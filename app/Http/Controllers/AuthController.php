@@ -74,30 +74,33 @@ class AuthController extends Controller
         return view('register');
     }
 
-    // Procesar registro - EMAIL AHORA ES OPCIONAL
+    // ========== REGISTRO CORREGIDO ==========
     public function register(Request $request)
     {
+        // Construir el nombre completo desde los campos del formulario
+        $primerNombre = $request->input('primer_nombre', '');
+        $segundoNombre = $request->input('segundo_nombre', '');
+        $primerApellido = $request->input('primer_apellido', '');
+        $segundoApellido = $request->input('segundo_apellido', '');
+        
+        // Combinar nombres y apellidos en un solo campo 'name'
+        $nombreCompleto = trim($primerNombre . ' ' . $segundoNombre . ' ' . $primerApellido . ' ' . $segundoApellido);
+        $nombreCompleto = preg_replace('/\s+/', ' ', $nombreCompleto); // Limpiar espacios extra
+        
+        // Validaciones
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'identificacion' => 'required|string|max:20', // Ya no es unique
             'username' => 'required|string|max:50|unique:users',
-            'email' => 'nullable|string|email|max:255|unique:users', // AHORA ES OPCIONAL (nullable)
-            'password' => 'nullable|string|min:6|confirmed', // AHORA ES OPCIONAL
-            // Validaciones para los campos de personas
-            'identificacion' => 'required|string|max:20|unique:personas,identificacion',
+            'password' => 'required|string|min:6|confirmed',
             'primer_nombre' => 'required|string|max:50',
-            'segundo_nombre' => 'nullable|string|max:50',
             'primer_apellido' => 'required|string|max:50',
-            'segundo_apellido' => 'nullable|string|max:50',
         ], [
-            'name.required' => 'El nombre completo es obligatorio',
+            'identificacion.required' => 'La identificación es obligatoria',
             'username.required' => 'El nombre de usuario es obligatorio',
             'username.unique' => 'Este nombre de usuario ya está en uso',
+            'password.required' => 'La contraseña es obligatoria',
             'password.min' => 'La contraseña debe tener al menos 6 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
-            'email.email' => 'Ingrese un correo electrónico válido',
-            'email.unique' => 'Este correo electrónico ya está registrado',
-            'identificacion.required' => 'La identificación es obligatoria',
-            'identificacion.unique' => 'Esta identificación ya está registrada en el sistema',
             'primer_nombre.required' => 'El primer nombre es obligatorio',
             'primer_apellido.required' => 'El primer apellido es obligatorio',
         ]);
@@ -108,15 +111,15 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        // Generar email automático si no se proporcionó
-        $email = $request->email ?? $request->username . '@temp.com';
+        // Generar email automático
+        $email = $request->username . '@temp.com';
         
-        // Generar contraseña por defecto si no se proporcionó
-        $password = $request->password ? Hash::make($request->password) : Hash::make('password123');
+        // Hashear contraseña
+        $hashedPassword = Hash::make($request->password);
 
-        // ========== PERMISOS POR DEFECTO: LOGIN EN 0 (NO PUEDE INICIAR SESIÓN) ==========
+        // ========== PERMISOS POR DEFECTO ==========
         $permisosPorDefecto = [
-            'login' => 0,  // EL USUARIO NO PUEDE INICIAR SESIÓN - DEBE SER ACTIVADO POR EL SUPER ADMINISTRADOR
+            'login' => 0,
             'agregar_paciente' => 0,
             'usuarios' => 0,
             'servicios' => 0,
@@ -124,36 +127,36 @@ class AuthController extends Controller
             'atender_turnos' => 0,
             'perfil' => 0,
         ];
-        // =================================================================================
 
-        // ========== GUARDAR EN TABLA users (EXISTENTE) ==========
+        // ========== 1. GUARDAR EN TABLA users ==========
         $user = User::create([
-            'name' => $request->name,
+            'name' => $nombreCompleto,
             'username' => $request->username,
             'email' => $email,
-            'password' => $password,
+            'password' => $hashedPassword,
             'permisos' => $permisosPorDefecto,
         ]);
 
-        // ========== NUEVO: GUARDAR EN TABLA personas ==========
-        try {
+        // ========== 2. GUARDAR EN TABLA personas SOLO SI NO EXISTE ==========
+        $identificacion = $request->identificacion;
+        $personaExistente = Persona::where('identificacion', $identificacion)->first();
+
+        if (!$personaExistente) {
+            // La cédula NO existe, la guardamos en personas
             Persona::create([
-                'identificacion' => $request->identificacion,
-                'primer_nombre' => strtoupper($request->primer_nombre),
-                'segundo_nombre' => $request->segundo_nombre ? strtoupper($request->segundo_nombre) : null,
-                'primer_apellido' => strtoupper($request->primer_apellido),
-                'segundo_apellido' => $request->segundo_apellido ? strtoupper($request->segundo_apellido) : null,
+                'identificacion' => $identificacion,
+                'primer_nombre' => strtoupper($primerNombre),
+                'segundo_nombre' => $segundoNombre ? strtoupper($segundoNombre) : null,
+                'primer_apellido' => strtoupper($primerApellido),
+                'segundo_apellido' => $segundoApellido ? strtoupper($segundoApellido) : null,
             ]);
-        } catch (\Exception $e) {
-            // Si falla el guardado en personas, igualmente se guardó en users
-            // Pero mostramos un mensaje de advertencia
-            return redirect()->route('login')->with('warning', '⚠️ Usuario registrado en el sistema, pero hubo un problema al guardar los datos personales. Contacte al administrador.');
         }
+        // Si la cédula YA EXISTE, NO se guarda en personas (solo en users)
 
         return redirect()->route('login')->with('success', '✅ ¡Registro exitoso! Tu cuenta ha sido creada. Espera a que el administrador active tu acceso.');
     }
 
-    // ==================== MÉTODO PARA REGISTRO RÁPIDO (SOLO NOMBRE Y USUARIO) ====================
+    // ==================== MÉTODO PARA REGISTRO RÁPIDO ====================
     public function registrarUsuarioRapido(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -171,15 +174,11 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        // Generar email automático
         $email = $request->username . '@temp.com';
-        
-        // Contraseña por defecto (el usuario la puede cambiar después)
         $password = Hash::make('password123');
 
-        // ========== PERMISOS POR DEFECTO: LOGIN EN 0 (NO PUEDE INICIAR SESIÓN) ==========
         $permisosPorDefecto = [
-            'login' => 0,  // EL USUARIO NO PUEDE INICIAR SESIÓN - DEBE SER ACTIVADO POR EL SUPER ADMINISTRADOR
+            'login' => 0,
             'agregar_paciente' => 0,
             'usuarios' => 0,
             'servicios' => 0,
@@ -187,7 +186,6 @@ class AuthController extends Controller
             'atender_turnos' => 0,
             'perfil' => 0,
         ];
-        // =================================================================================
 
         $user = User::create([
             'name' => $request->name,
@@ -197,7 +195,7 @@ class AuthController extends Controller
             'permisos' => $permisosPorDefecto,
         ]);
 
-        return redirect()->route('login')->with('success', '✅ ¡Usuario registrado exitosamente! El administrador debe activar tu cuenta para poder iniciar sesión.');
+        return redirect()->route('login')->with('success', '✅ ¡Usuario registrado exitosamente! El administrador debe activar tu cuenta.');
     }
 
     // Cerrar sesión

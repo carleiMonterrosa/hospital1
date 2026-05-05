@@ -8,7 +8,7 @@
     <title>Administrador Turnos - Hospital San Pablo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== TODOS TUS ESTILOS EXISTENTES ===== */
+        /* ===== TODOS TUS ESTILOS EXISTENTES (MANTENIDOS IGUALES) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -62,6 +62,216 @@
         .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,215,0,0.3); margin-top: auto; }
         .btn-clear-history { width: 100%; background: #dc3545; color: white; border: none; padding: 8px; border-radius: 30px; cursor: pointer; font-weight: bold; }
         .main-content { flex: 1; margin-left: 320px; padding: 20px; }
+        
+        /* ESTILOS PARA MODO TRABAJADOR (PANTALLA COMPLETA) */
+        .sidebar-hidden {
+            display: none !important;
+        }
+        .main-content-full {
+            margin-left: 0 !important;
+            width: 100%;
+            padding: 20px;
+        }
+        
+        /* BARRA DE MÓDULOS (PESTAÑAS) PARA USUARIOS NORMALES */
+        .modulos-bar {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            padding: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .modulo-tab {
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: #f1f5f9;
+            color: #1e293b;
+            border: none;
+            font-size: 0.9rem;
+        }
+        .modulo-tab:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        .modulo-tab.active {
+            background: linear-gradient(135deg, #0b2b5e, #1e4a8a);
+            color: white;
+            box-shadow: 0 4px 12px rgba(11,43,94,0.3);
+        }
+        .modulo-tab i {
+            margin-right: 8px;
+        }
+        
+        /* MODO TRABAJADOR PANTALLA COMPLETA PARA TODAS LAS SECCIONES */
+        .modo-trabajador .main-content-full {
+            padding: 0 !important;
+        }
+        
+        .modo-trabajador .modulos-bar {
+            border-radius: 0;
+            margin: 0;
+            padding: 12px 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        /* Estilos para sección SERVICIOS en modo trabajador */
+        .modo-trabajador .servicios-section {
+            border-radius: 0 !important;
+            margin: 0 !important;
+            min-height: calc(100vh - 70px);
+            padding: 28px;
+        }
+        
+        .modo-trabajador .servicios-section .servicios-grid {
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+        
+        .modo-trabajador .servicios-section .servicios-header {
+            margin-bottom: 30px;
+        }
+        
+        .modo-trabajador .servicios-section .servicios-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .modo-trabajador .servicios-section .btn-agregar-servicio {
+            padding: 14px 28px;
+            font-size: 1rem;
+        }
+        
+        .modo-trabajador .servicio-card {
+            padding: 25px;
+        }
+        
+        .modo-trabajador .servicio-card h3 {
+            font-size: 1.3rem;
+        }
+        
+        .modo-trabajador .servicio-card .descripcion {
+            font-size: 0.95rem;
+        }
+        
+        .modo-trabajador .servicio-card .badge-orden,
+        .modo-trabajador .servicio-card .estado {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+        
+        /* Estilos para sección REPORTES en modo trabajador */
+        .modo-trabajador .reportes-section {
+            border-radius: 0 !important;
+            margin: 0 !important;
+            min-height: calc(100vh - 70px);
+            padding: 28px;
+        }
+        
+        .modo-trabajador .reportes-section .report-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .modo-trabajador .reportes-section .filtros-fecha {
+            padding: 25px;
+        }
+        
+        .modo-trabajador .reportes-section .filtros-fecha input {
+            padding: 14px 22px;
+            font-size: 1rem;
+        }
+        
+        .modo-trabajador .reportes-section .btn-generar-reporte,
+        .modo-trabajador .reportes-section .btn-descargar,
+        .modo-trabajador .reportes-section .btn-buscar-reporte {
+            padding: 14px 28px;
+            font-size: 1rem;
+        }
+        
+        .modo-trabajador .reportes-section .reporte-table th,
+        .modo-trabajador .reportes-section .reporte-table td {
+            padding: 14px 12px;
+        }
+        
+        /* Estilos para sección ATENDER en modo trabajador */
+        .modo-trabajador .atender-section {
+            border-radius: 0 !important;
+            margin: 0 !important;
+            min-height: calc(100vh - 70px);
+            padding: 28px;
+        }
+        
+        .modo-trabajador .gestionar-turno-layout {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .modo-trabajador .gestionar-izquierda,
+        .modo-trabajador .gestionar-derecha {
+            padding: 30px;
+        }
+        
+        .modo-trabajador .turno-numero-grande {
+            font-size: 2.2rem;
+            padding: 18px;
+        }
+        
+        .modo-trabajador .btn-finalizar-grande {
+            padding: 20px;
+        }
+        
+        .modo-trabajador .btn-finalizar-grande .circulo-stop {
+            width: 65px;
+            height: 65px;
+        }
+        
+        .modo-trabajador .btn-finalizar-grande .circulo-stop i {
+            font-size: 2rem;
+        }
+        
+        /* Ajustes para pantallas más grandes */
+        @media (min-width: 1400px) {
+            .modo-trabajador .gestionar-turno-layout {
+                gap: 40px;
+            }
+            .modo-trabajador .gestionar-izquierda,
+            .modo-trabajador .gestionar-derecha {
+                padding: 35px;
+            }
+            .modo-trabajador .turno-numero-grande {
+                font-size: 2.5rem;
+                padding: 20px;
+            }
+            .modo-trabajador .campo-fila .campo-valor-display {
+                padding: 14px 18px;
+                font-size: 1rem;
+            }
+            .modo-trabajador .btn-finalizar-grande {
+                padding: 24px;
+            }
+            .modo-trabajador .btn-finalizar-grande .circulo-stop {
+                width: 70px;
+                height: 70px;
+            }
+            .modo-trabajador .btn-finalizar-grande .circulo-stop i {
+                font-size: 2.2rem;
+            }
+            .modo-trabajador .btn-finalizar-grande span {
+                font-size: 1.3rem;
+            }
+            
+            .modo-trabajador .servicios-section .servicios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+                gap: 30px;
+            }
+        }
+        
+        /* El resto de tus estilos existentes continúan igual */
         .header-hospital { background: white; border-radius: 20px; padding: 15px 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 5px solid #ffd966; }
         .header-hospital h1 { color: #0b2b5e; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
@@ -515,38 +725,42 @@
         </div>
     </div>
 
-    <!-- MODAL AGREGAR PERSONA (PACIENTE) -->
+    <!-- MODAL AGREGAR PERSONA (PACIENTE) - CAMPOS SIN PLACEHOLDER -->
     <div id="modalAgregarPersona" class="modal-persona">
         <div class="modal-content">
             <div class="modal-header"><h2><i class="fas fa-user-plus"></i> Registrar Nuevo Paciente</h2><button class="close-modal-persona" onclick="cerrarModalPersona()">&times;</button></div>
             <form id="formRegistrarPersona">
-                <div class="form-persona-group"><label><i class="fas fa-id-card"></i> Identificación *</label><input type="text" id="regIdentificacion" placeholder="Ej: 12345678" required></div>
-                <div class="form-persona-group"><label><i class="fas fa-user"></i> Primer Nombre *</label><input type="text" id="regPrimerNombre" placeholder="Nombre" required></div>
-                <div class="form-persona-group"><label><i class="fas fa-user"></i> Segundo Nombre</label><input type="text" id="regSegundoNombre" placeholder="Segundo nombre (opcional)"></div>
-                <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Primer Apellido *</label><input type="text" id="regPrimerApellido" placeholder="Apellido paterno" required></div>
-                <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Segundo Apellido</label><input type="text" id="regSegundoApellido" placeholder="Apellido materno (opcional)"></div>
+                <div class="form-persona-group"><label><i class="fas fa-id-card"></i> Identificación *</label><input type="text" id="regIdentificacion" placeholder="" required></div>
+                <div class="form-persona-group"><label><i class="fas fa-user"></i> Primer Nombre *</label><input type="text" id="regPrimerNombre" placeholder="" required></div>
+                <div class="form-persona-group"><label><i class="fas fa-user"></i> Segundo Nombre</label><input type="text" id="regSegundoNombre" placeholder=""></div>
+                <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Primer Apellido *</label><input type="text" id="regPrimerApellido" placeholder="" required></div>
+                <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Segundo Apellido</label><input type="text" id="regSegundoApellido" placeholder=""></div>
                 <div class="modal-persona-actions"><button type="button" class="btn-cancelar-persona" onclick="cerrarModalPersona()">Cancelar</button><button type="submit" class="btn-guardar-persona"><i class="fas fa-save"></i> Guardar Paciente</button></div>
             </form>
         </div>
     </div>
 
     <div class="app-layout">
-        <div class="sidebar">
+        <div class="sidebar" id="mainSidebar">
             <div class="sidebar-header"><h2><i class="fas fa-hospital-user"></i> HOSPITAL LOCAL SAN PABLO</h2></div>
             <div class="nav-menu">
-                <div class="nav-section"><div class="nav-section-title">INICIO</div><div class="nav-item active" onclick="mostrarSeccion('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div></div>
+                <div class="nav-section"><div class="nav-section-title">INICIO</div><div class="nav-item" onclick="mostrarSeccion('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div></div>
                 <div class="nav-section"><div class="nav-section-title">SERVICIOS</div><div class="nav-item" id="navServicios" onclick="verificarAcceso('servicios')"><i class="fas fa-stethoscope"></i><span>Servicios</span></div></div>
                 <div class="nav-section"><div class="nav-section-title">USUARIOS</div><div class="nav-item" id="navUsuarios" onclick="verificarAcceso('usuarios')"><i class="fas fa-users"></i><span>Usuarios</span></div></div>
                 <div class="nav-section"><div class="nav-section-title">PERFIL</div><div class="nav-item" id="navPerfil" onclick="verificarAcceso('perfil')"><i class="fas fa-id-card"></i><span>Perfil</span></div></div>
                 <div class="nav-section"><div class="nav-section-title">GESTION TURNOS</div><div class="nav-item" id="navAgregarPaciente" onclick="verificarAcceso('agregar_paciente')"><i class="fas fa-user-plus"></i><span>Agregar paciente</span></div><div class="nav-item" id="navAtenderTurnos" onclick="verificarAcceso('atender_turnos')"><i class="fas fa-users"></i><span>Atender Turnos</span></div></div>
                 <div class="nav-section"><div class="nav-section-title">REPORTES</div><div class="nav-item" id="navReportes" onclick="verificarAcceso('reportes')"><i class="fas fa-chart-bar"></i><span>Reportes</span></div></div>
+                <div class="nav-section"><div class="nav-section-title">SALIR</div><div class="nav-item" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div></div>
             </div>
             <div class="voice-control"><h3><i class="fas fa-volume-up"></i> Control de Voz</h3><div class="voice-buttons"><button class="voice-btn" id="voiceOnBtn" onclick="toggleVoice(true)">Activar</button><button class="voice-btn" id="voiceOffBtn" onclick="toggleVoice(false)">Desactivar</button></div><div id="voiceStatus">✅ Voz activada</div></div>
             <div class="sidebar-turns"><h3><i class="fas fa-clock"></i> Turnos Pendientes</h3><div class="turnos-side-list" id="turnosSideList">No hay turnos</div></div>
             <div class="sidebar-footer"><button class="btn-clear-history" onclick="limpiarHistorial()">Limpiar historial</button></div>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="mainContent">
+            <!-- BARRA DE MÓDULOS PARA USUARIOS NORMALES -->
+            <div id="modulosBarContainer" style="display: none;"></div>
+            
             <div id="seccion-inicio">
                 <div class="header-hospital"><h1><i class="fas fa-ticket-alt"></i> Gestión de Turnos</h1><p>Administre los turnos de los pacientes - Llamado en voz alta</p></div>
                 <div class="stats-grid">
@@ -631,6 +845,8 @@
                     </div>
                     <div class="permisos-container" id="permisosContainer">
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-sign-in-alt"></i> Login</h4><p>Acceso al sistema - Inicio de sesión</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_login" value="1"> Sí</label><label><input type="radio" name="permiso_login" value="0" checked> No</label></div></div>
+                        <!-- NUEVO PERMISO: INICIO (debajo de Login) -->
+                        <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-home"></i> Inicio</h4><p>Pantalla principal - Gestión de turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_inicio" value="1"> Sí</label><label><input type="radio" name="permiso_inicio" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-user-plus"></i> Agregar Pacientes</h4><p>Registrar nuevos pacientes</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_agregar_pacientes" value="1"> Sí</label><label><input type="radio" name="permiso_agregar_pacientes" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-users"></i> Usuarios</h4><p>Gestionar usuarios del sistema</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_usuarios" value="1"> Sí</label><label><input type="radio" name="permiso_usuarios" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-stethoscope"></i> Servicios</h4><p>Gestionar servicios médicos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_servicios" value="1"> Sí</label><label><input type="radio" name="permiso_servicios" value="0" checked> No</label></div></div>
@@ -760,6 +976,20 @@
     </div>
 
     <script>
+        // ==================== FUNCIÓN CERRAR SESIÓN ====================
+        function cerrarSesion() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("logout") }}';
+            form.style.display = 'none';
+            const token = document.createElement('input');
+            token.name = '_token';
+            token.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            form.appendChild(token);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         // ==================== RECIBIR PERMISOS DESDE PHP ====================
         const userPermissions = @json($permisos ?? []);
         
@@ -777,12 +1007,148 @@
         let editandoUsuarioId = null;
         let cicloLlamadaInterval = null;
         let turnoEnCiclo = null;
+        let modulosPermitidos = [];
+        let currentModuloActivo = null;
 
-        // ==================== MOSTRAR NOMBRE DEL USUARIO EN ATENDER TURNOS ====================
         const nombreUsuarioAutenticado = @json(auth()->user()->name ?? 'Usuario');
         
-        // ==================== MODAL SERVICIO ====================
+        // ==================== DETECTAR SI ES ADMINISTRADOR ====================
+        function esSuperAdministrador() {
+            const permisosRequeridos = ['login', 'inicio', 'agregar_paciente', 'usuarios', 'servicios', 'reportes', 'atender_turnos', 'perfil'];
+            for (const permiso of permisosRequeridos) {
+                if (userPermissions[permiso] !== 1) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        const esAdministrador = esSuperAdministrador();
+        
+        // ==================== OBTENER LISTA DE MÓDULOS PERMITIDOS ====================
+        function getModulosPermitidos() {
+            const modulos = [];
+            const mapping = {
+                'inicio': { seccion: 'inicio', nombre: 'Inicio', icono: 'fas fa-home' },
+                'agregar_paciente': { seccion: 'inicio', nombre: 'Agregar Pacientes', icono: 'fas fa-user-plus' },
+                'servicios': { seccion: 'servicios', nombre: 'Servicios Médicos', icono: 'fas fa-stethoscope' },
+                'usuarios': { seccion: 'usuarios', nombre: 'Gestión de Usuarios', icono: 'fas fa-users' },
+                'reportes': { seccion: 'reportes', nombre: 'Reportes', icono: 'fas fa-chart-bar' },
+                'atender_turnos': { seccion: 'atender', nombre: 'Gestionar Turnos', icono: 'fas fa-stethoscope' },
+                'perfil': { seccion: 'perfil', nombre: 'Mi Perfil', icono: 'fas fa-id-card' }
+            };
+            
+            for (const [key, value] of Object.entries(userPermissions)) {
+                if (value === 1 && mapping[key]) {
+                    const existe = modulos.some(m => m.seccion === mapping[key].seccion);
+                    if (!existe) {
+                        modulos.push({
+                            key: key,
+                            seccion: mapping[key].seccion,
+                            nombre: mapping[key].nombre,
+                            icono: mapping[key].icono
+                        });
+                    }
+                }
+            }
+            return modulos;
+        }
+        
+        // ==================== RENDERIZAR BARRA DE MÓDULOS ====================
+        function renderizarBarraModulos() {
+            const container = document.getElementById('modulosBarContainer');
+            if (!container) return;
+            modulosPermitidos = getModulosPermitidos();
+            if (!esAdministrador && modulosPermitidos.length > 1) {
+                container.style.display = 'block';
+                let html = '<div class="modulos-bar">';
+                modulosPermitidos.forEach(mod => {
+                    const isActive = (currentModuloActivo && currentModuloActivo.seccion === mod.seccion) || 
+                                    (!currentModuloActivo && modulosPermitidos[0].seccion === mod.seccion);
+                    html += `<button class="modulo-tab ${isActive ? 'active' : ''}" onclick="cambiarModulo('${mod.seccion}', '${mod.key}')">
+                        <i class="${mod.icono}"></i> ${mod.nombre}
+                    </button>`;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        // ==================== CAMBIAR ENTRE MÓDULOS ====================
+        function cambiarModulo(seccion, key) {
+            if (currentModuloActivo && currentModuloActivo.seccion === seccion) return;
+            const moduloSeleccionado = modulosPermitidos.find(m => m.seccion === seccion);
+            if (moduloSeleccionado) {
+                currentModuloActivo = moduloSeleccionado;
+                renderizarBarraModulos();
+                mostrarSeccion(seccion);
+                if (seccion === 'atender') {
+                    const nombreElement = document.getElementById('usuarioAutenticadoNombre');
+                    if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
+                    if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
+                        limpiarPanelIzquierdo();
+                        actualizarContadoresModal();
+                        actualizarConteoDropdown();
+                        renderizarListaTurnos();
+                        poblarSelectServiciosModal();
+                    }
+                } else if (seccion === 'reportes') {
+                    setTimeout(() => generarReporte(), 200);
+                } else if (seccion === 'servicios') {
+                    cargarServiciosDB();
+                }
+            }
+        }
+        
+        // ==================== CONFIGURAR VISTA SEGÚN PERMISOS ====================
+        function configurarVistaPorPermisos() {
+            if (!esAdministrador) {
+                const sidebar = document.getElementById('mainSidebar');
+                if (sidebar) sidebar.classList.add('sidebar-hidden');
+                const mainContent = document.getElementById('mainContent');
+                if (mainContent) {
+                    mainContent.classList.add('main-content-full');
+                    mainContent.style.marginLeft = '0';
+                }
+                modulosPermitidos = getModulosPermitidos();
+                if (modulosPermitidos.length > 0) {
+                    document.body.classList.add('modo-trabajador');
+                    currentModuloActivo = modulosPermitidos[0];
+                    renderizarBarraModulos();
+                    mostrarSeccion(currentModuloActivo.seccion);
+                    if (currentModuloActivo.seccion === 'atender') {
+                        const nombreElement = document.getElementById('usuarioAutenticadoNombre');
+                        if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
+                        if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
+                            limpiarPanelIzquierdo();
+                            actualizarContadoresModal();
+                            actualizarConteoDropdown();
+                            renderizarListaTurnos();
+                            poblarSelectServiciosModal();
+                        }
+                    } else if (currentModuloActivo.seccion === 'reportes') {
+                        setTimeout(() => generarReporte(), 200);
+                    } else if (currentModuloActivo.seccion === 'servicios') {
+                        cargarServiciosDB();
+                    }
+                } else {
+                    mostrarAccesoDenegado();
+                }
+            } else {
+                document.body.classList.remove('modo-trabajador');
+                const container = document.getElementById('modulosBarContainer');
+                if (container) container.style.display = 'none';
+            }
+        }
+        
+        // ==================== MODALES Y FUNCIONES EXISTENTES ====================
         function abrirModalServicio() {
+            if (!tienePermiso('servicios')) {
+                mostrarAccesoDenegado();
+                return;
+            }
             document.getElementById('modalTitulo').textContent = 'Agregar Servicio';
             document.getElementById('formServicio').reset();
             document.getElementById('servicioId').value = '';
@@ -799,9 +1165,16 @@
             if (e.target === this) cerrarModalServicio();
         });
 
-        // ==================== FUNCIONES DE PERMISOS ====================
         function tienePermiso(moduloId) {
-            const moduloMap = { 'servicios': 'servicios', 'usuarios': 'usuarios', 'agregar_paciente': 'agregar_paciente', 'atender_turnos': 'atender_turnos', 'reportes': 'reportes', 'perfil': 'perfil' };
+            const moduloMap = { 
+                'inicio': 'inicio',
+                'servicios': 'servicios', 
+                'usuarios': 'usuarios', 
+                'agregar_paciente': 'agregar_paciente', 
+                'atender_turnos': 'atender_turnos', 
+                'reportes': 'reportes', 
+                'perfil': 'perfil' 
+            };
             const key = moduloMap[moduloId];
             if (!key) return false;
             return userPermissions[key] === 1;
@@ -816,8 +1189,19 @@
         }
 
         function verificarAcceso(modulo) {
+            if (!esAdministrador) {
+                const moduloObj = modulosPermitidos.find(m => m.key === modulo);
+                if (moduloObj) {
+                    cambiarModulo(moduloObj.seccion, moduloObj.key);
+                } else {
+                    mostrarAccesoDenegado();
+                }
+                return;
+            }
             if (tienePermiso(modulo)) {
-                if (modulo === 'agregar_paciente') { abrirModalPersona(); }
+                if (modulo === 'agregar_paciente') { 
+                    abrirModalPersona(); 
+                }
                 else if (modulo === 'atender_turnos') { 
                     mostrarSeccion('atender');
                     const nombreElement = document.getElementById('usuarioAutenticadoNombre');
@@ -830,11 +1214,14 @@
                         poblarSelectServiciosModal();
                     }
                 }
-                else { mostrarSeccion(modulo); }
-            } else { mostrarAccesoDenegado(); }
+                else { 
+                    mostrarSeccion(modulo); 
+                }
+            } else { 
+                mostrarAccesoDenegado(); 
+            }
         }
 
-        // ==================== FUNCIONES ORIGINALES ====================
         function abrirModalPersona() { 
             const form = document.getElementById('formRegistrarPersona');
             if (form) form.reset();
@@ -846,6 +1233,28 @@
             document.getElementById('modalAgregarPersona').style.display = 'flex';
         }
         
+        // ===== FUNCIÓN MODIFICADA: Precarga la cédula desde el campo de búsqueda =====
+        function abrirModalPersonaYPrecargar() {
+            // Obtener la cédula que el usuario escribió en el campo de búsqueda
+            const cedulaBuscada = document.getElementById('cedula').value.trim();
+            
+            // Limpiar y abrir el modal
+            const form = document.getElementById('formRegistrarPersona');
+            if (form) form.reset();
+            document.getElementById('regIdentificacion').value = '';
+            document.getElementById('regPrimerNombre').value = '';
+            document.getElementById('regSegundoNombre').value = '';
+            document.getElementById('regPrimerApellido').value = '';
+            document.getElementById('regSegundoApellido').value = '';
+            
+            // Si hay una cédula, la ponemos en el campo Identificación
+            if (cedulaBuscada !== '') {
+                document.getElementById('regIdentificacion').value = cedulaBuscada;
+            }
+            
+            document.getElementById('modalAgregarPersona').style.display = 'flex';
+        }
+        
         function mostrarSeccion(sec) {
             document.getElementById('seccion-inicio').style.display = 'none';
             document.getElementById('seccion-servicios').style.display = 'none';
@@ -853,22 +1262,56 @@
             document.getElementById('seccion-reportes').style.display = 'none';
             document.getElementById('seccion-perfil').style.display = 'none';
             document.getElementById('seccion-atender').style.display = 'none';
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            if(sec === 'inicio') { document.getElementById('seccion-inicio').style.display = 'block'; document.querySelectorAll('.nav-item')[0].classList.add('active'); actualizarVista(); }
-            else if(sec === 'servicios') { document.getElementById('seccion-servicios').style.display = 'block'; document.getElementById('navServicios').classList.add('active'); cargarServiciosDB(); }
-            else if(sec === 'usuarios') { document.getElementById('seccion-usuarios').style.display = 'block'; document.getElementById('navUsuarios').classList.add('active'); cargarUsuarios(); poblarSelectServiciosUsuario(); }
-            else if(sec === 'perfil') { document.getElementById('seccion-perfil').style.display = 'block'; document.getElementById('navPerfil').classList.add('active'); cargarPermisosDesdeLocalStorage(); }
-            else if(sec === 'reportes') { document.getElementById('seccion-reportes').style.display = 'block'; document.getElementById('navReportes').classList.add('active'); generarReporte(); }
-            else if(sec === 'atender') { document.getElementById('seccion-atender').style.display = 'block'; document.getElementById('navAtenderTurnos').classList.add('active'); }
+            
+            if (esAdministrador) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            }
+            
+            if(sec === 'inicio') { 
+                document.getElementById('seccion-inicio').style.display = 'block'; 
+                if (esAdministrador) document.querySelectorAll('.nav-item')[0].classList.add('active'); 
+                actualizarVista(); 
+            }
+            else if(sec === 'servicios') { 
+                document.getElementById('seccion-servicios').style.display = 'block'; 
+                if (esAdministrador) document.getElementById('navServicios').classList.add('active'); 
+                cargarServiciosDB(); 
+            }
+            else if(sec === 'usuarios') { 
+                document.getElementById('seccion-usuarios').style.display = 'block'; 
+                if (esAdministrador) document.getElementById('navUsuarios').classList.add('active'); 
+                cargarUsuarios(); 
+                poblarSelectServiciosUsuario(); 
+            }
+            else if(sec === 'perfil') { 
+                document.getElementById('seccion-perfil').style.display = 'block'; 
+                if (esAdministrador) document.getElementById('navPerfil').classList.add('active'); 
+                cargarPermisosDesdeLocalStorage(); 
+            }
+            else if(sec === 'reportes') { 
+                document.getElementById('seccion-reportes').style.display = 'block'; 
+                if (esAdministrador) document.getElementById('navReportes').classList.add('active'); 
+                generarReporte(); 
+            }
+            else if(sec === 'atender') { 
+                document.getElementById('seccion-atender').style.display = 'block'; 
+                if (esAdministrador) document.getElementById('navAtenderTurnos').classList.add('active'); 
+            }
         }
 
-        // ==================== PERFIL ====================
         function cargarPermisosDesdeLocalStorage() {
             const permisosGuardados = localStorage.getItem('permisos_sistema');
             if(permisosGuardados) {
                 const permisos = JSON.parse(permisosGuardados);
                 const set = (name, val) => { const el = document.querySelector(`input[name="${name}"][value="${val ? '1' : '0'}"]`); if(el) el.checked = true; };
-                set('permiso_login', permisos.login); set('permiso_agregar_pacientes', permisos.agregar_paciente); set('permiso_usuarios', permisos.usuarios); set('permiso_servicios', permisos.servicios); set('permiso_reportes', permisos.reportes); set('permiso_atender_turnos', permisos.atender_turnos); set('permiso_perfil', permisos.perfil);
+                set('permiso_login', permisos.login);
+                set('permiso_inicio', permisos.inicio);
+                set('permiso_agregar_pacientes', permisos.agregar_paciente);
+                set('permiso_usuarios', permisos.usuarios);
+                set('permiso_servicios', permisos.servicios);
+                set('permiso_reportes', permisos.reportes);
+                set('permiso_atender_turnos', permisos.atender_turnos);
+                set('permiso_perfil', permisos.perfil);
             }
         }
 
@@ -879,6 +1322,7 @@
             if(username === '') { showNotification('⚠️ Primero busque un usuario para modificar sus permisos', 'warning'); return; }
             const permisos = {
                 login: document.querySelector('input[name="permiso_login"]:checked').value === '1' ? 1 : 0,
+                inicio: document.querySelector('input[name="permiso_inicio"]:checked').value === '1' ? 1 : 0,
                 agregar_paciente: document.querySelector('input[name="permiso_agregar_pacientes"]:checked').value === '1' ? 1 : 0,
                 usuarios: document.querySelector('input[name="permiso_usuarios"]:checked').value === '1' ? 1 : 0,
                 servicios: document.querySelector('input[name="permiso_servicios"]:checked').value === '1' ? 1 : 0,
@@ -901,12 +1345,21 @@
                 if(data.success) {
                     const p = data.usuario.permisos;
                     const set = (name, val) => { const el = document.querySelector(`input[name="${name}"][value="${val == 1 ? '1' : '0'}"]`); if(el) el.checked = true; };
-                    set('permiso_login', p.login); set('permiso_agregar_pacientes', p.agregar_paciente); set('permiso_usuarios', p.usuarios); set('permiso_servicios', p.servicios); set('permiso_reportes', p.reportes); set('permiso_atender_turnos', p.atender_turnos); set('permiso_perfil', p.perfil);
+                    set('permiso_login', p.login);
+                    set('permiso_inicio', p.inicio);
+                    set('permiso_agregar_pacientes', p.agregar_paciente);
+                    set('permiso_usuarios', p.usuarios);
+                    set('permiso_servicios', p.servicios);
+                    set('permiso_reportes', p.reportes);
+                    set('permiso_atender_turnos', p.atender_turnos);
+                    set('permiso_perfil', p.perfil);
                     showNotification(`✅ Usuario encontrado: ${data.usuario.name || data.usuario.username}`, 'success');
                 } else { showNotification(`❌ Usuario "${busqueda}" no encontrado`, 'error'); }
             }).catch(() => showNotification('❌ Error de conexión con el servidor', 'error'));
         }
 
+        // El resto de las funciones originales se mantienen exactamente igual...
+        
         // ==================== MÓDULOS ====================
         function getNombreModulo(modulo) { return `MÓDULO ${modulo}`; }
         function toggleModuloDropdown() { const btn = document.getElementById('moduloBtnClick'); const dropdown = document.getElementById('moduloDropdown'); btn.classList.toggle('open'); dropdown.classList.toggle('open'); actualizarConteoDropdown(); }
@@ -972,8 +1425,6 @@
             } catch(e) { resultadoDiv.innerHTML = `<div class="no-encontrado-mensaje" style="background:#f8d7da;border-color:#dc3545;"><i class="fas fa-exclamation-triangle" style="color:#dc3545;"></i><strong>❌ Error de conexión</strong></div>`; showNotification('Error al buscar persona', 'error'); }
             finally { btnBuscar.disabled = false; btnBuscar.innerHTML = textoOriginal; }
         }
-
-        function abrirModalPersonaYPrecargar() { abrirModalPersona(); }
 
         // ==================== SERVICIOS DB ====================
         async function cargarServiciosDB() {
@@ -1064,7 +1515,7 @@
             }
         }
 
-        // ==================== ATENDER SECCIÓN - FUNCIONES CORREGIDAS ====================
+        // ==================== ATENDER SECCIÓN ====================
         function limpiarPanelIzquierdo() { 
             const gtNumeroTurno = document.getElementById('gtNumeroTurno');
             if(gtNumeroTurno) {
@@ -1146,18 +1597,13 @@
             if(gtContTotales) gtContTotales.textContent = lista.length;
         }
         
-        // ========== FUNCIÓN CORREGIDA: Solo muestra turnos no atendidos ==========
         function renderizarListaTurnos() { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
-            
-            // FILTRO IMPORTANTE: SOLO turnos que NO están atendidos (pendiente o llamado)
             let activos = turnos.filter(t => t.estado !== 'atendido');
-            
             let espera = servicioFiltro ? 
                 activos.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
                 activos.filter(t => parseInt(t.ventanilla) === moduloSeleccionado);
-            
             const turnosUnicos = [];
             const numerosVistos = new Set();
             for (const turno of espera) {
@@ -1166,21 +1612,17 @@
                     turnosUnicos.push(turno);
                 }
             }
-            
             turnosUnicos.sort((a, b) => {
                 if (a.estado === 'llamado' && b.estado !== 'llamado') return -1;
                 if (a.estado !== 'llamado' && b.estado === 'llamado') return 1;
                 return 0;
             });
-            
             const body = document.getElementById('turnosEsperaBody'); 
             if(!body) return;
-            
             if(turnosUnicos.length === 0) { 
                 body.innerHTML = `<div style="text-align:center;padding:20px;color:#888;font-size:0.85rem;"><i class="fas fa-inbox" style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>No hay turnos en espera</div>`; 
                 return; 
             } 
-            
             body.innerHTML = turnosUnicos.map(t => `<div class="turno-espera-item ${turnoActivoModal && turnoActivoModal.numero === t.numero ? 'seleccionado' : ''}" data-num="${t.numero}">
                 <div style="flex:1; cursor:pointer;" onclick='cargarTurnoEnPanel(${JSON.stringify(t)})'>
                     <div class="turno-espera-num">${t.numero}</div>
@@ -1191,18 +1633,16 @@
                     <button class="btn-atender-lista" onclick="event.stopPropagation(); atenderTurno('${t.numero}')"><i class="fas fa-check"></i> Atender</button>
                 </div>
             </div>`).join(''); 
-            
             if(turnoActivoModal) {
                 const item = document.querySelector(`.turno-espera-item[data-num="${turnoActivoModal.numero}"]`);
                 if(item) item.classList.add('seleccionado');
             }
         }
         
-        // ========== FUNCIÓN CORREGIDA: Atender turno ==========
         function atenderTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
-            if(idx !== -1) { 
+            if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
                 turnos[idx].estado = 'atendido'; 
                 turnos[idx].salida = new Date().toISOString(); 
                 localStorage.setItem('turnos', JSON.stringify(turnos)); 
@@ -1213,8 +1653,9 @@
                 actualizarContadoresModal(); 
                 actualizarConteoDropdown(); 
                 if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); 
-                // REFRESCAR LISTA INMEDIATAMENTE
                 renderizarListaTurnos();
+            } else if(idx !== -1) { 
+                showNotification(`⚠️ El turno ${num} ya fue atendido`, 'warning'); 
             } else { 
                 showNotification(`⚠️ No se encontró el turno ${num}`, 'warning'); 
             } 
@@ -1272,20 +1713,42 @@
             const fechaFin = document.getElementById('fechaFin').value; 
             let datos = turnos.map(t => { 
                 let s = serviciosDB.find(s => s.id_servicio == t.especialidad) || { nombre_servicio: t.nombreEspecialidad || 'MEDICINA' }; 
-                let estado = t.estado === 'pendiente' || t.estado === 'llamado' ? 'ACTIVO' : t.estado === 'atendido' ? 'FINALIZADO' : 'CANCELADO'; 
-                return { estado, turno: t.numero, servicio: s.nombre_servicio, documento: t.identificacion || '---', nombre: t.nombre_persona || 'Paciente', ingreso: t.timestamp ? formatearFechaLocal(t.timestamp) : '', salida: t.salida ? formatearFechaLocal(t.salida) : '', fechaIngreso: t.timestamp ? t.timestamp.split('T')[0] : '' }; 
+                let estadoTexto = t.estado === 'pendiente' || t.estado === 'llamado' ? 'ACTIVO' : t.estado === 'atendido' ? 'FINALIZADO' : 'CANCELADO'; 
+                return { 
+                    estado: estadoTexto, 
+                    turno: t.numero, 
+                    servicio: s.nombre_servicio, 
+                    documento: t.identificacion || '---', 
+                    nombre: t.nombre_persona || 'Paciente', 
+                    ingreso: t.timestamp ? formatearFechaLocal(t.timestamp) : '', 
+                    salida: t.salida ? formatearFechaLocal(t.salida) : '', 
+                    fechaIngreso: t.timestamp ? t.timestamp.split('T')[0] : '' 
+                }; 
             }); 
-            if(fechaInicio && fechaFin) datos = datos.filter(d => d.fechaIngreso >= fechaInicio && d.fechaIngreso <= fechaFin); 
+            if(fechaInicio && fechaFin) {
+                datos = datos.filter(d => d.fechaIngreso >= fechaInicio && d.fechaIngreso <= fechaFin);
+            }
             reporteFiltrado = datos; 
             const tbody = document.getElementById('reporteBody'); 
             if(!reporteFiltrado.length) { 
-                tbody.innerHTML = '<tr><td colspan="8">No hay datos</td>' + '</tr>'; 
+                tbody.innerHTML = '<tr><td colspan="8">No hay datos en el rango de fechas seleccionado</td>' + '<tr>'; 
                 return; 
             } 
-            tbody.innerHTML = reporteFiltrado.map(d => `<tr><td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td><td><strong>${d.turno}</strong></td><td>${d.servicio}</td><td>${d.documento}</td><td>${d.nombre}</td><td>${d.ingreso}</td><td>${d.salida}</td><td>---</td></tr>`).join(''); 
+            tbody.innerHTML = reporteFiltrado.map(d => `
+                <tr>
+                    <td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td>
+                    <td><strong>${d.turno}</strong></td>
+                    <td>${d.servicio}</td>
+                    <td>${d.documento}</td>
+                    <td>${d.nombre}</td>
+                    <td>${d.ingreso}</td>
+                    <td>${d.salida}</td>
+                    <td>---</td>
+                </tr>
+            `).join(''); 
         }
         
-        function buscarEnReporte() { const busqueda = prompt('Buscar:'); if(!busqueda) return; const resultados = reporteFiltrado.filter(d => d.turno.includes(busqueda) || d.nombre.includes(busqueda) || d.documento.includes(busqueda)); const tbody = document.getElementById('reporteBody'); if(!resultados.length) { tbody.innerHTML = '<tr><td colspan="8">No se encontraron</td>' + '</tr>'; return; } tbody.innerHTML = resultados.map(d => `<tr><td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td><td>${d.turno}</td><td>${d.servicio}</td><td>${d.documento}</td><td>${d.nombre}</td><td>${d.ingreso}</td><td>${d.salida}</td><td>---</td></tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
+        function buscarEnReporte() { const busqueda = prompt('Buscar:'); if(!busqueda) return; const resultados = reporteFiltrado.filter(d => d.turno.includes(busqueda) || d.nombre.includes(busqueda) || d.documento.includes(busqueda)); const tbody = document.getElementById('reporteBody'); if(!resultados.length) { tbody.innerHTML = '<tr><td colspan="8">No se encontraron resultados</td>' + '</tr>'; return; } tbody.innerHTML = resultados.map(d => `<tr><td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td><td><strong>${d.turno}</strong></td><td>${d.servicio}</td><td>${d.documento}</td><td>${d.nombre}</td><td>${d.ingreso}</td><td>${d.salida}</td><td>---</td>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
         function descargarReporte() { if(!reporteFiltrado.length) { showNotification('No hay datos', 'error'); return; } let csv = "ESTADO,TURNO,SERVICIO,DOCUMENTO,NOMBRE,INGRESO,SALIDA\n"; reporteFiltrado.forEach(d => csv += `"${d.estado}","${d.turno}","${d.servicio}","${d.documento}","${d.nombre}","${d.ingreso}","${d.salida}"\n`); const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `reporte_${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('Reporte descargado', 'success'); }
 
         // ==================== UTILIDADES ====================
@@ -1379,7 +1842,8 @@
         actualizarVista();
         toggleVoice(true);
         cargarUsuarios();
-        mostrarSeccion('inicio');
+        
+        configurarVistaPorPermisos();
         
         setTimeout(() => {
             if(document.getElementById('gtServicioFiltro')) {

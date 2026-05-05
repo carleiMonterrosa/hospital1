@@ -17,7 +17,7 @@
         body {
             font-family: 'Inter', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #7FFFD4  0%, #7FFFD4 100%);
+            background: linear-gradient(135deg, #7FFFD4 0%, #7FFFD4 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -135,6 +135,11 @@
             background: #f1f5f9;
             cursor: not-allowed;
         }
+        
+        .form-group input:read-only {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
 
         .password-input-container {
             position: relative;
@@ -159,6 +164,11 @@
         }
 
         .password-input-container input:disabled {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+        
+        .password-input-container input:read-only {
             background: #f1f5f9;
             cursor: not-allowed;
         }
@@ -256,7 +266,60 @@
             color: #856404;
         }
 
-        /* Estilos para el mensaje de confirmación tipo modal */
+        /* Modal de OK (cuando SÍ encuentra el usuario) */
+        .modal-ok-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-ok-card {
+            background: white;
+            border-radius: 40px;
+            padding: 40px 50px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.2s ease;
+        }
+        .modal-ok-card i {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        .modal-ok-card h3 {
+            font-size: 1.8rem;
+            color: #0b2b5e;
+            margin-bottom: 15px;
+        }
+        .modal-ok-card p {
+            color: #64748b;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+        .modal-ok-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .modal-ok-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* Modal de confirmación (cuando NO encuentra el usuario) */
         .confirm-overlay {
             position: fixed;
             top: 0;
@@ -376,7 +439,7 @@
         <div class="register-card">
 
             <div class="register-header">
-                <h1><img src="images/hls.jpg" alt="Logo" class="hospital-logo-img"> Hospital San Pablo</h1>
+                <h1><img src="{{ asset('images/hls.jpg') }}" alt="Logo" class="hospital-logo-img"> Hospital San Pablo</h1>
                 <p>Registro de Usuario</p>
                 <div class="badge"><i class="fas fa-notes-medical"></i> Datos personales</div>
             </div>
@@ -386,8 +449,6 @@
             <form id="registerForm" action="{{ route('register') }}" method="POST">
                 @csrf
 
-                <input type="hidden" name="name" id="nameHidden">
-
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i> IDENTIFICACIÓN <span class="required">*</span></label>
                     <input type="text" name="identificacion" id="identificacion" placeholder="" autocomplete="off" required>
@@ -395,7 +456,7 @@
 
                 <div class="form-group">
                     <label><i class="fas fa-user-circle"></i> USUARIO <span class="required">*</span></label>
-                    <input type="text" name="username" id="usuario" placeholder="Se generará automáticamente" autocomplete="off" required>
+                    <input type="text" name="username" id="usuario" placeholder="" autocomplete="off" required>
                 </div>
 
                 <div class="form-row-2">
@@ -424,16 +485,16 @@
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> CONTRASEÑA <span class="required">*</span></label>
                         <div class="password-input-container">
-                            <input type="password" name="password" id="password" placeholder="Opcional" autocomplete="new-password">
+                            <input type="password" name="password" id="password" placeholder="" autocomplete="new-password" required>
                             <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-check-circle"></i> CONFIRMAR CONTRASEÑA</label>
+                        <label><i class="fas fa-check-circle"></i> CONFIRMAR CONTRASEÑA <span class="required">*</span></label>
                         <div class="password-input-container">
-                            <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Opcional" autocomplete="new-password">
+                            <input type="password" name="password_confirmation" id="password_confirmation" placeholder="" autocomplete="new-password" required>
                             <button type="button" class="toggle-password" onclick="togglePassword('password_confirmation', this)">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
@@ -526,8 +587,28 @@
             }, 4000);
         }
 
+        // MODAL DE OK (cuando SÍ encuentra el usuario)
+        function mostrarModalOK(identificacion, nombreCompleto) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-ok-overlay';
+            overlay.innerHTML = `
+                <div class="modal-ok-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>¡Usuario Encontrado!</h3>
+                    <p>Se encontraron datos con la identificación: <strong>${identificacion}</strong></p>
+                    <p>Nombre: <strong>${nombreCompleto}</strong></p>
+                    <button class="modal-ok-btn" id="modalOkBtn">OK</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            document.getElementById('modalOkBtn').onclick = function() {
+                overlay.remove();
+            };
+        }
+
+        // MODAL DE CONFIRMACIÓN (cuando NO encuentra el usuario)
         function mostrarConfirmacion(identificacion) {
-            // Eliminar overlay existente si hay
             const overlayExistente = document.querySelector('.confirm-overlay');
             if (overlayExistente) overlayExistente.remove();
             
@@ -536,9 +617,9 @@
             overlay.innerHTML = `
                 <div class="confirm-card">
                     <i class="fas fa-question-circle"></i>
-                    <h3>Identificación no registrada</h3>
-                    <p>No se encontró los datos con la identificación: <strong>${identificacion}</strong></p>
-                    <p>¿Quiere seguir registrando?</p>
+                    <h3>Identificación no encontrada</h3>
+                    <p>No se encontraron datos con la identificación: <strong>${identificacion}</strong></p>
+                    <p>¿Desea continuar con el registro?</p>
                     <div class="confirm-buttons">
                         <button class="confirm-btn-si" id="confirmSiBtn">Sí, continuar</button>
                         <button class="confirm-btn-no" id="confirmNoBtn">Cancelar</button>
@@ -550,15 +631,15 @@
             document.getElementById('confirmSiBtn').onclick = function() {
                 overlay.remove();
                 confirmacionMostrada = false;
-                // Habilitar todos los campos para que el usuario pueda llenarlos
+                // Habilitar campos para llenar manualmente
                 document.getElementById('usuario').disabled = false;
-                document.getElementById('primer_nombre').disabled = false;
-                document.getElementById('segundo_nombre').disabled = false;
-                document.getElementById('primer_apellido').disabled = false;
-                document.getElementById('segundo_apellido').disabled = false;
+                document.getElementById('primer_nombre').readOnly = false;
+                document.getElementById('segundo_nombre').readOnly = false;
+                document.getElementById('primer_apellido').readOnly = false;
+                document.getElementById('segundo_apellido').readOnly = false;
                 document.getElementById('password').disabled = false;
                 document.getElementById('password_confirmation').disabled = false;
-                // Limpiar campos para que el usuario los llene desde cero
+                // Limpiar campos para llenar desde cero
                 document.getElementById('usuario').value = '';
                 document.getElementById('primer_nombre').value = '';
                 document.getElementById('segundo_nombre').value = '';
@@ -566,15 +647,19 @@
                 document.getElementById('segundo_apellido').value = '';
                 autoGenerandoUsuario = true;
                 mostrarAlerta('📝 Complete los datos del nuevo usuario', 'info');
+                
+                // PONER EL FOCO EN EL CAMPO "USUARIO"
+                document.getElementById('usuario').focus();
             };
             
             document.getElementById('confirmNoBtn').onclick = function() {
                 overlay.remove();
                 confirmacionMostrada = false;
-                // Limpiar el campo de identificación también
                 document.getElementById('identificacion').value = '';
                 limpiarFormulario();
                 mostrarAlerta('Registro cancelado. Puede intentar con otra identificación.', 'info');
+                // Poner foco en identificación para nueva búsqueda
+                document.getElementById('identificacion').focus();
             };
         }
 
@@ -588,20 +673,15 @@
             document.getElementById('password_confirmation').value = '';
             
             document.getElementById('usuario').disabled = false;
-            document.getElementById('primer_nombre').disabled = false;
-            document.getElementById('segundo_nombre').disabled = false;
-            document.getElementById('primer_apellido').disabled = false;
-            document.getElementById('segundo_apellido').disabled = false;
+            document.getElementById('primer_nombre').readOnly = false;
+            document.getElementById('segundo_nombre').readOnly = false;
+            document.getElementById('primer_apellido').readOnly = false;
+            document.getElementById('segundo_apellido').readOnly = false;
             document.getElementById('password').disabled = false;
             document.getElementById('password_confirmation').disabled = false;
             
             autoGenerandoUsuario = true;
         }
-
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const nombreCompleto = obtenerNombreCompleto();
-            document.getElementById('nameHidden').value = nombreCompleto;
-        });
 
         async function buscarPacientePorIdentificacion(identificacion) {
             if (!identificacion || identificacion.length < 4) {
@@ -623,6 +703,7 @@
 
                 if (data.success && data.persona) {
                     const persona = data.persona;
+                    const nombreCompleto = `${persona.primer_nombre || ''} ${persona.segundo_nombre || ''} ${persona.primer_apellido || ''} ${persona.segundo_apellido || ''}`.trim().replace(/\s+/g, ' ');
                     
                     document.getElementById('usuario').value = persona.usuario || '';
                     document.getElementById('primer_nombre').value = persona.primer_nombre || '';
@@ -630,14 +711,17 @@
                     document.getElementById('primer_apellido').value = persona.primer_apellido || '';
                     document.getElementById('segundo_apellido').value = persona.segundo_apellido || '';
                     
-                    document.getElementById('usuario').disabled = false;
-                    document.getElementById('primer_nombre').disabled = true;
-                    document.getElementById('segundo_nombre').disabled = true;
-                    document.getElementById('primer_apellido').disabled = true;
-                    document.getElementById('segundo_apellido').disabled = true;
+                    // Usamos readOnly para que los valores se envíen al servidor
+                    document.getElementById('usuario').readOnly = false;
+                    document.getElementById('primer_nombre').readOnly = true;
+                    document.getElementById('segundo_nombre').readOnly = true;
+                    document.getElementById('primer_apellido').readOnly = true;
+                    document.getElementById('segundo_apellido').readOnly = true;
                     
-                    mostrarAlerta(`✅ Usuario encontrado: ${persona.primer_nombre} ${persona.primer_apellido}`, 'success');
+                    // MOSTRAR MODAL DE OK (solo un botón)
+                    mostrarModalOK(identificacion, nombreCompleto);
                 } else {
+                    // No se encontró la persona
                     limpiarFormulario();
                     if (identificacion.length >= 5 && !confirmacionMostrada) {
                         confirmacionMostrada = true;
@@ -645,17 +729,22 @@
                     }
                 }
             } catch (error) {
-                console.error('Error al buscar usuario:', error);
+                console.error('Error al buscar:', error);
                 limpiarFormulario();
             }
         }
 
+        // Eventos
         document.getElementById('primer_nombre').addEventListener('input', function() {
-            generarNombreUsuario();
+            if (!document.getElementById('primer_nombre').readOnly) {
+                generarNombreUsuario();
+            }
         });
         
         document.getElementById('primer_apellido').addEventListener('input', function() {
-            generarNombreUsuario();
+            if (!document.getElementById('primer_apellido').readOnly) {
+                generarNombreUsuario();
+            }
         });
         
         document.getElementById('usuario').addEventListener('input', usuarioManual);
@@ -666,34 +755,23 @@
             const identificacion = e.target.value.trim();
             
             if (identificacion.length >= 4) {
+                // CAMBIADO: el tiempo de espera ahora es de 6000ms (6 segundos) para dar tiempo a escribir toda la identificación
                 timeoutBuscador = setTimeout(() => {
                     buscarPacientePorIdentificacion(identificacion);
-                }, 500);
+                }, 3000);
             } else {
                 limpiarFormulario();
             }
         });
 
-        @if($errors->any())
-            let mensajes = [];
-            @foreach($errors->all() as $error)
-                mensajes.push("{{ $error }}");
-            @endforeach
-            mostrarAlerta('⚠️ ' + mensajes.join(', '), 'error');
-        @endif
-
-        @if(session('success'))
-            mostrarAlerta('✅ {{ session('success') }}', 'success');
-            setTimeout(() => {
-                redirigirAlLogin();
-            }, 2000);
-        @endif
-
+        // Validación antes de enviar
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const identificacion = document.getElementById('identificacion').value.trim();
             const usuario = document.getElementById('usuario').value.trim();
             const primer_nombre = document.getElementById('primer_nombre').value.trim();
             const primer_apellido = document.getElementById('primer_apellido').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const password_confirmation = document.getElementById('password_confirmation').value.trim();
             let errores = [];
 
             if (!identificacion) {
@@ -714,12 +792,37 @@
                 errores.push('El primer apellido es obligatorio');
             }
 
+            if (!password) {
+                errores.push('La contraseña es obligatoria');
+            } else if (password !== password_confirmation) {
+                errores.push('Las contraseñas no coinciden');
+            } else if (password.length < 6) {
+                errores.push('La contraseña debe tener al menos 6 caracteres');
+            }
+
             if (errores.length > 0) {
                 e.preventDefault();
                 mostrarAlerta('⚠️ ' + errores.join(', '), 'error');
-                return;
+                return false;
             }
         });
+
+        // Mostrar errores de Laravel
+        @if($errors->any())
+            let mensajes = [];
+            @foreach($errors->all() as $error)
+                mensajes.push("{{ $error }}");
+            @endforeach
+            mostrarAlerta('⚠️ ' + mensajes.join(', '), 'error');
+        @endif
+
+        // Registro exitoso - redirigir al login
+        @if(session('success'))
+            mostrarAlerta('✅ {{ session('success') }}', 'success');
+            setTimeout(() => {
+                redirigirAlLogin();
+            }, 2000);
+        @endif
     </script>
 
 </body>

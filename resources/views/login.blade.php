@@ -21,9 +21,9 @@
             overflow: hidden;
         }
 
-        /* PANEL IZQUIERDO - Fondo claro y elegante */
+        /* PANEL IZQUIERDO - Más angosto (35%) */
         .left-panel {
-            width: 50%;
+            width: 35%;
             position: relative;
             display: flex;
             align-items: center;
@@ -64,8 +64,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            height: 60%;
+            width: 70%;
+            height: 70%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -131,9 +131,9 @@
             z-index: 0;
         }
 
-        /* PANEL DERECHO - Formulario elegante */
+        /* PANEL DERECHO - Más ancho (65%) para el formulario */
         .right-panel {
-            width: 50%;
+            width: 65%;
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             display: flex;
             align-items: center;
@@ -181,7 +181,7 @@
 
         .login-container {
             width: 100%;
-            max-width: 460px;
+            max-width: 500px;
             position: relative;
             z-index: 2;
             animation: fadeInRight 0.8s ease-out;
@@ -190,7 +190,7 @@
         .login-card {
             background: rgba(255, 255, 255, 0.98);
             border-radius: 32px;
-            padding: 35px 30px;
+            padding: 40px 35px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.02);
             backdrop-filter: blur(2px);
             position: relative;
@@ -562,11 +562,14 @@
                 width: 55%;
                 height: 55%;
             }
+            .login-container {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- PANEL IZQUIERDO - Fondo claro elegante con burbujas -->
+    <!-- PANEL IZQUIERDO - Más angosto -->
     <div class="left-panel" id="leftPanel">
         <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ asset('images/hospital-bg.jpg') }}');"></div>
         
@@ -580,7 +583,7 @@
         <div class="corner-decoration corner-br"></div>
     </div>
 
-    <!-- PANEL DERECHO - Formulario de Login elegante -->
+    <!-- PANEL DERECHO - Más ancho para el formulario -->
     <div class="right-panel">
         <div class="login-container">
             <div class="login-card">
@@ -617,7 +620,7 @@
                         <label><i class="fas fa-user-circle"></i>Usuario</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="text" name="login" value="{{ old('login') }}" placeholder="correo@ejemplo.com o usuario" required>
+                            <input type="text" name="login" value="" placeholder="" required>
                         </div>
                         <div class="info-text">
                             <i class="fas fa-info-circle"></i> Ingresa tu correo electrónico o nombre de usuario
@@ -627,7 +630,7 @@
                         <label><i class="fas fa-lock"></i> Contraseña</label>
                         <div class="password-container">
                             <i class="fas fa-key input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 1;"></i>
-                            <input type="password" name="password" id="password" placeholder="••••••" required>
+                            <input type="password" name="password" id="password" placeholder="" required>
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
