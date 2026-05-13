@@ -13,39 +13,44 @@ class TurnoController extends Controller
     // Mostrar vista del admin - CORREGIDO para pasar los permisos del usuario
     public function admin()
     {
-        // Obtener el usuario autenticado
         $user = auth()->user();
-        
-        // Obtener sus permisos de la base de datos
         $permisos = $user->permisos ?? [];
+        $usuariosBD = User::select('id', 'name', 'username', 'usuario_asesor', 'identificacion', 'servicio', 'nivel_acceso', 'modulos', 'permisos')->get();
         
-        // Pasar los permisos a la vista
-        return view('admin', compact('permisos'));
+        return view('admin', compact('permisos', 'usuariosBD'));
     }
 
-    // Buscar persona por identificación (cédula) - CORREGIDO
+    // Buscar persona por identificación (cédula) - CORREGIDO con campo USUARIO
     public function buscarPersona(Request $request)
     {
         try {
             $request->validate([
-                'identificacion' => 'required|string|min:3|max:20' // Cambiado de min:5 a min:3
+                'identificacion' => 'required|string|min:3|max:20'
             ]);
 
+            // Buscar en la tabla personas
             $persona = Persona::where('identificacion', $request->identificacion)->first();
 
             if ($persona) {
+                // Generar nombre de usuario automático: primer_nombre.primer_apellido
+                $usuarioGenerado = '';
+                if ($persona->primer_nombre && $persona->primer_apellido) {
+                    $usuarioGenerado = strtolower(
+                        trim($persona->primer_nombre) . '.' . trim($persona->primer_apellido)
+                    );
+                    // Limpiar caracteres especiales y acentos
+                    $usuarioGenerado = preg_replace('/[^a-z0-9.]/', '', $usuarioGenerado);
+                }
+                
                 return response()->json([
                     'success' => true,
                     'persona' => [
-                        'id' => $persona->id,
                         'identificacion' => $persona->identificacion,
-                        'primer_nombre' => $persona->primer_nombre,
-                        'segundo_nombre' => $persona->segundo_nombre,
-                        'primer_apellido' => $persona->primer_apellido,
-                        'segundo_apellido' => $persona->segundo_apellido,
-                        'nombres' => $persona->nombres ?? ($persona->primer_nombre . ' ' . ($persona->segundo_nombre ?? '')),
-                        'apellidos' => $persona->apellidos ?? ($persona->primer_apellido . ' ' . ($persona->segundo_apellido ?? '')),
-                        'nombre_completo' => $persona->nombre_completo ?? ($persona->primer_nombre . ' ' . ($persona->segundo_nombre ?? '') . ' ' . $persona->primer_apellido . ' ' . ($persona->segundo_apellido ?? ''))
+                        'primer_nombre' => $persona->primer_nombre ?? '',
+                        'segundo_nombre' => $persona->segundo_nombre ?? '',
+                        'primer_apellido' => $persona->primer_apellido ?? '',
+                        'segundo_apellido' => $persona->segundo_apellido ?? '',
+                        'usuario' => $usuarioGenerado,
                     ]
                 ]);
             } else {
@@ -62,43 +67,43 @@ class TurnoController extends Controller
         }
     }
 
-    // ==================== MÉTODO PARA BUSCAR USUARIO EN LA TABLA USERS ====================
-    /**
-     * Buscar usuario por nombre de usuario (username) en la tabla users
-     * Retorna los permisos del usuario encontrado
-     */
+    // ========== MÉTODO MODIFICADO: Buscar usuario por username O por identificación ==========
     public function buscarUsuarioPorUsername(Request $request)
     {
         $request->validate([
             'username' => 'required|string|min:2|max:50'
         ]);
 
-        $username = $request->username;
+        $busqueda = $request->username;
         
-        // Buscar por username exacto
-        $usuario = User::where('username', $username)->first();
+        // Buscar por username O por identificacion
+        $usuario = User::where('username', $busqueda)
+                        ->orWhere('identificacion', $busqueda)
+                        ->first();
 
         if ($usuario) {
-            // Obtener los permisos del usuario (decodificar JSON automáticamente por el cast 'array')
             $permisos = $usuario->permisos ?? [
                 'login' => 0,
+                'inicio' => 0,
                 'agregar_paciente' => 0,
                 'usuarios' => 0,
                 'servicios' => 0,
                 'reportes' => 0,
                 'atender_turnos' => 0,
-                'perfil' => 0
+                'perfil' => 0,
+                'agregar_nivel_acceso' => 0
             ];
 
-            // Asegurar que todos los campos de permisos existan
             $permisosCompletos = [
                 'login' => $permisos['login'] ?? 0,
+                'inicio' => $permisos['inicio'] ?? 0,
                 'agregar_paciente' => $permisos['agregar_paciente'] ?? 0,
                 'usuarios' => $permisos['usuarios'] ?? 0,
                 'servicios' => $permisos['servicios'] ?? 0,
                 'reportes' => $permisos['reportes'] ?? 0,
                 'atender_turnos' => $permisos['atender_turnos'] ?? 0,
                 'perfil' => $permisos['perfil'] ?? 0,
+                'agregar_nivel_acceso' => $permisos['agregar_nivel_acceso'] ?? 0,
             ];
 
             return response()->json([
@@ -108,6 +113,7 @@ class TurnoController extends Controller
                     'id' => $usuario->id,
                     'name' => $usuario->name,
                     'username' => $usuario->username,
+                    'identificacion' => $usuario->identificacion,
                     'email' => $usuario->email,
                     'permisos' => $permisosCompletos
                 ]
@@ -116,15 +122,12 @@ class TurnoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Usuario no encontrado',
-                'username_buscado' => $username
+                'username_buscado' => $busqueda
             ]);
         }
     }
 
-    // ==================== MÉTODO PARA GUARDAR PERMISOS EN LA BASE DE DATOS ====================
-    /**
-     * Guardar los permisos de un usuario en la tabla users
-     */
+    // ========== MÉTODO MODIFICADO: Guardar los permisos de un usuario en columna JSON ==========
     public function guardarPermisosUsuario(Request $request)
     {
         $request->validate([
@@ -132,7 +135,10 @@ class TurnoController extends Controller
             'permisos' => 'required|array'
         ]);
 
-        $usuario = User::where('username', $request->username)->first();
+        // Buscar por username O por identificacion
+        $usuario = User::where('username', $request->username)
+                        ->orWhere('identificacion', $request->username)
+                        ->first();
 
         if (!$usuario) {
             return response()->json([
@@ -141,7 +147,7 @@ class TurnoController extends Controller
             ]);
         }
 
-        // Actualizar los permisos del usuario
+        // Guardar permisos en la columna JSON 'permisos'
         $usuario->permisos = $request->permisos;
         $usuario->save();
 
@@ -252,5 +258,201 @@ class TurnoController extends Controller
             'success' => true,
             'message' => "Turno {$turno->numero} actualizado a {$request->estado}"
         ]);
+    }
+
+    // Obtener un usuario por su username
+    public function obtenerUsuarioPorUsername($username)
+    {
+        $usuario = User::where('username', $username)->first();
+        
+        if ($usuario) {
+            return response()->json([
+                'success' => true,
+                'usuario' => [
+                    'id' => $usuario->id,
+                    'name' => $usuario->name,
+                    'username' => $usuario->username,
+                    'servicio' => $usuario->servicio ?? '',
+                    'nivel_acceso' => $usuario->nivel_acceso ?? 'admin',
+                    'modulos' => $usuario->modulos ?? [],
+                    'usuario_asesor' => $usuario->usuario_asesor ?? '',
+                    'identificacion' => $usuario->identificacion ?? ''
+                ]
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Usuario no encontrado'
+        ]);
+    }
+
+    // Actualizar un usuario existente
+    public function actualizarUsuario(Request $request, $id)
+    {
+        try {
+            $usuario = User::find($id);
+            
+            if (!$usuario) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no encontrado'
+                ]);
+            }
+            
+            $request->validate([
+                'name' => 'nullable|string',
+                'username' => 'nullable|string',
+                'password' => 'nullable|string|min:6',
+                'usuario_asesor' => 'nullable|string',
+                'identificacion' => 'nullable|string',
+                'servicio' => 'nullable|string',
+                'nivel_acceso' => 'nullable|string',
+                'modulos' => 'nullable|array',
+            ]);
+            
+            if ($request->has('name')) {
+                $usuario->name = $request->name;
+            }
+            
+            if ($request->has('username')) {
+                $usuario->username = $request->username;
+            }
+            
+            if ($request->has('password') && !empty($request->password)) {
+                $usuario->password = bcrypt($request->password);
+            }
+            
+            if ($request->has('usuario_asesor')) {
+                $usuario->usuario_asesor = $request->usuario_asesor;
+            }
+            
+            if ($request->has('identificacion')) {
+                $usuario->identificacion = $request->identificacion;
+            }
+            
+            if ($request->has('servicio')) {
+                $usuario->servicio = $request->servicio;
+            }
+            
+            if ($request->has('nivel_acceso')) {
+                $usuario->nivel_acceso = $request->nivel_acceso;
+            }
+            
+            if ($request->has('modulos')) {
+                $usuario->modulos = $request->modulos;
+            }
+            
+            $usuario->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario actualizado correctamente',
+                'usuario' => [
+                    'id' => $usuario->id,
+                    'name' => $usuario->name,
+                    'username' => $usuario->username,
+                    'usuario_asesor' => $usuario->usuario_asesor,
+                    'identificacion' => $usuario->identificacion,
+                    'servicio' => $usuario->servicio,
+                    'nivel_acceso' => $usuario->nivel_acceso,
+                    'modulos' => $usuario->modulos
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // Eliminar un usuario
+    public function eliminarUsuario($id)
+    {
+        try {
+            $usuario = User::find($id);
+            
+            if (!$usuario) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no encontrado'
+                ]);
+            }
+            
+            if ($usuario->id === auth()->id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No puedes eliminar tu propio usuario'
+                ]);
+            }
+            
+            $usuario->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario eliminado correctamente'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // ==================== MÉTODOS PARA NIVELES DE ACCESO ====================
+    
+    /**
+     * Obtener todos los niveles de acceso de la base de datos
+     */
+    public function getNivelesAcceso()
+    {
+        try {
+            $niveles = DB::table('nivel_acceso')->orderBy('nombre')->get();
+            return response()->json([
+                'success' => true,
+                'niveles' => $niveles
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cargar niveles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Guardar un nuevo nivel de acceso en la base de datos
+     */
+    public function storeNivelAcceso(Request $request)
+    {
+        try {
+            $request->validate([
+                'nombre' => 'required|string|max:100|unique:nivel_acceso,nombre'
+            ]);
+
+            $id = DB::table('nivel_acceso')->insertGetId([
+                'nombre' => $request->nombre,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nivel de acceso agregado correctamente',
+                'nivel' => [
+                    'id' => $id,
+                    'nombre' => $request->nombre
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

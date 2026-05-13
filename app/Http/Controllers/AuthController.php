@@ -89,7 +89,7 @@ class AuthController extends Controller
         
         // Validaciones
         $validator = Validator::make($request->all(), [
-            'identificacion' => 'required|string|max:20', // Ya no es unique
+            'identificacion' => 'required|string|max:20',
             'username' => 'required|string|max:50|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'primer_nombre' => 'required|string|max:50',
@@ -120,20 +120,23 @@ class AuthController extends Controller
         // ========== PERMISOS POR DEFECTO ==========
         $permisosPorDefecto = [
             'login' => 0,
+            'inicio' => 0,
             'agregar_paciente' => 0,
             'usuarios' => 0,
             'servicios' => 0,
             'reportes' => 0,
             'atender_turnos' => 0,
             'perfil' => 0,
+            'agregar_nivel_acceso' => 0,
         ];
 
-        // ========== 1. GUARDAR EN TABLA users ==========
+        // ========== 1. GUARDAR EN TABLA users (CON IDENTIFICACION) ==========
         $user = User::create([
             'name' => $nombreCompleto,
             'username' => $request->username,
             'email' => $email,
             'password' => $hashedPassword,
+            'identificacion' => $request->identificacion,  // Guardar identificación
             'permisos' => $permisosPorDefecto,
         ]);
 
@@ -179,12 +182,14 @@ class AuthController extends Controller
 
         $permisosPorDefecto = [
             'login' => 0,
+            'inicio' => 0,
             'agregar_paciente' => 0,
             'usuarios' => 0,
             'servicios' => 0,
             'reportes' => 0,
             'atender_turnos' => 0,
             'perfil' => 0,
+            'agregar_nivel_acceso' => 0,
         ];
 
         $user = User::create([
@@ -192,10 +197,49 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $email,
             'password' => $password,
+            'identificacion' => $request->identificacion ?? null,
             'permisos' => $permisosPorDefecto,
         ]);
 
         return redirect()->route('login')->with('success', '✅ ¡Usuario registrado exitosamente! El administrador debe activar tu cuenta.');
+    }
+
+    // ==================== BUSCAR USUARIO POR USERNAME O IDENTIFICACION ====================
+    public function buscarUsuarioPermisos(Request $request)
+    {
+        $busqueda = $request->input('username');
+        
+        if (!$busqueda) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debe ingresar un usuario o identificación'
+            ]);
+        }
+        
+        // Buscar por username O por identificacion
+        $usuario = User::where('username', $busqueda)
+                        ->orWhere('identificacion', $busqueda)
+                        ->first();
+        
+        if ($usuario) {
+            $permisos = $usuario->permisos ?? [];
+            
+            return response()->json([
+                'success' => true,
+                'usuario' => [
+                    'id' => $usuario->id,
+                    'name' => $usuario->name,
+                    'username' => $usuario->username,
+                    'identificacion' => $usuario->identificacion,
+                    'permisos' => $permisos
+                ]
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Usuario no encontrado'
+        ]);
     }
 
     // Cerrar sesión

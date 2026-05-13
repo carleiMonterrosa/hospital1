@@ -15,6 +15,7 @@ class User extends Authenticatable
         'email',
         'password',
         'username',
+        'identificacion',   // <--- AGREGADO: para guardar el número de identificación
         'permisos',
     ];
 

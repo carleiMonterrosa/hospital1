@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Persona;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -55,24 +56,46 @@ class PersonaController extends Controller
 
     /**
      * Search for a person by identification.
+     * Ahora también genera un nombre de usuario automático
      */
     public function buscarPersona(Request $request)
     {
         try {
             $identificacion = $request->input('identificacion');
             
+            // Buscar por identificación en tabla personas
             $persona = Persona::where('identificacion', $identificacion)->first();
             
             if ($persona) {
+                // Buscar si ya existe un usuario con esta identificación
+                $user = User::where('username', $identificacion)->first();
+                
+                // Generar nombre de usuario automático: primer_nombre.primer_apellido
+                $usuarioGenerado = '';
+                if ($persona->primer_nombre && $persona->primer_apellido) {
+                    $usuarioGenerado = strtolower(
+                        trim($persona->primer_nombre) . '.' . trim($persona->primer_apellido)
+                    );
+                    // Reemplazar espacios y caracteres especiales
+                    $usuarioGenerado = preg_replace('/[^a-z0-9.]/', '', $usuarioGenerado);
+                }
+                
                 return response()->json([
                     'success' => true,
-                    'persona' => $persona
+                    'persona' => [
+                        'identificacion' => $persona->identificacion,
+                        'primer_nombre' => $persona->primer_nombre,
+                        'segundo_nombre' => $persona->segundo_nombre,
+                        'primer_apellido' => $persona->primer_apellido,
+                        'segundo_apellido' => $persona->segundo_apellido,
+                        'usuario' => $user ? $user->username : $usuarioGenerado,
+                    ]
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Persona no encontrada'
-                ], 404);
+                ]);
             }
         } catch (\Exception $e) {
             return response()->json([

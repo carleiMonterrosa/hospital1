@@ -52,15 +52,6 @@
         .voice-buttons { display: flex; gap: 8px; justify-content: center; }
         .voice-btn { background: rgba(255,255,255,0.2); border: none; padding: 6px 12px; border-radius: 30px; color: white; cursor: pointer; transition: all 0.3s; font-size: 0.75em; }
         .voice-btn:hover, .voice-btn.active { background: #ffd966; color: #0b2b5e; }
-        .sidebar-turns { padding: 0 15px 15px; margin-top: 10px; }
-        .sidebar-turns h3 { color: #ffd966; margin-bottom: 12px; font-size: 1em; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 8px; }
-        .turnos-side-list { max-height: 250px; overflow-y: auto; }
-        .turno-side-item { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 8px; border-left: 3px solid #ffd966; cursor: pointer; }
-        .turno-side-item:hover { background: rgba(255,215,0,0.2); }
-        .turno-side-num { font-weight: bold; color: #ffd966; }
-        .turno-side-pac { font-size: 0.7em; color: #e0e7ff; margin-top: 3px; }
-        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,215,0,0.3); margin-top: auto; }
-        .btn-clear-history { width: 100%; background: #dc3545; color: white; border: none; padding: 8px; border-radius: 30px; cursor: pointer; font-weight: bold; }
         .main-content { flex: 1; margin-left: 320px; padding: 20px; }
         
         /* ESTILOS PARA MODO TRABAJADOR (PANTALLA COMPLETA) */
@@ -83,6 +74,7 @@
             gap: 10px;
             flex-wrap: wrap;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
         }
         .modulo-tab {
             padding: 12px 24px;
@@ -106,6 +98,28 @@
         }
         .modulo-tab i {
             margin-right: 8px;
+        }
+        
+        /* BOTÓN DE CERRAR SESIÓN EN BARRA DE MÓDULOS */
+        .btn-cerrar-sesion-modulo {
+            margin-left: auto;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-cerrar-sesion-modulo:hover {
+            background: #b02a37;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220,53,69,0.4);
         }
         
         /* MODO TRABAJADOR PANTALLA COMPLETA PARA TODAS LAS SECCIONES */
@@ -221,17 +235,73 @@
             padding: 18px;
         }
         
-        .modo-trabajador .btn-finalizar-grande {
-            padding: 20px;
+        /* Estilos para sección AGREGAR NIVEL en modo trabajador */
+        .modo-trabajador .agregar-nivel-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
         }
         
-        .modo-trabajador .btn-finalizar-grande .circulo-stop {
-            width: 65px;
-            height: 65px;
+        .modo-trabajador .agregar-nivel-section h2 {
+            color: #0b2b5e;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffd966;
+            padding-bottom: 15px;
         }
         
-        .modo-trabajador .btn-finalizar-grande .circulo-stop i {
-            font-size: 2rem;
+        .modo-trabajador .agregar-nivel-section .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .modo-trabajador .agregar-nivel-section .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .modo-trabajador .agregar-nivel-section .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+        }
+        
+        .modo-trabajador .agregar-nivel-section .form-group input:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        
+        .modo-trabajador .btn-guardar-nivel-section {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+        
+        .modo-trabajador .btn-cancelar-nivel-section {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
         }
         
         /* Ajustes para pantallas más grandes */
@@ -251,24 +321,333 @@
                 padding: 14px 18px;
                 font-size: 1rem;
             }
-            .modo-trabajador .btn-finalizar-grande {
-                padding: 24px;
-            }
-            .modo-trabajador .btn-finalizar-grande .circulo-stop {
-                width: 70px;
-                height: 70px;
-            }
-            .modo-trabajador .btn-finalizar-grande .circulo-stop i {
-                font-size: 2.2rem;
-            }
-            .modo-trabajador .btn-finalizar-grande span {
-                font-size: 1.3rem;
-            }
             
             .modo-trabajador .servicios-section .servicios-grid {
                 grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
                 gap: 30px;
             }
+        }
+        
+        /* ===== NUEVOS ESTILOS PARA ADMINISTRACIÓN DE BANNERS - ANCHO COMPLETO ===== */
+        .banners-section-fullwidth {
+            background: white;
+            border-radius: 0px;
+            padding: 28px;
+            box-shadow: none;
+            width: 100%;
+            margin: 0;
+            min-height: calc(100vh - 100px);
+        }
+        
+        .modo-trabajador .banners-section-fullwidth {
+            border-radius: 0;
+            margin: 0;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .banners-section-fullwidth h2 {
+            color: #0b2b5e;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        
+        .banners-subtitle {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+        }
+        
+        .btn-agregar-banner {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+        
+        .btn-agregar-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.4);
+        }
+        
+        .banners-lista-fullwidth {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .banner-item-clickable {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 5px solid #ffd966;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .banner-item-clickable:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .banner-numero {
+            width: 40px;
+            height: 40px;
+            background: #0b2b5e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .banner-imagen-preview {
+            width: 80px;
+            height: 80px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .banner-imagen-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Vista previa del color de fondo */
+        .banner-color-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .banner-info {
+            flex: 1;
+        }
+        
+        .banner-info h4 {
+            color: #0b2b5e;
+            margin-bottom: 5px;
+        }
+        
+        .banner-info p {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        
+        .btn-eliminar-banner {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-eliminar-banner:hover {
+            background: #b02a37;
+        }
+        
+        .banners-duracion-fullwidth {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .banners-duracion-fullwidth label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+        }
+        
+        .banners-duracion-fullwidth input {
+            width: 150px;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .banners-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Estilos para selector de tipo de fondo */
+        .tipo-fondo-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .tipo-fondo-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: normal !important;
+            margin-bottom: 0 !important;
+        }
+        
+        .campo-color-fondo {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        /* MODAL PARA AGREGAR/EDITAR BANNER - CON TODOS LOS CAMPOS */
+        .modal-banner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-banner-card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .modal-banner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        .modal-banner-header h3 {
+            color: #0b2b5e;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .modal-banner-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .form-row {
+            margin-bottom: 20px;
+        }
+        .form-row label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        .form-row input[type="text"],
+        .form-row input[type="number"],
+        .form-row input[type="url"],
+        .form-row input[type="color"],
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        .form-row input[type="color"] {
+            width: 60px;
+            height: 40px;
+            padding: 2px;
+        }
+        .form-row input:focus,
+        .form-row textarea:focus,
+        .form-row select:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        .form-row textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .color-input-group input[type="color"] {
+            width: 50px;
+            height: 40px;
+            padding: 2px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .color-input-group input[type="text"] {
+            flex: 1;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        .modal-banner-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
         }
         
         /* El resto de tus estilos existentes continúan igual */
@@ -572,11 +951,6 @@
         .campo-fila .campo-valor-display { background: white; border: 1.5px solid #e0e7ff; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #0b2b5e; min-height: 40px; }
         .campo-fila .campo-valor-display.vacio { color: #bbb; font-weight: 400; }
         .campos-dos-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn-finalizar-grande { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; border: 3px solid #dc3545; border-radius: 12px; padding: 16px; cursor: pointer; background: white; transition: all 0.2s; width: 100%; }
-        .btn-finalizar-grande:hover { background: #fff5f5; transform: scale(1.02); }
-        .btn-finalizar-grande .circulo-stop { width: 54px; height: 54px; border: 4px solid #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .btn-finalizar-grande .circulo-stop i { font-size: 1.8rem; color: #dc3545; }
-        .btn-finalizar-grande span { font-size: 1.1rem; font-weight: 800; color: #dc3545; letter-spacing: 2px; }
         .gestionar-derecha {
             background: #f8fafc;
             border-radius: 20px;
@@ -641,10 +1015,73 @@
         .form-usuario-field label { display: block; font-weight: 600; color: #0b2b5e; margin-bottom: 6px; font-size: 0.8rem; text-transform: uppercase; }
         .form-usuario-field input, .form-usuario-field select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; transition: 0.2s; }
         .form-usuario-field input:focus, .form-usuario-field select:focus { border-color: #ffd966; outline: none; box-shadow: 0 0 0 3px rgba(255,217,102,0.3); }
-        .modulos-check-group { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; }
-        .modulo-check { display: flex; align-items: center; gap: 8px; background: white; padding: 8px 16px; border-radius: 30px; border: 1px solid #e2e8f0; cursor: pointer; }
-        .modulo-check input { width: auto; margin: 0; transform: scale(1.1); }
-        .modulo-check.selected { background: #ffd966; border-color: #ffd966; }
+        
+        /* ===== NUEVO ESTILO PARA SELECTOR MÚLTIPLE DE MÓDULOS ===== */
+        .modulos-select-container {
+            position: relative;
+            width: 100%;
+        }
+        .modulos-select-btn {
+            width: 100%;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: inherit;
+        }
+        .modulos-select-btn:hover {
+            border-color: #667eea;
+        }
+        .modulos-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .modulos-dropdown.open {
+            display: block;
+        }
+        .modulo-check-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modulo-check-option:hover {
+            background: #f1f5f9;
+        }
+        .modulo-check-option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .modulo-check-option label {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin: 0;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+        }
+        
         .form-usuario-actions { display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
         .btn-guardar-usuario-form { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
         .btn-actualizar-usuario { background: linear-gradient(135deg, #ffc107, #ff9800); color: #0b2b5e; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
@@ -689,6 +1126,145 @@
         .btn-actualizar-perfil { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
         .btn-guardar-perfil { background: linear-gradient(135deg, #ffc107, #ff9800); color: #0b2b5e; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
         .perfil-footer { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; color: #666; font-size: 0.8rem; }
+
+        /* ===== ESTILO PARA OCULTAR EL FORMULARIO DE USUARIO ===== */
+        .form-usuario-container {
+            display: none;
+        }
+        .form-usuario-container.visible {
+            display: block;
+        }
+        
+        /* ===== NUEVO ESTILO PARA MODAL DE NIVEL ACCESO ===== */
+        .modal-nivel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-nivel-card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .modal-nivel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        .modal-nivel-header h3 {
+            color: #0b2b5e;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .modal-nivel-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .modal-nivel-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+        .btn-guardar-nivel {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-cancelar-nivel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* Estilos para la sección de agregar nivel (modo trabajador) */
+        .agregar-nivel-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .agregar-nivel-section h2 {
+            color: #0b2b5e;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        .agregar-nivel-section .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .agregar-nivel-section .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .agregar-nivel-section .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+        }
+        .agregar-nivel-section .form-group input:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        .btn-guardar-nivel-section {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+        .btn-cancelar-nivel-section {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -742,23 +1318,53 @@
 
     <div class="app-layout">
         <div class="sidebar" id="mainSidebar">
-            <div class="sidebar-header"><h2><i class="fas fa-hospital-user"></i> HOSPITAL LOCAL SAN PABLO</h2></div>
+            <div class="sidebar-header"><h2><i class="fas fa-hospital-user"></i> E.S.E HOSPITAL LOCAL SANPABLO</h2></div>
             <div class="nav-menu">
-                <div class="nav-section"><div class="nav-section-title">INICIO</div><div class="nav-item" onclick="mostrarSeccion('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">SERVICIOS</div><div class="nav-item" id="navServicios" onclick="verificarAcceso('servicios')"><i class="fas fa-stethoscope"></i><span>Servicios</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">USUARIOS</div><div class="nav-item" id="navUsuarios" onclick="verificarAcceso('usuarios')"><i class="fas fa-users"></i><span>Usuarios</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">PERFIL</div><div class="nav-item" id="navPerfil" onclick="verificarAcceso('perfil')"><i class="fas fa-id-card"></i><span>Perfil</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">GESTION TURNOS</div><div class="nav-item" id="navAgregarPaciente" onclick="verificarAcceso('agregar_paciente')"><i class="fas fa-user-plus"></i><span>Agregar paciente</span></div><div class="nav-item" id="navAtenderTurnos" onclick="verificarAcceso('atender_turnos')"><i class="fas fa-users"></i><span>Atender Turnos</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">REPORTES</div><div class="nav-item" id="navReportes" onclick="verificarAcceso('reportes')"><i class="fas fa-chart-bar"></i><span>Reportes</span></div></div>
-                <div class="nav-section"><div class="nav-section-title">SALIR</div><div class="nav-item" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div></div>
+                <!-- INICIO -->
+                <div class="nav-section">
+                    <div class="nav-section-title">INICIO</div>
+                    <div class="nav-item" onclick="mostrarSeccion('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div>
+                </div>
+                
+                <!-- SERVICIOS - Agrupa Servicios y Agregar Nivel de Acceso -->
+                <div class="nav-section">
+                    <div class="nav-section-title">SERVICIOS</div>
+                    <div class="nav-item" id="navServicios" onclick="verificarAcceso('servicios')"><i class="fas fa-stethoscope"></i><span>Servicios</span></div>
+                    <div class="nav-item" onclick="abrirModalNivelAcceso()"><i class="fas fa-plus-circle"></i><span>Agregar Nivel de Acceso</span></div>
+                </div>
+                
+                <!-- USUARIOS - Agrupa Usuarios, Atender Turnos y Perfil -->
+                <div class="nav-section">
+                    <div class="nav-section-title">USUARIOS</div>
+                    <div class="nav-item" id="navUsuarios" onclick="verificarAcceso('usuarios')"><i class="fas fa-users"></i><span>Usuarios</span></div>
+                    <div class="nav-item" id="navAtenderTurnos" onclick="verificarAcceso('atender_turnos')"><i class="fas fa-users"></i><span>Atender Turnos</span></div>
+                    <div class="nav-item" id="navPerfil" onclick="verificarAcceso('perfil')"><i class="fas fa-id-card"></i><span>Perfil</span></div>
+                </div>
+                
+                <!-- PUBLICIDAD TV - NUEVA SECCIÓN SEPARADA (SIN RESTRICCIÓN DE PERMISOS) -->
+                <div class="nav-section">
+                    <div class="nav-section-title" style="margin-top: 15px; border-top: 1px solid rgba(255,215,0,0.3); padding-top: 15px;">PUBLICIDAD</div>
+                    <div class="nav-item" id="navPublicidadTV" onclick="mostrarSeccion('publicidad_tv')">
+                        <i class="fas fa-tv"></i><span>Publicidad TV</span>
+                    </div>
+                </div>
+                
+                <!-- REPORTES -->
+                <div class="nav-section">
+                    <div class="nav-section-title">REPORTES</div>
+                    <div class="nav-item" id="navReportes" onclick="verificarAcceso('reportes')"><i class="fas fa-chart-bar"></i><span>Reportes</span></div>
+                </div>
+                
+                <!-- SALIR -->
+                <div class="nav-section">
+                    <div class="nav-section-title">SALIR</div>
+                    <div class="nav-item" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
+                </div>
             </div>
             <div class="voice-control"><h3><i class="fas fa-volume-up"></i> Control de Voz</h3><div class="voice-buttons"><button class="voice-btn" id="voiceOnBtn" onclick="toggleVoice(true)">Activar</button><button class="voice-btn" id="voiceOffBtn" onclick="toggleVoice(false)">Desactivar</button></div><div id="voiceStatus">✅ Voz activada</div></div>
-            <div class="sidebar-turns"><h3><i class="fas fa-clock"></i> Turnos Pendientes</h3><div class="turnos-side-list" id="turnosSideList">No hay turnos</div></div>
-            <div class="sidebar-footer"><button class="btn-clear-history" onclick="limpiarHistorial()">Limpiar historial</button></div>
         </div>
 
         <div class="main-content" id="mainContent">
-            <!-- BARRA DE MÓDULOS PARA USUARIOS NORMALES -->
             <div id="modulosBarContainer" style="display: none;"></div>
             
             <div id="seccion-inicio">
@@ -805,7 +1411,7 @@
             <div id="seccion-usuarios" style="display:none;">
                 <div class="usuarios-section">
                     <div class="usuarios-header">
-                        <button class="btn-agregar-servicio" onclick="limpiarFormularioUsuario()"><i class="fas fa-user-plus"></i> Agregar Usuario</button>
+                        <button class="btn-agregar-servicio" onclick="mostrarFormularioUsuario()"><i class="fas fa-user-plus"></i> Agregar Usuario</button>
                     </div>
                     <div class="form-usuario-container" id="formUsuarioContainer">
                         <h3><i class="fas fa-user-edit"></i> Registrar Usuario</h3>
@@ -817,11 +1423,45 @@
                                 <div class="form-usuario-field"><label>CONTRASEÑA</label><input type="password" id="passwordUsuarioNuevo" value="" required></div>
                                 <div class="form-usuario-field"><label>USUARIO / ASESOR</label><input type="text" id="usuarioAsesor"></div>
                                 <div class="form-usuario-field"><label>SERVICIO</label><select id="servicioUsuario"><option value="">Seleccionar servicio</option></select></div>
-                                <div class="form-usuario-field"><label>MÓDULOS DE ACCESO</label><div class="modulos-check-group" id="modulosCheckGroup"><label class="modulo-check"><input type="checkbox" value="1"> MÓDULO 1</label><label class="modulo-check"><input type="checkbox" value="2"> MÓDULO 2</label><label class="modulo-check"><input type="checkbox" value="3"> MÓDULO 3</label><label class="modulo-check"><input type="checkbox" value="4"> MÓDULO 4</label></div></div>
+                                <div class="form-usuario-field">
+                                    <label>MÓDULOS DE ACCESO</label>
+                                    <div class="modulos-select-container" id="modulosSelectContainer">
+                                        <button type="button" class="modulos-select-btn" id="modulosSelectBtn">
+                                            <span id="modulosSelectText">Seleccionar módulos</span>
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                        <div class="modulos-dropdown" id="modulosDropdown">
+                                            <div class="modulo-check-option" data-modulo="1">
+                                                <input type="checkbox" value="1" id="moduloCheck1">
+                                                <label for="moduloCheck1">MÓDULO 1</label>
+                                            </div>
+                                            <div class="modulo-check-option" data-modulo="2">
+                                                <input type="checkbox" value="2" id="moduloCheck2">
+                                                <label for="moduloCheck2">MÓDULO 2</label>
+                                            </div>
+                                            <div class="modulo-check-option" data-modulo="3">
+                                                <input type="checkbox" value="3" id="moduloCheck3">
+                                                <label for="moduloCheck3">MÓDULO 3</label>
+                                            </div>
+                                            <div class="modulo-check-option" data-modulo="4">
+                                                <input type="checkbox" value="4" id="moduloCheck4">
+                                                <label for="moduloCheck4">MÓDULO 4</label>
+                                            </div>
+                                            <div class="modulo-check-option" data-modulo="5">
+                                                <input type="checkbox" value="5" id="moduloCheck5">
+                                                <label for="moduloCheck5">MÓDULO 5</label>
+                                            </div>
+                                            <div class="modulo-check-option" data-modulo="6">
+                                                <input type="checkbox" value="6" id="moduloCheck6">
+                                                <label for="moduloCheck6">MÓDULO 6</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-usuario-field"><label>NIVEL ACCESO</label><select id="nivelAccesoUsuario"><option value="admin">Administrador</option><option value="facturador">Facturador</option></select></div>
                             </div>
                             <div class="form-usuario-actions">
-                                <button type="button" class="btn-cancelar-usuario-form" onclick="limpiarFormularioUsuario()">Cancelar</button>
+                                <button type="button" class="btn-cancelar-usuario-form" onclick="ocultarFormularioUsuario()">Cancelar</button>
                                 <button type="button" class="btn-actualizar-usuario" id="btnActualizarUsuario" style="display:none;" onclick="actualizarUsuario()">Actualizar</button>
                                 <button type="submit" class="btn-guardar-usuario-form" id="btnGuardarUsuario">Guardar Usuario</button>
                             </div>
@@ -845,13 +1485,33 @@
                     </div>
                     <div class="permisos-container" id="permisosContainer">
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-sign-in-alt"></i> Login</h4><p>Acceso al sistema - Inicio de sesión</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_login" value="1"> Sí</label><label><input type="radio" name="permiso_login" value="0" checked> No</label></div></div>
-                        <!-- NUEVO PERMISO: INICIO (debajo de Login) -->
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-home"></i> Inicio</h4><p>Pantalla principal - Gestión de turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_inicio" value="1"> Sí</label><label><input type="radio" name="permiso_inicio" value="0" checked> No</label></div></div>
+                        <div class="permiso-item">
+                            <div class="permiso-info">
+                                <h4><i class="fas fa-lock"></i> Agregar Nivel de Acceso</h4>
+                                <p>Crear y gestionar niveles de acceso para usuarios</p>
+                            </div>
+                            <div class="permiso-buttons">
+                                <label><input type="radio" name="permiso_agregar_nivel_acceso" value="1"> Sí</label>
+                                <label><input type="radio" name="permiso_agregar_nivel_acceso" value="0" checked> No</label>
+                            </div>
+                        </div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-user-plus"></i> Agregar Pacientes</h4><p>Registrar nuevos pacientes</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_agregar_pacientes" value="1"> Sí</label><label><input type="radio" name="permiso_agregar_pacientes" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-users"></i> Usuarios</h4><p>Gestionar usuarios del sistema</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_usuarios" value="1"> Sí</label><label><input type="radio" name="permiso_usuarios" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-stethoscope"></i> Servicios</h4><p>Gestionar servicios médicos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_servicios" value="1"> Sí</label><label><input type="radio" name="permiso_servicios" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-chart-bar"></i> Reportes</h4><p>Ver reportes de turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_reportes" value="1"> Sí</label><label><input type="radio" name="permiso_reportes" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-users"></i> Atender Turnos</h4><p>Gestionar y atender turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_atender_turnos" value="1"> Sí</label><label><input type="radio" name="permiso_atender_turnos" value="0" checked> No</label></div></div>
+                        <!-- NUEVO PERMISO: PUBLICIDAD TV -->
+                        <div class="permiso-item">
+                            <div class="permiso-info">
+                                <h4><i class="fas fa-tv"></i> Publicidad TV</h4>
+                                <p>Acceso a la sección de Publicidad TV - Gestión de banners</p>
+                            </div>
+                            <div class="permiso-buttons">
+                                <label><input type="radio" name="permiso_publicidad_tv" value="1"> Sí</label>
+                                <label><input type="radio" name="permiso_publicidad_tv" value="0" checked> No</label>
+                            </div>
+                        </div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-id-card"></i> Perfil</h4><p>Ver y editar perfil de usuario</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_perfil" value="1"> Sí</label><label><input type="radio" name="permiso_perfil" value="0" checked> No</label></div></div>
                     </div>
                     <div class="perfil-actions">
@@ -877,13 +1537,13 @@
                     </div>
                     <table class="reporte-table">
                         <thead><tr><th>ESTADO</th><th>TURNO</th><th>SERVICIO</th><th>DOCUMENTO</th><th>NOMBRE</th><th>INGRESO</th><th>SALIDA</th><th>DIFERENCIA</th></tr></thead>
-                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td></tr></tbody>
+                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td</tr</tbody>
                     </table>
                     <div class="footer-reporte">SISTEMA DE GESTIÓN DE TURNOS</div>
                 </div>
             </div>
 
-            <!-- SECCIÓN ATENDER TURNOS -->
+            <!-- SECCIÓN ATENDER TURNOS (SIN BOTÓN FINALIZAR) -->
             <div id="seccion-atender" style="display:none;">
                 <div class="atender-section">
                     <div class="atender-header">
@@ -910,10 +1570,6 @@
                                 <div class="campo-fila"><label>Segundo Apellido</label><div class="campo-valor-display vacio" id="gtSegundoApellido">—</div></div>
                             </div>
                             <div class="campo-fila"><label>Primer Nombre</label><div class="campo-valor-display vacio" id="gtPrimerNombre">—</div></div>
-                            <button class="btn-finalizar-grande" id="btnFinalizarTurno" onclick="finalizarTurnoActual()" disabled>
-                                <div class="circulo-stop"><i class="fas fa-stop"></i></div>
-                                <span>FINALIZAR</span>
-                            </button>
                         </div>
                         <div class="gestionar-derecha">
                             <div class="datos-usuario-titulo">Datos del Usuario</div>
@@ -922,11 +1578,13 @@
                             <div class="selector-servicio"><label>Servicio:</label><select id="gtServicioFiltro" onchange="filtrarPorServicio()"><option value="">— Todos los servicios —</option></select></div>
                             <div class="modulo-selector-wrapper" id="moduloSelectorWrapper">
                                 <button type="button" class="modulo-btn-click" id="moduloBtnClick" onclick="toggleModuloDropdown()"><span class="modulo-nombre-text" id="moduloBtnTexto">MÓDULO 1</span><i class="fas fa-chevron-down modulo-chevron"></i></button>
-                                <div class="modulo-dropdown" id="moduloDropdown">
+                                <div class="modulo-dropdown" id="moduloDropdownM">
                                     <div class="modulo-option active-mod" data-mod="1" onclick="seleccionarModulo(1)"><div class="mod-icon">M1</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 1</span><span class="mod-info-count" id="countMod1">Cargando...</span></div></div>
                                     <div class="modulo-option" data-mod="2" onclick="seleccionarModulo(2)"><div class="mod-icon">M2</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 2</span><span class="mod-info-count" id="countMod2">Cargando...</span></div></div>
                                     <div class="modulo-option" data-mod="3" onclick="seleccionarModulo(3)"><div class="mod-icon">M3</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 3</span><span class="mod-info-count" id="countMod3">Cargando...</span></div></div>
                                     <div class="modulo-option" data-mod="4" onclick="seleccionarModulo(4)"><div class="mod-icon">M4</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 4</span><span class="mod-info-count" id="countMod4">Cargando...</span></div></div>
+                                    <div class="modulo-option" data-mod="5" onclick="seleccionarModulo(5)"><div class="mod-icon">M5</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 5</span><span class="mod-info-count" id="countMod5">Cargando...</span></div></div>
+                                    <div class="modulo-option" data-mod="6" onclick="seleccionarModulo(6)"><div class="mod-icon">M6</div><div class="mod-info-text"><span class="mod-info-name">MÓDULO 6</span><span class="mod-info-count" id="countMod6">Cargando...</span></div></div>
                                 </div>
                             </div>
                             <div class="modulo-info-box"><div class="modulo-nombre" id="gtModuloNombre">MÓDULO 1</div><div class="modulo-contadores"><span class="contador-badge activos"><i class="fas fa-clock"></i> ACTIVOS: <span id="gtContActivos">0</span></span><span class="contador-badge atendidos"><i class="fas fa-check"></i> ATENDIDOS: <span id="gtContAtendidos">0</span></span><span class="contador-badge totales"><i class="fas fa-list"></i> TOTALES: <span id="gtContTotales">0</span></span></div></div>
@@ -934,6 +1592,171 @@
                             <div class="turnos-espera-lista" id="turnos-espera-lista"><div id="turnosEsperaBody"></div></div>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN AGREGAR NIVEL DE ACCESO (para trabajadores) -->
+            <div id="seccion-agregar-nivel" style="display:none;">
+                <div class="agregar-nivel-section">
+                    <h2><i class="fas fa-plus-circle"></i> Agregar Nivel de Acceso</h2>
+                    <div class="form-group">
+                        <label>Nombre del Nivel</label>
+                        <input type="text" id="nuevoNivelAccesoSeccion" placeholder="">
+                    </div>
+                    <div>
+                        <button class="btn-guardar-nivel-section" onclick="guardarNivelAccesoSeccion()">Guardar</button>
+                        <button class="btn-cancelar-nivel-section" onclick="mostrarSeccion('inicio')">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN ADMINISTRACIÓN DE BANNERS -->
+            <div id="seccion-publicidad-tv" style="display:none;">
+                <div class="banners-section-fullwidth">
+                    <h2><i class="fas fa-tv"></i> Administración de banners</h2>
+                    <div class="banners-subtitle">Agrega y/o edita el contenido de los banners (Máximo 5 banners)</div>
+                    
+                    <button class="btn-agregar-banner" onclick="abrirModalAgregarBanner()">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                    
+                    <div class="banners-lista-fullwidth" id="bannersLista"></div>
+                    
+                    <div class="banners-duracion-fullwidth">
+                        <label><i class="fas fa-clock"></i> Duración de rotación</label>
+                        <div style="font-size: 0.8rem; color: #666; margin-bottom: 8px;">Define los segundos que durará la rotación automáticamente de los banners</div>
+                        <input type="number" id="rotacionDuracion" value="10" min="3" max="60">
+                        <span style="margin-left: 10px;">segundos</span>
+                    </div>
+                    
+                    <div class="banners-actions">
+                        <button class="btn-cancelar-publicidad" onclick="mostrarSeccion('inicio')"><i class="fas fa-times"></i> Cancelar</button>
+                        <button class="btn-guardar-publicidad" onclick="guardarBanners()"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA AGREGAR/EDITAR BANNER -->
+    <div id="modalAgregarBanner" style="display: none;">
+        <div class="modal-banner-overlay">
+            <div class="modal-banner-card">
+                <div class="modal-banner-header">
+                    <h3 id="modalBannerTitulo"><i class="fas fa-plus-circle"></i> Agregar Banner</h3>
+                    <button class="modal-banner-close" onclick="cerrarModalAgregarBanner()">&times;</button>
+                </div>
+                
+                <input type="hidden" id="editandoBannerIndex" value="-1">
+                
+                <!-- Tipo de contenido -->
+                <div class="form-row">
+                    <label><i class="fas fa-film"></i> Tipo de contenido</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="tipoContenido" value="imagen" checked> Imagen</label>
+                        <label><input type="radio" name="tipoContenido" value="video"> Video</label>
+                    </div>
+                </div>
+                
+                <!-- Tipo de fondo -->
+                <div class="form-row">
+                    <label><i class="fas fa-palette"></i> Tipo de fondo</label>
+                    <div class="tipo-fondo-group">
+                        <label><input type="radio" name="tipoFondo" value="imagen" checked> Imagen</label>
+                        <label><input type="radio" name="tipoFondo" value="color"> Color sólido</label>
+                    </div>
+                </div>
+                
+                <!-- Foto de fondo -->
+                <div class="form-row" id="campoImagenFondo">
+                    <label><i class="fas fa-image"></i> Foto de fondo</label>
+                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px;">Tamaño recomendado: 1200px x 300px | Peso máximo: 2 Mb</div>
+                    <input type="file" id="bannerImagen" accept="image/*" style="padding: 8px;">
+                    <div id="imagenActualPreview" style="margin-top: 8px; display: none;">
+                        <small>Imagen actual:</small>
+                        <img id="imagenActualPreviewImg" src="" style="max-width: 100px; max-height: 50px;">
+                    </div>
+                </div>
+                
+                <!-- Color de fondo sólido -->
+                <div class="form-row campo-color-fondo" id="campoColorFondo" style="display: none;">
+                    <label><i class="fas fa-fill-drip"></i> Color de fondo</label>
+                    <input type="color" id="colorFondoSolido" value="#0b2b5e">
+                </div>
+                
+                <!-- Filtro -->
+                <div class="form-row" id="campoFiltro">
+                    <label><i class="fas fa-filter"></i> Filtro (solo para imagen)</label>
+                    <div class="color-input-group">
+                        <input type="color" id="filtroColor" value="#000000">
+                        <input type="range" id="filtroOpacidad" min="0" max="100" value="0" style="flex: 1;">
+                        <span id="opacidadValor" style="width: 40px;">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Título -->
+                <div class="form-row">
+                    <label><i class="fas fa-heading"></i> Título</label>
+                    <div class="color-input-group" style="margin-bottom: 8px;">
+                        <span style="font-size: 0.75rem;">Color de letra:</span>
+                        <input type="color" id="tituloColor" value="#FFFFFF">
+                        <span style="font-size: 0.75rem;">Color de fondo:</span>
+                        <input type="color" id="tituloFondoColor" value="#000000">
+                        <span style="font-size: 0.75rem;">Tipografía:</span>
+                        <select id="tituloTipografia" style="width: 150px;">
+                            <option value="Arial">Arial</option>
+                            <option value="Montserrat" selected>Montserrat</option>
+                            <option value="Poppins">Poppins</option>
+                            <option value="Roboto">Roboto</option>
+                        </select>
+                    </div>
+                    <input type="text" id="tituloTexto" placeholder="Texto del título (máx. 80 caracteres)" maxlength="80">
+                </div>
+                
+                <!-- Subtítulo -->
+                <div class="form-row">
+                    <label><i class="fas fa-subscript"></i> Subtítulo</label>
+                    <div class="color-input-group" style="margin-bottom: 8px;">
+                        <span style="font-size: 0.75rem;">Color de letra:</span>
+                        <input type="color" id="subtituloColor" value="#FFFFFF">
+                        <span style="font-size: 0.75rem;">Color de fondo:</span>
+                        <input type="color" id="subtituloFondoColor" value="#000000">
+                        <span style="font-size: 0.75rem;">Tipografía:</span>
+                        <select id="subtituloTipografia" style="width: 150px;">
+                            <option value="Arial">Arial</option>
+                            <option value="Montserrat" selected>Montserrat</option>
+                            <option value="Poppins">Poppins</option>
+                            <option value="Roboto">Roboto</option>
+                        </select>
+                    </div>
+                    <textarea id="subtituloTexto" rows="2" placeholder="Texto del subtítulo (máx. 140 caracteres)" maxlength="140"></textarea>
+                </div>
+                
+                <!-- Justificación -->
+                <div class="form-row">
+                    <label><i class="fas fa-align-left"></i> Justificación</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="justificacion" value="left"> Izquierda</label>
+                        <label><input type="radio" name="justificacion" value="center" checked> Centro</label>
+                        <label><input type="radio" name="justificacion" value="right"> Derecha</label>
+                    </div>
+                </div>
+                
+                <!-- Texto descriptivo para accesibilidad -->
+                <div class="form-row">
+                    <label><i class="fas fa-universal-access"></i> Texto descriptivo para accesibilidad</label>
+                    <textarea id="textoAccesibilidad" rows="2" placeholder="Describe el banner para personas con discapacidad visual" maxlength="250"></textarea>
+                </div>
+                
+                <!-- Agregar enlace -->
+                <div class="form-row">
+                    <label><i class="fas fa-link"></i> Agregar enlace</label>
+                    <input type="url" id="bannerEnlace" placeholder="https://ejemplo.com">
+                </div>
+                
+                <div class="modal-banner-actions">
+                    <button class="btn-cancelar-nivel" onclick="cerrarModalAgregarBanner()">Cancelar</button>
+                    <button class="btn-guardar-nivel" onclick="guardarBanner()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -975,8 +1798,658 @@
         </div>
     </div>
 
+    <!-- MODAL PARA AGREGAR NIVEL DE ACCESO (CAMPO EN BLANCO) -->
+    <div id="modalNivelAcceso" style="display: none;">
+        <div class="modal-nivel-overlay">
+            <div class="modal-nivel-card">
+                <div class="modal-nivel-header">
+                    <h3><i class="fas fa-plus-circle"></i> Agregar Nivel de Acceso</h3>
+                    <button class="modal-nivel-close" onclick="cerrarModalNivelAcceso()">&times;</button>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>NOMBRE DEL NIVEL</label>
+                    <input type="text" id="nuevoNivelAcceso" placeholder="" style="width:100%; padding:12px; border:2px solid #e2e8f0; border-radius:12px;">
+                </div>
+                <div class="modal-nivel-actions">
+                    <button class="btn-cancelar-nivel" onclick="cerrarModalNivelAcceso()">Cancelar</button>
+                    <button class="btn-guardar-nivel" onclick="guardarNivelAcceso()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ==================== FUNCIÓN CERRAR SESIÓN ====================
+        // ==================== USUARIOS DESDE BASE DE DATOS ====================
+        const usuariosDesdeBD = @json($usuariosBD ?? []);
+        
+        // ==================== VARIABLES PARA BANNERS ====================
+        let banners = [];
+        let bannerEditandoIndex = -1;
+        let serviciosDB = [];
+        
+        // ==================== FUNCIONES PARA BANNERS ====================
+        function cargarBanners() {
+            const bannersGuardados = localStorage.getItem('banners_tv');
+            if(bannersGuardados) {
+                banners = JSON.parse(bannersGuardados);
+            } else {
+                banners = [];
+            }
+            
+            const duracionGuardada = localStorage.getItem('rotacion_duracion');
+            if(duracionGuardada) {
+                document.getElementById('rotacionDuracion').value = duracionGuardada;
+            }
+            
+            renderizarListaBanners();
+        }
+        
+        function renderizarListaBanners() {
+            const container = document.getElementById('bannersLista');
+            if(!container) return;
+            
+            if(banners.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#999;">No hay banners agregados. Haz clic en "+ Agregar" para crear banners.</div>';
+                return;
+            }
+            
+            container.innerHTML = banners.map((banner, index) => {
+                const tieneImagen = banner.url && banner.url !== '';
+                const previewHtml = tieneImagen ? 
+                    `<div class="banner-imagen-preview"><img src="${banner.url}" alt="Banner ${index + 1}"></div>` :
+                    `<div class="banner-color-preview" style="background-color: ${banner.colorFondoSolido || '#0b2b5e'};"></div>`;
+                
+                return `
+                    <div class="banner-item-clickable" data-index="${index}" onclick="abrirModalEditarBanner(${index})">
+                        <div class="banner-numero">${index + 1}</div>
+                        ${previewHtml}
+                        <div class="banner-info">
+                            <h4>Banner ${index + 1}</h4>
+                            <p>${banner.titulo || 'Sin título'}</p>
+                        </div>
+                        <button class="btn-eliminar-banner" onclick="event.stopPropagation(); eliminarBanner(${index})">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Configurar opacidad
+        document.getElementById('filtroOpacidad')?.addEventListener('input', function() {
+            document.getElementById('opacidadValor').textContent = this.value + '%';
+        });
+        
+        function toggleCamposPorTipoFondo() {
+            const tipoFondo = document.querySelector('input[name="tipoFondo"]:checked').value;
+            const campoImagen = document.getElementById('campoImagenFondo');
+            const campoColor = document.getElementById('campoColorFondo');
+            const campoFiltro = document.getElementById('campoFiltro');
+            
+            if(tipoFondo === 'imagen') {
+                campoImagen.style.display = 'block';
+                campoColor.style.display = 'none';
+                campoFiltro.style.display = 'block';
+            } else {
+                campoImagen.style.display = 'none';
+                campoColor.style.display = 'block';
+                campoFiltro.style.display = 'none';
+            }
+        }
+        
+        document.querySelectorAll('input[name="tipoFondo"]').forEach(radio => {
+            radio.addEventListener('change', toggleCamposPorTipoFondo);
+        });
+        
+        function abrirModalAgregarBanner() {
+            if(banners.length >= 5) {
+                showNotification('⚠️ Máximo 5 banners permitidos', 'warning');
+                return;
+            }
+            bannerEditandoIndex = -1;
+            document.getElementById('modalBannerTitulo').innerHTML = '<i class="fas fa-plus-circle"></i> Agregar Banner';
+            document.getElementById('editandoBannerIndex').value = '-1';
+            resetearFormularioBanner();
+            document.getElementById('modalAgregarBanner').style.display = 'flex';
+        }
+        
+        function abrirModalEditarBanner(index) {
+            if(index < 0 || index >= banners.length) return;
+            bannerEditandoIndex = index;
+            const banner = banners[index];
+            document.getElementById('modalBannerTitulo').innerHTML = '<i class="fas fa-edit"></i> Editar Banner';
+            document.getElementById('editandoBannerIndex').value = index;
+            
+            document.querySelector(`input[name="tipoContenido"][value="${banner.tipoContenido || 'imagen'}"]`).checked = true;
+            
+            const tieneImagen = banner.url && banner.url !== '';
+            if(tieneImagen) {
+                document.querySelector('input[name="tipoFondo"][value="imagen"]').checked = true;
+            } else {
+                document.querySelector('input[name="tipoFondo"][value="color"]').checked = true;
+            }
+            toggleCamposPorTipoFondo();
+            
+            document.getElementById('colorFondoSolido').value = banner.colorFondoSolido || '#0b2b5e';
+            document.getElementById('filtroColor').value = banner.filtroColor || '#000000';
+            document.getElementById('filtroOpacidad').value = banner.filtroOpacidad || '0';
+            document.getElementById('opacidadValor').textContent = (banner.filtroOpacidad || '0') + '%';
+            document.getElementById('tituloTexto').value = banner.titulo || '';
+            document.getElementById('tituloColor').value = banner.tituloColor || '#FFFFFF';
+            document.getElementById('tituloFondoColor').value = banner.tituloFondoColor || '#000000';
+            document.getElementById('tituloTipografia').value = banner.tituloTipografia || 'Montserrat';
+            document.getElementById('subtituloTexto').value = banner.subtitulo || '';
+            document.getElementById('subtituloColor').value = banner.subtituloColor || '#FFFFFF';
+            document.getElementById('subtituloFondoColor').value = banner.subtituloFondoColor || '#000000';
+            document.getElementById('subtituloTipografia').value = banner.subtituloTipografia || 'Montserrat';
+            document.querySelector(`input[name="justificacion"][value="${banner.justificacion || 'center'}"]`).checked = true;
+            document.getElementById('textoAccesibilidad').value = banner.textoAccesibilidad || '';
+            document.getElementById('bannerEnlace').value = banner.enlace || '';
+            
+            if(banner.url) {
+                const previewDiv = document.getElementById('imagenActualPreview');
+                const previewImg = document.getElementById('imagenActualPreviewImg');
+                previewImg.src = banner.url;
+                previewDiv.style.display = 'block';
+            } else {
+                document.getElementById('imagenActualPreview').style.display = 'none';
+            }
+            
+            document.getElementById('modalAgregarBanner').style.display = 'flex';
+        }
+        
+        function resetearFormularioBanner() {
+            document.getElementById('bannerImagen').value = '';
+            document.getElementById('tituloTexto').value = '';
+            document.getElementById('subtituloTexto').value = '';
+            document.getElementById('textoAccesibilidad').value = '';
+            document.getElementById('bannerEnlace').value = '';
+            document.getElementById('filtroOpacidad').value = '0';
+            document.getElementById('opacidadValor').textContent = '0%';
+            document.getElementById('filtroColor').value = '#000000';
+            document.getElementById('tituloColor').value = '#FFFFFF';
+            document.getElementById('tituloFondoColor').value = '#000000';
+            document.getElementById('subtituloColor').value = '#FFFFFF';
+            document.getElementById('subtituloFondoColor').value = '#000000';
+            document.getElementById('colorFondoSolido').value = '#0b2b5e';
+            document.querySelector('input[name="tipoContenido"][value="imagen"]').checked = true;
+            document.querySelector('input[name="justificacion"][value="center"]').checked = true;
+            document.querySelector('input[name="tipoFondo"][value="imagen"]').checked = true;
+            document.getElementById('imagenActualPreview').style.display = 'none';
+            toggleCamposPorTipoFondo();
+        }
+        
+        function cerrarModalAgregarBanner() {
+            document.getElementById('modalAgregarBanner').style.display = 'none';
+            bannerEditandoIndex = -1;
+        }
+        
+        function guardarBanner() {
+            const editandoIndex = parseInt(document.getElementById('editandoBannerIndex').value);
+            const tipoFondo = document.querySelector('input[name="tipoFondo"]:checked').value;
+            const fileInput = document.getElementById('bannerImagen');
+            const file = fileInput.files[0];
+            
+            const bannerBase = {
+                id: editandoIndex >= 0 ? banners[editandoIndex].id : Date.now(),
+                tipoContenido: document.querySelector('input[name="tipoContenido"]:checked').value,
+                tipoFondo: tipoFondo,
+                filtroColor: document.getElementById('filtroColor').value,
+                filtroOpacidad: document.getElementById('filtroOpacidad').value,
+                titulo: document.getElementById('tituloTexto').value,
+                tituloColor: document.getElementById('tituloColor').value,
+                tituloFondoColor: document.getElementById('tituloFondoColor').value,
+                tituloTipografia: document.getElementById('tituloTipografia').value,
+                subtitulo: document.getElementById('subtituloTexto').value,
+                subtituloColor: document.getElementById('subtituloColor').value,
+                subtituloFondoColor: document.getElementById('subtituloFondoColor').value,
+                subtituloTipografia: document.getElementById('subtituloTipografia').value,
+                justificacion: document.querySelector('input[name="justificacion"]:checked').value,
+                textoAccesibilidad: document.getElementById('textoAccesibilidad').value,
+                enlace: document.getElementById('bannerEnlace').value,
+                colorFondoSolido: document.getElementById('colorFondoSolido').value,
+                fechaModificacion: new Date().toISOString()
+            };
+            
+            if(tipoFondo === 'color') {
+                bannerBase.url = '';
+                bannerBase.nombre = '';
+                
+                if(editandoIndex >= 0) {
+                    banners[editandoIndex] = bannerBase;
+                    showNotification('✅ Banner actualizado correctamente', 'success');
+                } else {
+                    banners.push(bannerBase);
+                    showNotification('✅ Banner agregado correctamente', 'success');
+                }
+                renderizarListaBanners();
+                cerrarModalAgregarBanner();
+                return;
+            }
+            
+            if(editandoIndex >= 0 && banners[editandoIndex] && !file && banners[editandoIndex].url) {
+                bannerBase.url = banners[editandoIndex].url;
+                bannerBase.nombre = banners[editandoIndex].nombre;
+                banners[editandoIndex] = bannerBase;
+                renderizarListaBanners();
+                cerrarModalAgregarBanner();
+                showNotification('✅ Banner actualizado correctamente', 'success');
+                return;
+            }
+            
+            if(!file) {
+                showNotification('⚠️ Seleccione una imagen para el fondo', 'warning');
+                return;
+            }
+            
+            if(!file.type.startsWith('image/')) {
+                showNotification('⚠️ El archivo debe ser una imagen', 'error');
+                return;
+            }
+            
+            if(file.size > 2 * 1024 * 1024) {
+                showNotification('⚠️ La imagen no debe superar los 2MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bannerBase.url = e.target.result;
+                bannerBase.nombre = file.name;
+                
+                if(editandoIndex >= 0) {
+                    banners[editandoIndex] = bannerBase;
+                    showNotification('✅ Banner actualizado correctamente', 'success');
+                } else {
+                    banners.push(bannerBase);
+                    showNotification('✅ Banner agregado correctamente', 'success');
+                }
+                renderizarListaBanners();
+                cerrarModalAgregarBanner();
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function eliminarBanner(index) {
+            if(confirm('¿Eliminar este banner?')) {
+                banners.splice(index, 1);
+                renderizarListaBanners();
+                showNotification('✅ Banner eliminado', 'success');
+            }
+        }
+        
+        function guardarBanners() {
+            const duracion = document.getElementById('rotacionDuracion').value;
+            localStorage.setItem('banners_tv', JSON.stringify(banners));
+            localStorage.setItem('rotacion_duracion', duracion);
+            showNotification('✅ Banners guardados correctamente para la pantalla TV', 'success');
+            mostrarSeccion('inicio');
+        }
+        
+        // ==================== FUNCIONES PARA MOSTRAR/OCULTAR FORMULARIO DE USUARIO ====================
+        function mostrarFormularioUsuario() {
+            document.getElementById('formUsuarioContainer').classList.add('visible');
+            limpiarFormularioUsuario();
+        }
+        
+        function ocultarFormularioUsuario() {
+            document.getElementById('formUsuarioContainer').classList.remove('visible');
+            limpiarFormularioUsuario();
+        }
+        
+        function limpiarFormularioUsuarioOriginal() {
+            document.getElementById('nombresUsuario').value = '';
+            document.getElementById('apellidosUsuario').value = '';
+            document.getElementById('cedulaUsuario').value = '';
+            document.getElementById('passwordUsuarioNuevo').value = '';
+            document.getElementById('usuarioAsesor').value = '';
+            document.getElementById('servicioUsuario').value = '';
+            document.getElementById('nivelAccesoUsuario').value = 'admin';
+            document.querySelectorAll('#modulosDropdown input[type="checkbox"]').forEach(cb => cb.checked = false);
+            actualizarTextoModulosSeleccionados();
+            editandoUsuarioId = null;
+            editandoUsuarioBDId = null;
+            document.getElementById('btnGuardarUsuario').style.display = 'block';
+            document.getElementById('btnActualizarUsuario').style.display = 'none';
+            document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-user-edit"></i> Registrar Usuario';
+        }
+        
+        limpiarFormularioUsuario = limpiarFormularioUsuarioOriginal;
+        
+        // ==================== FUNCIONES PARA SELECTOR MÚLTIPLE DE MÓDULOS ====================
+        function toggleModulosDropdown() {
+            const dropdown = document.getElementById('modulosDropdown');
+            dropdown.classList.toggle('open');
+        }
+        
+        function actualizarTextoModulosSeleccionados() {
+            const checkboxes = document.querySelectorAll('#modulosDropdown input[type="checkbox"]:checked');
+            const texto = document.getElementById('modulosSelectText');
+            if (checkboxes.length === 0) {
+                texto.textContent = 'Seleccionar módulos';
+            } else {
+                const modulosSeleccionados = Array.from(checkboxes).map(cb => cb.value);
+                texto.textContent = `${modulosSeleccionados.length} módulo(s) seleccionado(s)`;
+            }
+        }
+        
+        function obtenerModulosSeleccionados() {
+            return Array.from(document.querySelectorAll('#modulosDropdown input[type="checkbox"]:checked')).map(cb => cb.value);
+        }
+        
+        function marcarModulosSeleccionados(modulosArray) {
+            const checkboxes = document.querySelectorAll('#modulosDropdown input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = modulosArray.includes(cb.value);
+            });
+            actualizarTextoModulosSeleccionados();
+        }
+        
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('modulosSelectContainer');
+            if (container && !container.contains(e.target)) {
+                document.getElementById('modulosDropdown').classList.remove('open');
+            }
+        });
+        
+        // ==================== FUNCIONES PARA NIVEL DE ACCESO ====================
+        let nivelesAcceso = [];
+        
+        function cargarNivelesAcceso() {
+            fetch('/api/niveles-acceso')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        nivelesAcceso = data.niveles;
+                        const selectNivel = document.getElementById('nivelAccesoUsuario');
+                        if (selectNivel) {
+                            const valorActual = selectNivel.value;
+                            selectNivel.innerHTML = '';
+                            nivelesAcceso.forEach(nivel => {
+                                const option = document.createElement('option');
+                                option.value = nivel.nombre;
+                                option.textContent = nivel.nombre;
+                                selectNivel.appendChild(option);
+                            });
+                            if (valorActual && nivelesAcceso.some(n => n.nombre === valorActual)) {
+                                selectNivel.value = valorActual;
+                            }
+                        }
+                    }
+                })
+                .catch(error => console.error('Error cargando niveles:', error));
+        }
+        
+        function abrirModalNivelAcceso() {
+            document.getElementById('modalNivelAcceso').style.display = 'flex';
+            document.getElementById('nuevoNivelAcceso').value = '';
+        }
+        
+        function cerrarModalNivelAcceso() {
+            document.getElementById('modalNivelAcceso').style.display = 'none';
+        }
+        
+        function guardarNivelAcceso() {
+            const nombre = document.getElementById('nuevoNivelAcceso').value.trim();
+            if (!nombre) {
+                showNotification('Ingrese un nombre para el nivel de acceso', 'error');
+                return;
+            }
+            
+            fetch('/api/niveles-acceso', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ nombre: nombre })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Nivel de acceso agregado correctamente', 'success');
+                    cerrarModalNivelAcceso();
+                    cargarNivelesAcceso();
+                } else {
+                    showNotification('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error de conexión con el servidor', 'error');
+            });
+        }
+        
+        function guardarNivelAccesoSeccion() {
+            const nombre = document.getElementById('nuevoNivelAccesoSeccion').value.trim();
+            if (!nombre) {
+                showNotification('Ingrese un nombre para el nivel de acceso', 'error');
+                return;
+            }
+            
+            fetch('/api/niveles-acceso', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ nombre: nombre })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Nivel de acceso agregado correctamente', 'success');
+                    document.getElementById('nuevoNivelAccesoSeccion').value = '';
+                    cargarNivelesAcceso();
+                    mostrarSeccion('inicio');
+                } else {
+                    showNotification('Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error de conexión con el servidor', 'error');
+            });
+        }
+        
+        document.querySelectorAll('#modulosDropdown input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', actualizarTextoModulosSeleccionados);
+        });
+        
+        // ==================== VARIABLES PARA EDICIÓN ====================
+        let editandoUsuarioId = null;
+        let editandoUsuarioBDId = null;
+        let usuariosDB = [];
+        
+        function editarUsuario(usuarioData, esBD, indiceLocal) {
+            mostrarFormularioUsuario();
+            
+            if(esBD) {
+                editandoUsuarioBDId = usuarioData.id;
+                document.getElementById('btnGuardarUsuario').style.display = 'none';
+                document.getElementById('btnActualizarUsuario').style.display = 'block';
+                document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> Editar Usuario';
+            } else {
+                editandoUsuarioId = indiceLocal;
+                document.getElementById('btnGuardarUsuario').style.display = 'none';
+                document.getElementById('btnActualizarUsuario').style.display = 'block';
+                document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> Editar Usuario';
+            }
+            
+            document.getElementById('nombresUsuario').value = usuarioData.nombres || '';
+            document.getElementById('apellidosUsuario').value = usuarioData.apellidos || '';
+            document.getElementById('cedulaUsuario').value = usuarioData.identificacion || usuarioData.cedula || '';
+            document.getElementById('passwordUsuarioNuevo').value = '';
+            document.getElementById('usuarioAsesor').value = usuarioData.usuario_asesor || '';
+            document.getElementById('servicioUsuario').value = usuarioData.servicio || '';
+            document.getElementById('nivelAccesoUsuario').value = usuarioData.nivel_acceso || 'admin';
+            
+            if (usuarioData.modulos && usuarioData.modulos.length > 0) {
+                marcarModulosSeleccionados(usuarioData.modulos);
+            } else {
+                marcarModulosSeleccionados([]);
+            }
+        }
+        
+        function actualizarUsuario() {
+            if(editandoUsuarioBDId !== null) {
+                actualizarUsuarioBD();
+            } else if(editandoUsuarioId !== null) {
+                actualizarUsuarioLocal();
+            }
+        }
+        
+        function actualizarUsuarioBD() {
+            const nombres = document.getElementById('nombresUsuario').value.trim();
+            const apellidos = document.getElementById('apellidosUsuario').value.trim();
+            const usuarioAsesor = document.getElementById('usuarioAsesor').value.trim();
+            const servicioId = document.getElementById('servicioUsuario').value;
+            const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
+            const modulosSeleccionados = obtenerModulosSeleccionados();
+            const password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            
+            if(!nombres || !apellidos || !usuarioAsesor) {
+                showNotification('Complete los campos obligatorios (Nombres, Apellidos y Usuario/Asesor)', 'error');
+                return;
+            }
+            
+            const servicioSelect = document.getElementById('servicioUsuario');
+            const servicioTexto = servicioSelect.options[servicioSelect.selectedIndex]?.text || '';
+            const nombreCompleto = `${nombres} ${apellidos}`;
+            
+            const datosActualizados = {
+                name: nombreCompleto,
+                nombres: nombres,
+                apellidos: apellidos,
+                username: usuarioAsesor,
+                usuario_asesor: usuarioAsesor,
+                servicio: servicioId,
+                servicio_nombre: servicioTexto,
+                nivel_acceso: nivelAcceso,
+                modulos: modulosSeleccionados
+            };
+            
+            if(password) {
+                datosActualizados.password = password;
+            }
+            
+            showNotification(`Actualizando usuario...`, 'info');
+            
+            fetch(`/actualizar-usuario/${editandoUsuarioBDId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(datosActualizados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    showNotification(`Usuario actualizado correctamente`, 'success');
+                    ocultarFormularioUsuario();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showNotification(`Error: ${data.message}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error de conexión con el servidor', 'error');
+            });
+        }
+        
+        function actualizarUsuarioLocal() {
+            const nombres = document.getElementById('nombresUsuario').value.trim();
+            const apellidos = document.getElementById('apellidosUsuario').value.trim();
+            const cedula = document.getElementById('cedulaUsuario').value.trim();
+            const password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            const usuarioAsesor = document.getElementById('usuarioAsesor').value.trim();
+            const servicioId = document.getElementById('servicioUsuario').value;
+            const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
+            const modulosSeleccionados = obtenerModulosSeleccionados();
+            
+            if(!nombres || !apellidos || !usuarioAsesor) {
+                showNotification('Complete los campos obligatorios', 'error');
+                return;
+            }
+            
+            const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId);
+            const usuarioActualizado = { 
+                id: usuariosDB[editandoUsuarioId].id,
+                nombres, 
+                apellidos, 
+                cedula: usuarioAsesor, 
+                password: password || usuariosDB[editandoUsuarioId].password,
+                usuario_asesor: usuarioAsesor, 
+                servicio: servicioId, 
+                servicio_nombre: servicioObj ? servicioObj.nombre_servicio : '', 
+                nivel_acceso: nivelAcceso, 
+                modulos: modulosSeleccionados 
+            };
+            
+            usuariosDB[editandoUsuarioId] = usuarioActualizado;
+            localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB));
+            renderizarUsuarios();
+            ocultarFormularioUsuario();
+            showNotification('Usuario actualizado correctamente', 'success');
+        }
+        
+        function registrarUsuarioNuevoModificado(event) {
+            event.preventDefault();
+            const nombres = document.getElementById('nombresUsuario').value.trim();
+            const apellidos = document.getElementById('apellidosUsuario').value.trim();
+            const usuarioAsesor = document.getElementById('usuarioAsesor').value.trim();
+            const password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            const servicioId = document.getElementById('servicioUsuario').value;
+            const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
+            const modulosSeleccionados = obtenerModulosSeleccionados();
+            if(!nombres || !apellidos || !usuarioAsesor || !password) { showNotification('Complete los campos obligatorios', 'error'); return; }
+            const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId);
+            const nuevoUsuario = { id: Date.now(), nombres, apellidos, cedula: usuarioAsesor, password, usuario_asesor: usuarioAsesor, servicio: servicioId, servicio_nombre: servicioObj ? servicioObj.nombre_servicio : '', nivel_acceso: nivelAcceso, modulos: modulosSeleccionados };
+            usuariosDB.push(nuevoUsuario);
+            localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB));
+            renderizarUsuarios();
+            ocultarFormularioUsuario();
+            showNotification('Usuario registrado correctamente', 'success');
+        }
+        
+        function eliminarUsuarioLocal(idx) {
+            if(confirm('¿Eliminar este usuario?')) {
+                usuariosDB.splice(idx,1);
+                localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB));
+                renderizarUsuarios();
+                showNotification('Usuario eliminado', 'success');
+                if(editandoUsuarioId === idx) ocultarFormularioUsuario();
+            }
+        }
+        
+        function eliminarUsuarioBD(id, username) {
+            if(confirm(`¿Eliminar permanentemente al usuario "${username}" de la base de datos?`)) {
+                showNotification(`Eliminando usuario "${username}"...`, 'info');
+                fetch(`/eliminar-usuario/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        showNotification(`Usuario "${username}" eliminado correctamente`, 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification(`Error: ${data.message}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Error de conexión con el servidor', 'error');
+                });
+            }
+        }
+        
         function cerrarSesion() {
             const form = document.createElement('form');
             form.method = 'POST';
@@ -990,21 +2463,64 @@
             form.submit();
         }
 
-        // ==================== RECIBIR PERMISOS DESDE PHP ====================
+        function cargarNombreUsuario() {
+            const nombreUsuario = @json(auth()->user()->name ?? 'Usuario');
+            const usuarioElement = document.getElementById('usuarioAutenticadoNombre');
+            if (usuarioElement) {
+                usuarioElement.textContent = nombreUsuario;
+            }
+        }
+        
+        function cargarServiciosCompletos() {
+            const servicioSelect = document.getElementById('gtServicioFiltro');
+            if (!servicioSelect) return;
+            servicioSelect.innerHTML = '<option value="">— Todos los servicios —</option>';
+            if (serviciosDB.length > 0) {
+                serviciosDB.filter(s => s.activo).forEach(servicio => {
+                    const option = document.createElement('option');
+                    option.value = servicio.id_servicio;
+                    option.textContent = servicio.nombre_servicio;
+                    servicioSelect.appendChild(option);
+                });
+            }
+            servicioSelect.disabled = false;
+        }
+        
+        function limpiarModulosDropdown() {
+            const modulosPermitidosUsuario = @json(auth()->user()->modulos ?? []);
+            const moduloDropdown = document.getElementById('moduloDropdownM');
+            if (!moduloDropdown) return;
+            const moduloOptions = moduloDropdown.querySelectorAll('.modulo-option');
+            moduloOptions.forEach(option => {
+                const moduloNum = parseInt(option.getAttribute('data-mod'));
+                if (modulosPermitidosUsuario.length > 0 && !modulosPermitidosUsuario.includes(String(moduloNum))) {
+                    option.style.display = 'none';
+                } else {
+                    option.style.display = 'flex';
+                }
+            });
+            if (modulosPermitidosUsuario.length > 0) {
+                const primerModulo = parseInt(modulosPermitidosUsuario[0]);
+                if (!isNaN(primerModulo)) {
+                    seleccionarModulo(primerModulo);
+                }
+            } else {
+                moduloOptions.forEach(option => {
+                    option.style.display = 'flex';
+                });
+            }
+        }
+
         const userPermissions = @json($permisos ?? []);
         
-        // ==================== VARIABLES GLOBALES ====================
         let currentUser = null;
         let selectedSpecialty = null, selectedWindow = null, personaActual = null, voiceEnabled = true;
         let turnCounters = {};
         let reporteFiltrado = [];
-        let serviciosDB = [];
         let cedulaActual = '';
         let turnoActivoModal = null;
         let listaTurnosVisible = false;
         let moduloSeleccionado = 1;
-        let usuariosDB = [];
-        let editandoUsuarioId = null;
         let cicloLlamadaInterval = null;
         let turnoEnCiclo = null;
         let modulosPermitidos = [];
@@ -1012,9 +2528,8 @@
 
         const nombreUsuarioAutenticado = @json(auth()->user()->name ?? 'Usuario');
         
-        // ==================== DETECTAR SI ES ADMINISTRADOR ====================
         function esSuperAdministrador() {
-            const permisosRequeridos = ['login', 'inicio', 'agregar_paciente', 'usuarios', 'servicios', 'reportes', 'atender_turnos', 'perfil'];
+            const permisosRequeridos = ['login', 'inicio', 'agregar_paciente', 'usuarios', 'servicios', 'reportes', 'atender_turnos', 'perfil', 'publicidad_tv'];
             for (const permiso of permisosRequeridos) {
                 if (userPermissions[permiso] !== 1) {
                     return false;
@@ -1025,7 +2540,6 @@
         
         const esAdministrador = esSuperAdministrador();
         
-        // ==================== OBTENER LISTA DE MÓDULOS PERMITIDOS ====================
         function getModulosPermitidos() {
             const modulos = [];
             const mapping = {
@@ -1035,7 +2549,9 @@
                 'usuarios': { seccion: 'usuarios', nombre: 'Gestión de Usuarios', icono: 'fas fa-users' },
                 'reportes': { seccion: 'reportes', nombre: 'Reportes', icono: 'fas fa-chart-bar' },
                 'atender_turnos': { seccion: 'atender', nombre: 'Gestionar Turnos', icono: 'fas fa-stethoscope' },
-                'perfil': { seccion: 'perfil', nombre: 'Mi Perfil', icono: 'fas fa-id-card' }
+                'perfil': { seccion: 'perfil', nombre: 'Mi Perfil', icono: 'fas fa-id-card' },
+                'agregar_nivel_acceso': { seccion: 'agregar_nivel', nombre: 'Agregar Nivel de Acceso', icono: 'fas fa-plus-circle' },
+                'publicidad_tv': { seccion: 'publicidad_tv', nombre: 'Publicidad TV', icono: 'fas fa-tv' }
             };
             
             for (const [key, value] of Object.entries(userPermissions)) {
@@ -1054,21 +2570,23 @@
             return modulos;
         }
         
-        // ==================== RENDERIZAR BARRA DE MÓDULOS ====================
         function renderizarBarraModulos() {
             const container = document.getElementById('modulosBarContainer');
             if (!container) return;
             modulosPermitidos = getModulosPermitidos();
-            if (!esAdministrador && modulosPermitidos.length > 1) {
+            if (!esAdministrador) {
                 container.style.display = 'block';
                 let html = '<div class="modulos-bar">';
                 modulosPermitidos.forEach(mod => {
                     const isActive = (currentModuloActivo && currentModuloActivo.seccion === mod.seccion) || 
-                                    (!currentModuloActivo && modulosPermitidos[0].seccion === mod.seccion);
+                                    (!currentModuloActivo && modulosPermitidos[0] && modulosPermitidos[0].seccion === mod.seccion);
                     html += `<button class="modulo-tab ${isActive ? 'active' : ''}" onclick="cambiarModulo('${mod.seccion}', '${mod.key}')">
                         <i class="${mod.icono}"></i> ${mod.nombre}
                     </button>`;
                 });
+                html += `<button class="btn-cerrar-sesion-modulo" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>`;
                 html += '</div>';
                 container.innerHTML = html;
             } else {
@@ -1076,7 +2594,6 @@
             }
         }
         
-        // ==================== CAMBIAR ENTRE MÓDULOS ====================
         function cambiarModulo(seccion, key) {
             if (currentModuloActivo && currentModuloActivo.seccion === seccion) return;
             const moduloSeleccionado = modulosPermitidos.find(m => m.seccion === seccion);
@@ -1092,17 +2609,21 @@
                         actualizarContadoresModal();
                         actualizarConteoDropdown();
                         renderizarListaTurnos();
-                        poblarSelectServiciosModal();
+                        cargarServiciosCompletos();
+                        limpiarModulosDropdown();
                     }
                 } else if (seccion === 'reportes') {
                     setTimeout(() => generarReporte(), 200);
                 } else if (seccion === 'servicios') {
                     cargarServiciosDB();
+                } else if (seccion === 'agregar_nivel') {
+                    document.getElementById('nuevoNivelAccesoSeccion').value = '';
+                } else if (seccion === 'publicidad_tv') {
+                    cargarBanners();
                 }
             }
         }
         
-        // ==================== CONFIGURAR VISTA SEGÚN PERMISOS ====================
         function configurarVistaPorPermisos() {
             if (!esAdministrador) {
                 const sidebar = document.getElementById('mainSidebar');
@@ -1126,12 +2647,17 @@
                             actualizarContadoresModal();
                             actualizarConteoDropdown();
                             renderizarListaTurnos();
-                            poblarSelectServiciosModal();
+                            cargarServiciosCompletos();
+                            limpiarModulosDropdown();
                         }
                     } else if (currentModuloActivo.seccion === 'reportes') {
                         setTimeout(() => generarReporte(), 200);
                     } else if (currentModuloActivo.seccion === 'servicios') {
                         cargarServiciosDB();
+                    } else if (currentModuloActivo.seccion === 'agregar_nivel') {
+                        document.getElementById('nuevoNivelAccesoSeccion').value = '';
+                    } else if (currentModuloActivo.seccion === 'publicidad_tv') {
+                        cargarBanners();
                     }
                 } else {
                     mostrarAccesoDenegado();
@@ -1143,7 +2669,6 @@
             }
         }
         
-        // ==================== MODALES Y FUNCIONES EXISTENTES ====================
         function abrirModalServicio() {
             if (!tienePermiso('servicios')) {
                 mostrarAccesoDenegado();
@@ -1173,7 +2698,9 @@
                 'agregar_paciente': 'agregar_paciente', 
                 'atender_turnos': 'atender_turnos', 
                 'reportes': 'reportes', 
-                'perfil': 'perfil' 
+                'perfil': 'perfil',
+                'agregar_nivel_acceso': 'agregar_nivel_acceso',
+                'publicidad_tv': 'publicidad_tv'
             };
             const key = moduloMap[moduloId];
             if (!key) return false;
@@ -1211,7 +2738,8 @@
                         actualizarContadoresModal();
                         actualizarConteoDropdown();
                         renderizarListaTurnos();
-                        poblarSelectServiciosModal();
+                        cargarServiciosCompletos();
+                        limpiarModulosDropdown();
                     }
                 }
                 else { 
@@ -1233,12 +2761,8 @@
             document.getElementById('modalAgregarPersona').style.display = 'flex';
         }
         
-        // ===== FUNCIÓN MODIFICADA: Precarga la cédula desde el campo de búsqueda =====
         function abrirModalPersonaYPrecargar() {
-            // Obtener la cédula que el usuario escribió en el campo de búsqueda
             const cedulaBuscada = document.getElementById('cedula').value.trim();
-            
-            // Limpiar y abrir el modal
             const form = document.getElementById('formRegistrarPersona');
             if (form) form.reset();
             document.getElementById('regIdentificacion').value = '';
@@ -1246,12 +2770,9 @@
             document.getElementById('regSegundoNombre').value = '';
             document.getElementById('regPrimerApellido').value = '';
             document.getElementById('regSegundoApellido').value = '';
-            
-            // Si hay una cédula, la ponemos en el campo Identificación
             if (cedulaBuscada !== '') {
                 document.getElementById('regIdentificacion').value = cedulaBuscada;
             }
-            
             document.getElementById('modalAgregarPersona').style.display = 'flex';
         }
         
@@ -1262,6 +2783,8 @@
             document.getElementById('seccion-reportes').style.display = 'none';
             document.getElementById('seccion-perfil').style.display = 'none';
             document.getElementById('seccion-atender').style.display = 'none';
+            document.getElementById('seccion-agregar-nivel').style.display = 'none';
+            document.getElementById('seccion-publicidad-tv').style.display = 'none';
             
             if (esAdministrador) {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -1296,6 +2819,18 @@
             else if(sec === 'atender') { 
                 document.getElementById('seccion-atender').style.display = 'block'; 
                 if (esAdministrador) document.getElementById('navAtenderTurnos').classList.add('active'); 
+                cargarNombreUsuario();
+                cargarServiciosCompletos();
+                limpiarModulosDropdown();
+            }
+            else if(sec === 'agregar_nivel') {
+                document.getElementById('seccion-agregar-nivel').style.display = 'block';
+                document.getElementById('nuevoNivelAccesoSeccion').value = '';
+            }
+            else if(sec === 'publicidad_tv') {
+                document.getElementById('seccion-publicidad-tv').style.display = 'block';
+                if (esAdministrador) document.getElementById('navPublicidadTV').classList.add('active');
+                cargarBanners();
             }
         }
 
@@ -1311,6 +2846,7 @@
                 set('permiso_servicios', permisos.servicios);
                 set('permiso_reportes', permisos.reportes);
                 set('permiso_atender_turnos', permisos.atender_turnos);
+                set('permiso_publicidad_tv', permisos.publicidad_tv);
                 set('permiso_perfil', permisos.perfil);
             }
         }
@@ -1328,6 +2864,8 @@
                 servicios: document.querySelector('input[name="permiso_servicios"]:checked').value === '1' ? 1 : 0,
                 reportes: document.querySelector('input[name="permiso_reportes"]:checked').value === '1' ? 1 : 0,
                 atender_turnos: document.querySelector('input[name="permiso_atender_turnos"]:checked').value === '1' ? 1 : 0,
+                agregar_nivel_acceso: document.querySelector('input[name="permiso_agregar_nivel_acceso"]:checked').value === '1' ? 1 : 0,
+                publicidad_tv: document.querySelector('input[name="permiso_publicidad_tv"]:checked').value === '1' ? 1 : 0,
                 perfil: document.querySelector('input[name="permiso_perfil"]:checked').value === '1' ? 1 : 0
             };
             showNotification(`💾 Guardando permisos para usuario: ${username}...`, 'info');
@@ -1338,38 +2876,53 @@
 
         function filtrarPermisos() {
             const busqueda = document.getElementById('buscarUsuarioPermisos').value.trim();
-            if(busqueda === '') { showNotification('Ingrese un nombre de usuario para buscar', 'info'); return; }
-            showNotification(`🔍 Buscando usuario: ${busqueda}...`, 'info');
-            fetch('/buscar-usuario-permisos', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }, body: JSON.stringify({ username: busqueda }) })
+            if(busqueda === '') { showNotification('Ingrese un nombre de usuario o número de identificación para buscar', 'info'); return; }
+            showNotification(`🔍 Buscando: ${busqueda}...`, 'info');
+            fetch('/buscar-usuario-permisos', { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                }, 
+                body: JSON.stringify({ username: busqueda, identificacion: busqueda }) 
+            })
             .then(r => r.json()).then(data => {
                 if(data.success) {
                     const p = data.usuario.permisos;
                     const set = (name, val) => { const el = document.querySelector(`input[name="${name}"][value="${val == 1 ? '1' : '0'}"]`); if(el) el.checked = true; };
                     set('permiso_login', p.login);
                     set('permiso_inicio', p.inicio);
+                    set('permiso_agregar_nivel_acceso', p.agregar_nivel_acceso);
                     set('permiso_agregar_pacientes', p.agregar_paciente);
                     set('permiso_usuarios', p.usuarios);
                     set('permiso_servicios', p.servicios);
                     set('permiso_reportes', p.reportes);
                     set('permiso_atender_turnos', p.atender_turnos);
+                    set('permiso_publicidad_tv', p.publicidad_tv);
                     set('permiso_perfil', p.perfil);
                     showNotification(`✅ Usuario encontrado: ${data.usuario.name || data.usuario.username}`, 'success');
                 } else { showNotification(`❌ Usuario "${busqueda}" no encontrado`, 'error'); }
             }).catch(() => showNotification('❌ Error de conexión con el servidor', 'error'));
         }
 
-        // El resto de las funciones originales se mantienen exactamente igual...
-        
-        // ==================== MÓDULOS ====================
         function getNombreModulo(modulo) { return `MÓDULO ${modulo}`; }
-        function toggleModuloDropdown() { const btn = document.getElementById('moduloBtnClick'); const dropdown = document.getElementById('moduloDropdown'); btn.classList.toggle('open'); dropdown.classList.toggle('open'); actualizarConteoDropdown(); }
-        function actualizarConteoDropdown() { const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; [1,2,3,4].forEach(mod => { let lista = servicioFiltro ? turnos.filter(t => String(t.especialidad) === String(servicioFiltro)) : turnos.filter(t => parseInt(t.ventanilla) === mod); const activos = lista.filter(t => t.estado === 'pendiente' || t.estado === 'llamado').length; const atendidos = lista.filter(t => t.estado === 'atendido').length; const el = document.getElementById(`countMod${mod}`); if(el) el.textContent = `${activos} activos · ${atendidos} atendidos`; }); }
+        function toggleModuloDropdown() { const btn = document.getElementById('moduloBtnClick'); const dropdown = document.getElementById('moduloDropdownM'); btn.classList.toggle('open'); dropdown.classList.toggle('open'); actualizarConteoDropdown(); }
+        function actualizarConteoDropdown() { 
+            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
+            const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
+            for(let mod = 1; mod <= 6; mod++) { 
+                let lista = servicioFiltro ? turnos.filter(t => String(t.especialidad) === String(servicioFiltro)) : turnos.filter(t => parseInt(t.ventanilla) === mod); 
+                const activos = lista.filter(t => t.estado === 'pendiente' || t.estado === 'llamado').length; 
+                const atendidos = lista.filter(t => t.estado === 'atendido').length; 
+                const el = document.getElementById(`countMod${mod}`); 
+                if(el) el.textContent = `${activos} activos · ${atendidos} atendidos`; 
+            } 
+        }
         function detenerCicloLlamada() { if(cicloLlamadaInterval) { clearInterval(cicloLlamadaInterval); cicloLlamadaInterval = null; turnoEnCiclo = null; if(window.speechSynthesis) window.speechSynthesis.cancel(); } }
         function iniciarCicloLlamada(numeroTurno, moduloTexto) { detenerCicloLlamada(); turnoEnCiclo = numeroTurno; const hablar = () => { if(voiceEnabled && window.speechSynthesis) { const u = new SpeechSynthesisUtterance(`Turno ${numeroTurno}, por favor acérquese al ${moduloTexto}`); u.lang = 'es-ES'; u.rate = 0.9; window.speechSynthesis.speak(u); } }; hablar(); let rep = 0; cicloLlamadaInterval = setInterval(() => { rep++; if(rep >= 24) detenerCicloLlamada(); else hablar(); }, 5000); }
-        function seleccionarModulo(num) { moduloSeleccionado = num; document.getElementById('moduloBtnTexto').textContent = getNombreModulo(num); document.getElementById('gtModuloNombre').textContent = getNombreModulo(num); document.querySelectorAll('.modulo-option').forEach(o => o.classList.toggle('active-mod', parseInt(o.getAttribute('data-mod')) === num)); document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdown').classList.remove('open'); if(turnoActivoModal && parseInt(turnoActivoModal.ventanilla) !== num) limpiarPanelIzquierdo(); actualizarContadoresModal(); renderizarListaTurnos(); showNotification(`📌 ${getNombreModulo(num)} seleccionado`, 'success'); }
-        document.addEventListener('click', function(e) { const wrapper = document.getElementById('moduloSelectorWrapper'); if(wrapper && !wrapper.contains(e.target)) { document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdown').classList.remove('open'); } });
+        function seleccionarModulo(num) { moduloSeleccionado = num; document.getElementById('moduloBtnTexto').textContent = getNombreModulo(num); document.getElementById('gtModuloNombre').textContent = getNombreModulo(num); document.querySelectorAll('.modulo-option').forEach(o => o.classList.toggle('active-mod', parseInt(o.getAttribute('data-mod')) === num)); document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); if(turnoActivoModal && parseInt(turnoActivoModal.ventanilla) !== num) limpiarPanelIzquierdo(); actualizarContadoresModal(); renderizarListaTurnos(); showNotification(`📌 ${getNombreModulo(num)} seleccionado`, 'success'); }
+        document.addEventListener('click', function(e) { const wrapper = document.getElementById('moduloSelectorWrapper'); if(wrapper && !wrapper.contains(e.target)) { document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); } });
 
-        // ==================== PERSONA ====================
         function cerrarModalPersona() { document.getElementById('modalAgregarPersona').style.display = 'none'; document.getElementById('formRegistrarPersona').reset(); }
 
         async function registrarPersona(event) {
@@ -1426,7 +2979,6 @@
             finally { btnBuscar.disabled = false; btnBuscar.innerHTML = textoOriginal; }
         }
 
-        // ==================== SERVICIOS DB ====================
         async function cargarServiciosDB() {
             try {
                 const response = await fetch('/api/servicios');
@@ -1445,14 +2997,13 @@
                         });
                     }
                     actualizarGridServiciosInicio();
-                    poblarSelectServiciosModal();
+                    cargarServiciosCompletos();
                     poblarSelectServiciosUsuario();
                 }
             } catch(error) { console.error(error); }
         }
 
         function poblarSelectServiciosUsuario() { const sel = document.getElementById('servicioUsuario'); if(!sel) return; sel.innerHTML = '<option value="">Seleccionar servicio</option>'; serviciosDB.filter(s=>s.activo).forEach(s=>{ const opt=document.createElement('option'); opt.value=s.id_servicio; opt.textContent=s.nombre_servicio; sel.appendChild(opt); }); }
-        function poblarSelectServiciosModal() { const sel = document.getElementById('gtServicioFiltro'); if(sel) { sel.innerHTML = '<option value="">— Todos los servicios —</option>'; serviciosDB.filter(s=>s.activo).forEach(s=>{ const opt=document.createElement('option'); opt.value=s.id_servicio; opt.textContent=s.nombre_servicio; sel.appendChild(opt); }); } }
 
         function actualizarGridServiciosInicio() {
             const grid = document.getElementById('serviciosGridInicio');
@@ -1515,7 +3066,6 @@
             }
         }
 
-        // ==================== ATENDER SECCIÓN ====================
         function limpiarPanelIzquierdo() { 
             const gtNumeroTurno = document.getElementById('gtNumeroTurno');
             if(gtNumeroTurno) {
@@ -1542,8 +3092,6 @@
                 gtPrimerNombre.textContent = '—';
                 gtPrimerNombre.classList.add('vacio');
             }
-            const btnFinalizar = document.getElementById('btnFinalizarTurno');
-            if(btnFinalizar) btnFinalizar.disabled = true;
             turnoActivoModal = null; 
         }
         
@@ -1578,8 +3126,6 @@
             }
             const gtModuloNombre = document.getElementById('gtModuloNombre');
             if(gtModuloNombre) gtModuloNombre.textContent = getNombreModulo(turno.ventanilla || moduloSeleccionado);
-            const btnFinalizar = document.getElementById('btnFinalizarTurno');
-            if(btnFinalizar) btnFinalizar.disabled = false;
             document.querySelectorAll('.turno-espera-item').forEach(el => el.classList.remove('seleccionado')); 
             const itemEl = document.querySelector(`.turno-espera-item[data-num="${turno.numero}"]`); 
             if(itemEl) itemEl.classList.add('seleccionado'); 
@@ -1697,16 +3243,7 @@
                 showNotification(`⚠️ No se encontró el turno ${num}`, 'warning');
             }
         }
-        
-        function finalizarTurnoActual() { 
-            if(!turnoActivoModal) { 
-                showNotification('⚠️ Seleccione un turno de la lista', 'warning'); 
-                return; 
-            } 
-            atenderTurno(turnoActivoModal.numero); 
-        }
 
-        // ==================== REPORTES ====================
         function generarReporte() { 
             const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const fechaInicio = document.getElementById('fechaInicio').value; 
@@ -1731,7 +3268,7 @@
             reporteFiltrado = datos; 
             const tbody = document.getElementById('reporteBody'); 
             if(!reporteFiltrado.length) { 
-                tbody.innerHTML = '<tr><td colspan="8">No hay datos en el rango de fechas seleccionado</td>' + '<tr>'; 
+                tbody.innerHTML = '<tr><td colspan="8">No hay datos en el rango de fechas seleccionado</td' + '</tr>'; 
                 return; 
             } 
             tbody.innerHTML = reporteFiltrado.map(d => `
@@ -1743,15 +3280,22 @@
                     <td>${d.nombre}</td>
                     <td>${d.ingreso}</td>
                     <td>${d.salida}</td>
-                    <td>---</td>
+                    <td>---</td
                 </tr>
             `).join(''); 
         }
         
-        function buscarEnReporte() { const busqueda = prompt('Buscar:'); if(!busqueda) return; const resultados = reporteFiltrado.filter(d => d.turno.includes(busqueda) || d.nombre.includes(busqueda) || d.documento.includes(busqueda)); const tbody = document.getElementById('reporteBody'); if(!resultados.length) { tbody.innerHTML = '<tr><td colspan="8">No se encontraron resultados</td>' + '</tr>'; return; } tbody.innerHTML = resultados.map(d => `<tr><td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td><td><strong>${d.turno}</strong></td><td>${d.servicio}</td><td>${d.documento}</td><td>${d.nombre}</td><td>${d.ingreso}</td><td>${d.salida}</td><td>---</td>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
+        function buscarEnReporte() { const busqueda = prompt('Buscar:'); if(!busqueda) return; const resultados = reporteFiltrado.filter(d => d.turno.includes(busqueda) || d.nombre.includes(busqueda) || d.documento.includes(busqueda)); const tbody = document.getElementById('reporteBody'); if(!resultados.length) { tbody.innerHTML = '<tr><td colspan="8">No se encontraron resultados</td' + '</tr>'; return; } tbody.innerHTML = resultados.map(d => `<tr><td class="estado-${d.estado === 'ACTIVO' ? 'activo' : 'finalizado'}">${d.estado}</td>
+                    <td><strong>${d.turno}</strong></td>
+                    <td>${d.servicio}</td>
+                    <td>${d.documento}</td>
+                    <td>${d.nombre}</td>
+                    <td>${d.ingreso}</td>
+                    <td>${d.salida}</td>
+                    <td>---</td
+                </tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
         function descargarReporte() { if(!reporteFiltrado.length) { showNotification('No hay datos', 'error'); return; } let csv = "ESTADO,TURNO,SERVICIO,DOCUMENTO,NOMBRE,INGRESO,SALIDA\n"; reporteFiltrado.forEach(d => csv += `"${d.estado}","${d.turno}","${d.servicio}","${d.documento}","${d.nombre}","${d.ingreso}","${d.salida}"\n`); const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `reporte_${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('Reporte descargado', 'success'); }
 
-        // ==================== UTILIDADES ====================
         function toggleVoice(e) { voiceEnabled = e; document.getElementById('voiceStatus').innerHTML = e ? '✅ Voz activada' : '🔇 Voz desactivada'; showNotification(e ? 'Voz activada' : 'Voz desactivada', e ? 'success' : 'info'); }
         function showNotification(m, t) { const n = document.getElementById('notification'); n.textContent = m; n.style.background = t === 'success' ? '#28a745' : t === 'error' ? '#dc3545' : '#ffc107'; n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 3000); }
         function cerrarHistorial() { document.getElementById('historyModal').style.display = 'none'; }
@@ -1766,32 +3310,142 @@
             document.getElementById('statsLlamados').innerHTML = llam.length; 
             document.getElementById('statsAtendidos').innerHTML = ate.length; 
             document.getElementById('statsEliminados').innerHTML = elim.length; 
-            const side = document.getElementById('turnosSideList'); 
-            if(!pend.length && !llam.length) side.innerHTML = '<div>No hay turnos</div>'; 
-            else { 
-                const todos = [...llam, ...pend]; 
-                const unicos = new Map(); 
-                todos.forEach(t => { if(!unicos.has(t.numero)) unicos.set(t.numero, t); }); 
-                side.innerHTML = Array.from(unicos.values()).map(t => `<div class="turno-side-item"><div class="turno-side-num">${t.numero}</div><div class="turno-side-pac">${t.nombre_persona || 'Paciente'}</div><div class="turno-side-pac">${getNombreModulo(t.ventanilla)}</div></div>`).join(''); 
-            } 
         }
         function formatearFechaLocal(f) { if(!f) return ''; const d = new Date(f); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`; }
         function loadCounters() { const s = localStorage.getItem('turnCounters'); if(s) turnCounters = JSON.parse(s); else saveCounters(); }
         function saveCounters() { localStorage.setItem('turnCounters', JSON.stringify(turnCounters)); }
         function cerrarTurnoGenerado() { document.getElementById('turnoGeneradoModal').style.display = 'none'; }
 
-        // ==================== USUARIOS ====================
-        function cargarUsuarios() { let stored = localStorage.getItem('usuarios_sistema_v2'); if(stored) usuariosDB = JSON.parse(stored); else { usuariosDB = []; localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB)); } renderizarUsuarios(); }
-        function renderizarUsuarios() { const cont = document.getElementById('usuariosGridContainer'); if(!cont) return; if(usuariosDB.length === 0) { cont.innerHTML = '<div style="text-align:center;padding:40px;">No hay usuarios registrados</div>'; return; } cont.innerHTML = usuariosDB.map((u,idx) => { const modulosHtml = u.modulos && u.modulos.length ? `<div class="modulos-asignados">${u.modulos.map(m => `<span class="modulo-badge">MÓDULO ${m}</span>`).join('')}</div>` : ''; return `<div class="usuario-card"><h4><i class="fas fa-user-circle"></i> ${u.nombres} ${u.apellidos}</h4><p><i class="fas fa-id-card"></i> ${u.cedula}</p><p><i class="fas fa-stethoscope"></i> Servicio: ${u.servicio_nombre || u.servicio || 'N/A'}</p><p><i class="fas fa-chart-line"></i> Nivel: ${u.nivel_acceso === 'admin' ? 'Administrador' : u.nivel_acceso === 'facturador' ? 'Facturador' : 'N/A'}</p>${modulosHtml}<div><button class="btn-editar-usuario-card" onclick="editarUsuario(${idx})"><i class="fas fa-edit"></i> Editar</button><button class="btn-eliminar-usuario-card" onclick="eliminarUsuario(${idx})"><i class="fas fa-trash"></i> Eliminar</button></div></div>`; }).join(''); }
-        function limpiarFormularioUsuario() { document.getElementById('nombresUsuario').value = ''; document.getElementById('apellidosUsuario').value = ''; document.getElementById('cedulaUsuario').value = ''; document.getElementById('passwordUsuarioNuevo').value = ''; document.getElementById('usuarioAsesor').value = ''; document.getElementById('servicioUsuario').value = ''; document.getElementById('nivelAccesoUsuario').value = 'admin'; document.querySelectorAll('#modulosCheckGroup input').forEach(cb => cb.checked = false); editandoUsuarioId = null; document.getElementById('btnGuardarUsuario').style.display = 'block'; document.getElementById('btnActualizarUsuario').style.display = 'none'; document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-user-edit"></i> Registrar Usuario'; }
-        function registrarUsuarioNuevo(event) { event.preventDefault(); const nombres = document.getElementById('nombresUsuario').value.trim(); const apellidos = document.getElementById('apellidosUsuario').value.trim(); const cedula = document.getElementById('cedulaUsuario').value.trim(); const password = document.getElementById('passwordUsuarioNuevo').value.trim(); const usuarioAsesor = document.getElementById('usuarioAsesor').value.trim(); const servicioId = document.getElementById('servicioUsuario').value; const nivelAcceso = document.getElementById('nivelAccesoUsuario').value; const modulosSeleccionados = Array.from(document.querySelectorAll('#modulosCheckGroup input:checked')).map(cb => cb.value); if(!nombres || !apellidos || !cedula || !password) { showNotification('Complete los campos obligatorios', 'error'); return; } const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId); const nuevoUsuario = { id: Date.now(), nombres, apellidos, cedula, password, usuario_asesor: usuarioAsesor, servicio: servicioId, servicio_nombre: servicioObj ? servicioObj.nombre_servicio : '', nivel_acceso: nivelAcceso, modulos: modulosSeleccionados }; if(editandoUsuarioId !== null) { usuariosDB[editandoUsuarioId] = nuevoUsuario; showNotification('Usuario actualizado correctamente', 'success'); } else { usuariosDB.push(nuevoUsuario); showNotification('Usuario registrado correctamente', 'success'); } localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB)); renderizarUsuarios(); limpiarFormularioUsuario(); }
-        function editarUsuario(idx) { const u = usuariosDB[idx]; if(!u) return; document.getElementById('nombresUsuario').value = u.nombres || ''; document.getElementById('apellidosUsuario').value = u.apellidos || ''; document.getElementById('cedulaUsuario').value = u.cedula || ''; document.getElementById('passwordUsuarioNuevo').value = u.password || ''; document.getElementById('usuarioAsesor').value = u.usuario_asesor || ''; document.getElementById('servicioUsuario').value = u.servicio || ''; document.getElementById('nivelAccesoUsuario').value = u.nivel_acceso || 'admin'; document.querySelectorAll('#modulosCheckGroup input').forEach(cb => { cb.checked = u.modulos && u.modulos.includes(cb.value); }); editandoUsuarioId = idx; document.getElementById('btnGuardarUsuario').style.display = 'none'; document.getElementById('btnActualizarUsuario').style.display = 'block'; document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> Actualizar Cliente'; document.getElementById('formUsuarioContainer').scrollIntoView({ behavior: 'smooth' }); }
-        function actualizarUsuario() { if(editandoUsuarioId !== null) registrarUsuarioNuevo(new Event('submit')); }
-        function eliminarUsuario(idx) { if(confirm('¿Eliminar este usuario?')) { usuariosDB.splice(idx,1); localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB)); renderizarUsuarios(); showNotification('Usuario eliminado', 'success'); if(editandoUsuarioId === idx) limpiarFormularioUsuario(); } }
+        function cargarUsuarios() { 
+            let stored = localStorage.getItem('usuarios_sistema_v2'); 
+            if(stored) {
+                usuariosDB = JSON.parse(stored);
+            } else { 
+                usuariosDB = []; 
+                localStorage.setItem('usuarios_sistema_v2', JSON.stringify(usuariosDB)); 
+            }
+            renderizarUsuarios(); 
+        }
+        
+        function renderizarUsuarios() { 
+            const cont = document.getElementById('usuariosGridContainer'); 
+            if(!cont) return;
+            
+            let todosLosUsuarios = [];
+            const usuariosVistos = new Set();
+            
+            if(usuariosDesdeBD && usuariosDesdeBD.length > 0) {
+                usuariosDesdeBD.forEach(usuarioBD => {
+                    if(usuarioBD.username === 'andres1') {
+                        return;
+                    }
+                    
+                    if(usuariosVistos.has(usuarioBD.username)) return;
+                    usuariosVistos.add(usuarioBD.username);
+                    
+                    let modulosArray = [];
+                    if(usuarioBD.modulos) {
+                        if(Array.isArray(usuarioBD.modulos)) {
+                            modulosArray = usuarioBD.modulos;
+                        } else if(typeof usuarioBD.modulos === 'string') {
+                            try {
+                                let modulosStr = usuarioBD.modulos.replace(/'/g, '"');
+                                modulosArray = JSON.parse(modulosStr);
+                            } catch(e) {
+                                modulosArray = [];
+                            }
+                        }
+                    }
+                    
+                    let servicioNombre = '';
+                    if(usuarioBD.servicio && serviciosDB.length > 0) {
+                        const servicioEncontrado = serviciosDB.find(s => s.id_servicio == usuarioBD.servicio);
+                        if(servicioEncontrado) {
+                            servicioNombre = servicioEncontrado.nombre_servicio;
+                        }
+                    }
+                    
+                    todosLosUsuarios.push({
+                        id: usuarioBD.id,
+                        nombres: usuarioBD.name || usuarioBD.username,
+                        apellidos: '',
+                        cedula: usuarioBD.username,
+                        identificacion: usuarioBD.identificacion,
+                        password: '******',
+                        usuario_asesor: usuarioBD.usuario_asesor || usuarioBD.username,
+                        servicio: usuarioBD.servicio || '',
+                        servicio_nombre: servicioNombre,
+                        nivel_acceso: usuarioBD.nivel_acceso || 'admin',
+                        modulos: modulosArray,
+                        esBD: true,
+                        username: usuarioBD.username,
+                        idBD: usuarioBD.id
+                    });
+                });
+            }
+            
+            if(usuariosDB && usuariosDB.length > 0) {
+                usuariosDB.forEach(usuarioLocal => {
+                    if(!usuariosVistos.has(usuarioLocal.cedula)) {
+                        usuariosVistos.add(usuarioLocal.cedula);
+                        todosLosUsuarios.push({
+                            ...usuarioLocal,
+                            esBD: false
+                        });
+                    }
+                });
+            }
+            
+            if(todosLosUsuarios.length === 0) { 
+                cont.innerHTML = '<div style="text-align:center;padding:40px;">No hay usuarios registrados</div>'; 
+                return; 
+            }
+            
+            cont.innerHTML = todosLosUsuarios.map((u, idx) => {
+                const identificacionMostrar = u.usuario_asesor && u.usuario_asesor !== '' ? u.usuario_asesor : u.cedula;
+                
+                const modulosHtml = u.modulos && u.modulos.length ? 
+                    `<div class="modulos-asignados">${u.modulos.map(m => `<span class="modulo-badge">MÓDULO ${m}</span>`).join('')}</div>` : 
+                    '<div class="modulos-asignados"><span class="modulo-badge">Sin módulos asignados</span></div>';
+                
+                if(u.esBD) {
+                    const servicioHtml = u.servicio_nombre ? `<p><i class="fas fa-stethoscope"></i> Servicio: ${u.servicio_nombre}</p>` : '';
+                    const nivelHtml = u.nivel_acceso && u.nivel_acceso !== 'admin' ? `<p><i class="fas fa-chart-line"></i> Nivel: ${u.nivel_acceso === 'facturador' ? 'Facturador' : u.nivel_acceso}</p>` : (u.nivel_acceso === 'admin' ? `<p><i class="fas fa-chart-line"></i> Nivel: Administrador</p>` : '');
+                    const identificacionMostrarCard = u.identificacion ? `<p><i class="fas fa-id-card"></i> Identificación: ${u.identificacion}</p>` : '';
+                    
+                    return `<div class="usuario-card">
+                        <h4><i class="fas fa-user-circle"></i> ${u.nombres} ${u.apellidos} <span style="font-size:0.7rem; background:#28a745; color:white; padding:2px 8px; border-radius:20px; margin-left:8px;">Sistema</span></h4>
+                        <p><i class="fas fa-user"></i> ${identificacionMostrar}</p>
+                        ${identificacionMostrarCard}
+                        ${servicioHtml}
+                        ${nivelHtml}
+                        ${modulosHtml}
+                        <div>
+                            <button class="btn-editar-usuario-card" onclick='editarUsuario(${JSON.stringify(u)}, true, null)'><i class="fas fa-edit"></i> Editar</button>
+                            <button class="btn-eliminar-usuario-card" onclick="eliminarUsuarioBD(${u.idBD || u.id}, '${u.cedula}')"><i class="fas fa-trash"></i> Eliminar</button>
+                        </div>
+                    </div>`;
+                } else {
+                    return `<div class="usuario-card">
+                        <h4><i class="fas fa-user-circle"></i> ${u.nombres} ${u.apellidos}</h4>
+                        <p><i class="fas fa-id-card"></i> ${u.cedula}</p>
+                        <p><i class="fas fa-stethoscope"></i> Servicio: ${u.servicio_nombre || u.servicio || 'N/A'}</p>
+                        <p><i class="fas fa-chart-line"></i> Nivel: ${u.nivel_acceso === 'admin' ? 'Administrador' : u.nivel_acceso === 'facturador' ? 'Facturador' : 'N/A'}</p>
+                        ${modulosHtml}
+                        <div>
+                            <button class="btn-editar-usuario-card" onclick='editarUsuario(${JSON.stringify(u)}, false, ${usuariosDB.findIndex(l => l.id === u.id)})'><i class="fas fa-edit"></i> Editar</button>
+                            <button class="btn-eliminar-usuario-card" onclick="eliminarUsuarioLocal(${usuariosDB.findIndex(l => l.id === u.id)})"><i class="fas fa-trash"></i> Eliminar</button>
+                        </div>
+                    </div>`;
+                }
+            }).join(''); 
+        }
+        
+        registrarUsuarioNuevo = registrarUsuarioNuevoModificado;
 
-        // ==================== EVENT LISTENERS ====================
         document.getElementById('cedula').addEventListener('keypress', e => { if(e.key === 'Enter') buscarPersona(); });
         document.getElementById('btnBuscar').addEventListener('click', buscarPersona);
+        
         document.getElementById('generateBtn').addEventListener('click', async () => {
             if(!selectedSpecialty || !personaActual) { showNotification('Seleccione especialidad', 'warning'); return; }
             const btn = document.getElementById('generateBtn');
@@ -1835,19 +3489,29 @@
         document.getElementById('formRegistrarPersona').addEventListener('submit', registrarPersona);
         const nuevoFormUsuario = document.getElementById('formRegistrarUsuarioNuevo');
         if(nuevoFormUsuario) nuevoFormUsuario.addEventListener('submit', registrarUsuarioNuevo);
+        
+        const modulosSelectBtn = document.getElementById('modulosSelectBtn');
+        if (modulosSelectBtn) {
+            modulosSelectBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleModulosDropdown();
+            });
+        }
 
-        // ==================== INICIALIZACIÓN ====================
         cargarServiciosDB();
         loadCounters();
         actualizarVista();
         toggleVoice(true);
         cargarUsuarios();
+        cargarNombreUsuario();
+        cargarNivelesAcceso();
         
         configurarVistaPorPermisos();
         
         setTimeout(() => {
             if(document.getElementById('gtServicioFiltro')) {
-                poblarSelectServiciosModal();
+                cargarServiciosCompletos();
+                limpiarModulosDropdown();
             }
         }, 500);
     </script>

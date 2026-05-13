@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* PANEL IZQUIERDO - Más angosto (35%) */
         .left-panel {
             width: 35%;
             position: relative;
@@ -32,7 +31,6 @@
             background: linear-gradient(145deg, #e8f5e9 0%, #d0e8dc 50%, #b8e0cc 100%);
         }
 
-        /* Borde decorativo animado alrededor del panel izquierdo */
         .left-panel::after {
             content: '';
             position: absolute;
@@ -58,7 +56,6 @@
             }
         }
 
-        /* Fondo con imagen - CLARA Y CENTRADA */
         .left-panel-bg {
             position: absolute;
             top: 50%;
@@ -81,7 +78,6 @@
             opacity: 1;
         }
 
-        /* Contenedor de burbujas alrededor de la imagen */
         .bubbles-container {
             position: absolute;
             top: 0;
@@ -119,7 +115,6 @@
             }
         }
 
-        /* Overlay con degradado elegante - muy sutil */
         .left-panel::before {
             content: '';
             position: absolute;
@@ -131,7 +126,6 @@
             z-index: 0;
         }
 
-        /* PANEL DERECHO - Más ancho (65%) para el formulario */
         .right-panel {
             width: 65%;
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -143,7 +137,6 @@
             position: relative;
         }
 
-        /* Decoración de fondo en panel derecho */
         .right-panel::before {
             content: '';
             position: absolute;
@@ -197,7 +190,6 @@
             overflow: hidden;
         }
 
-        /* Decoración de esquina en el card */
         .login-card::before {
             content: '';
             position: absolute;
@@ -319,7 +311,6 @@
             color: #43a047;
         }
 
-        /* Contenedor para la contraseña con el ojito dentro */
         .password-container {
             position: relative;
             width: 100%;
@@ -454,7 +445,6 @@
             font-size: 1.1rem;
         }
 
-        /* Animaciones */
         @keyframes fadeInLeft {
             from {
                 opacity: 0;
@@ -488,7 +478,6 @@
             }
         }
 
-        /* Líneas decorativas en los bordes */
         .corner-decoration {
             position: absolute;
             width: 80px;
@@ -530,7 +519,6 @@
             border-radius: 0 0 20px 0;
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .left-panel-bg {
                 width: 75%;
@@ -569,26 +557,20 @@
     </style>
 </head>
 <body>
-    <!-- PANEL IZQUIERDO - Más angosto -->
     <div class="left-panel" id="leftPanel">
         <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ asset('images/hospital-bg.jpg') }}');"></div>
-        
-        <!-- Contenedor de burbujas alrededor de la imagen -->
         <div class="bubbles-container" id="bubblesContainer"></div>
-        
-        <!-- Decoraciones de esquina -->
         <div class="corner-decoration corner-tl"></div>
         <div class="corner-decoration corner-tr"></div>
         <div class="corner-decoration corner-bl"></div>
         <div class="corner-decoration corner-br"></div>
     </div>
 
-    <!-- PANEL DERECHO - Más ancho para el formulario -->
     <div class="right-panel">
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <h1><i class="fas fa-hospital-user"></i> Hospital San Pablo</h1>
+                    <h1><i class="fas fa-hospital-user"></i> E.S.E HOSPITAL LOCAL SAN PABLO</h1>
                     <p>Bienvenido de vuelta</p>
                     <div class="badge"><i class="fas fa-shield-alt"></i> Acceso seguro</div>
                 </div>
@@ -614,13 +596,13 @@
                     </div>
                 @endif
 
-                <form action="{{ route('login.post') }}" method="POST">
+                <form action="{{ route('login.post') }}" method="POST" id="loginForm" autocomplete="off">
                     @csrf
                     <div class="form-group">
                         <label><i class="fas fa-user-circle"></i>Usuario</label>
                         <div class="input-wrapper">
                             <i class="fas fa-envelope input-icon"></i>
-                            <input type="text" name="login" value="" placeholder="" required>
+                            <input type="text" name="login" id="usuarioInput" value="" placeholder=" " autocomplete="off">
                         </div>
                         <div class="info-text">
                             <i class="fas fa-info-circle"></i> Ingresa tu correo electrónico o nombre de usuario
@@ -630,7 +612,7 @@
                         <label><i class="fas fa-lock"></i> Contraseña</label>
                         <div class="password-container">
                             <i class="fas fa-key input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 1;"></i>
-                            <input type="password" name="password" id="password" placeholder="" required>
+                            <input type="password" name="password" id="password" placeholder=" " autocomplete="off" required>
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
@@ -649,7 +631,29 @@
     </div>
 
     <script>
-        // Función para mostrar/ocultar contraseña
+        // Limpiar campos inmediatamente cuando se carga la página
+        document.getElementById('usuarioInput').value = '';
+        document.getElementById('password').value = '';
+        
+        // También limpiar después de 100ms (por si el navegador es lento)
+        setTimeout(function() {
+            document.getElementById('usuarioInput').value = '';
+            document.getElementById('password').value = '';
+        }, 100);
+        
+        // También limpiar cuando el usuario haga clic en los campos (por si el navegador autocompleta después)
+        document.getElementById('usuarioInput').addEventListener('focus', function() {
+            if (this.value !== '') {
+                this.value = '';
+            }
+        });
+        
+        document.getElementById('password').addEventListener('focus', function() {
+            if (this.value !== '') {
+                this.value = '';
+            }
+        });
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const icon = document.querySelector('.toggle-password i');
@@ -665,7 +669,6 @@
             }
         }
 
-        // Función para generar burbujas alrededor de la imagen
         function generarBurbujas() {
             const container = document.getElementById('bubblesContainer');
             if (!container) return;
@@ -686,7 +689,6 @@
             }
         }
 
-        // Función para cargar imagen de fondo desde localStorage o usar la imagen local
         function cargarFondo() {
             const fondoGuardado = localStorage.getItem('loginBackgroundImage');
             const panelBg = document.getElementById('panelBg');
@@ -704,7 +706,6 @@
             }
         }
 
-        // Función para subir imagen de fondo (se activa con doble clic)
         function subirFondo() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -725,7 +726,6 @@
             input.click();
         }
 
-        // Mostrar notificación elegante
         function mostrarNotificacion(mensaje, tipo = 'success') {
             const notif = document.createElement('div');
             notif.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${mensaje}`;
@@ -754,7 +754,6 @@
             }, 3000);
         }
 
-        // Al hacer doble clic en el panel izquierdo se puede cambiar la imagen de fondo
         const leftPanel = document.getElementById('leftPanel');
         if (leftPanel) {
             leftPanel.addEventListener('dblclick', function(e) {
@@ -762,7 +761,6 @@
             });
         }
 
-        // Inicializar
         cargarFondo();
         generarBurbujas();
     </script>

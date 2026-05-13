@@ -439,7 +439,7 @@
         <div class="register-card">
 
             <div class="register-header">
-                <h1><img src="{{ asset('images/hls.jpg') }}" alt="Logo" class="hospital-logo-img"> Hospital San Pablo</h1>
+                <h1><img src="{{ asset('images/hls.jpg') }}" alt="Logo" class="hospital-logo-img"> E.S.E HOSPITAL LOCAL SAN PABLO</h1>
                 <p>Registro de Usuario</p>
                 <div class="badge"><i class="fas fa-notes-medical"></i> Datos personales</div>
             </div>
@@ -755,7 +755,6 @@
             const identificacion = e.target.value.trim();
             
             if (identificacion.length >= 4) {
-                // CAMBIADO: el tiempo de espera ahora es de 6000ms (6 segundos) para dar tiempo a escribir toda la identificación
                 timeoutBuscador = setTimeout(() => {
                     buscarPacientePorIdentificacion(identificacion);
                 }, 3000);

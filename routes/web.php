@@ -25,6 +25,14 @@ Route::get('/superadmin/permisos/{id}', [SuperAdminController::class, 'obtenerPe
 Route::get('/tv', function () { return view('tv'); })->name('tv');
 Route::get('/tv/turnos', [TurnoController::class, 'getTurnosTV'])->name('tv.turnos');
 
+// ========== RUTA PÚBLICA PARA BUSCAR PERSONA (NO REQUIERE LOGIN) ==========
+// Esta ruta es usada por el formulario de REGISTRO (público) y por GESTIÓN DE TURNOS (autenticado)
+Route::post('/buscar-persona', [TurnoController::class, 'buscarPersona'])->name('buscar.persona');
+
+// ========== RUTAS PARA NIVELES DE ACCESO (PÚBLICAS PARA LA API) ==========
+Route::get('/api/niveles-acceso', [TurnoController::class, 'getNivelesAcceso']);
+Route::post('/api/niveles-acceso', [TurnoController::class, 'storeNivelAcceso']);
+
 // ========== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) ==========
 Route::middleware(['auth'])->group(function () {
     // Ruta principal - Admin
@@ -33,22 +41,28 @@ Route::middleware(['auth'])->group(function () {
     // ========== RUTA PARA OBTENER PERMISOS DEL USUARIO AUTENTICADO ==========
     Route::get('/api/usuario/permisos', [SuperAdminController::class, 'obtenerMisPermisos'])->name('api.usuario.permisos');
 
-    // ========== NUEVA RUTA PARA BUSCAR USUARIO POR USERNAME (PERFIL) ==========
-    Route::post('/buscar-usuario-permisos', [TurnoController::class, 'buscarUsuarioPorUsername'])->name('buscar.usuario.permisos');
+    // ========== RUTA PARA BUSCAR USUARIO POR USERNAME O IDENTIFICACION (PERFIL) ==========
+    Route::post('/buscar-usuario-permisos', [AuthController::class, 'buscarUsuarioPermisos'])->name('buscar.usuario.permisos');
 
-    // ========== NUEVA RUTA PARA GUARDAR PERMISOS DEL USUARIO EN LA BD ==========
+    // ========== RUTA PARA GUARDAR PERMISOS DEL USUARIO EN LA BD ==========
     Route::post('/guardar-permisos-usuario', [TurnoController::class, 'guardarPermisosUsuario'])->name('guardar.permisos.usuario');
 
-    // ========== TUS OTRAS RUTAS EXISTENTES ==========
-    Route::post('/buscar-persona', [TurnoController::class, 'buscarPersona'])->name('buscar.persona');
+    // ========== RUTAS PARA EDITAR Y ELIMINAR USUARIOS ==========
+    Route::get('/obtener-usuario/{username}', [TurnoController::class, 'obtenerUsuarioPorUsername'])->name('obtener.usuario');
+    Route::put('/actualizar-usuario/{id}', [TurnoController::class, 'actualizarUsuario'])->name('actualizar.usuario');
+    Route::delete('/eliminar-usuario/{id}', [TurnoController::class, 'eliminarUsuario'])->name('eliminar.usuario');
+
+    // ========== RUTAS DE TURNOS ==========
     Route::post('/generar-turno', [TurnoController::class, 'generarTurno'])->name('generar.turno');
     Route::post('/turnos/{id}/estado', [TurnoController::class, 'cambiarEstado'])->name('turnos.estado');
 
+    // ========== RUTAS DE SERVICIOS ==========
     Route::post('/get-servicios', [ServicioController::class, 'index'])->name('get.servicios');
     Route::post('/guardar-servicio', [ServicioController::class, 'store'])->name('guardar.servicio');
     Route::post('/actualizar-servicio/{id}', [ServicioController::class, 'update'])->name('actualizar.servicio');
     Route::post('/eliminar-servicio/{id}', [ServicioController::class, 'destroy'])->name('eliminar.servicio');
 
+    // ========== API DE SERVICIOS ==========
     Route::prefix('api')->group(function () {
         Route::get('/servicios', [ServicioController::class, 'index']);
         Route::post('/servicios', [ServicioController::class, 'store']);
@@ -62,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/historial-llamados/estadisticas', [HistorialLlamadoController::class, 'estadisticas']);
     });
 
+    // ========== RUTAS DE PERSONAS ==========
     Route::post('/personas', [PersonaController::class, 'store'])->name('personas.store');
     Route::post('/personas/buscar', [PersonaController::class, 'buscarPersona'])->name('personas.buscar');
 });
