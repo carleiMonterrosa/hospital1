@@ -529,7 +529,7 @@
             border-radius: 12px;
         }
         
-        /* MODAL PARA AGREGAR/EDITAR BANNER - CON TODOS LOS CAMPOS */
+        /* ===== MODAL PARA AGREGAR/EDITAR BANNER - MÁS ANCHO Y ORGANIZADO EN COLUMNAS ===== */
         .modal-banner-overlay {
             position: fixed;
             top: 0;
@@ -547,11 +547,24 @@
             border-radius: 28px;
             padding: 32px;
             width: 90%;
-            max-width: 700px;
+            max-width: 1000px;  /* Aumentado de 700px a 1000px para que sea más ancho */
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
+        
+        /* Organizar los campos en 2 columnas */
+        .modal-banner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 30px;
+        }
+        
+        /* Campos que ocupan las dos columnas (ancho completo) */
+        .modal-banner-grid .full-width {
+            grid-column: span 2;
+        }
+        
         .modal-banner-header {
             display: flex;
             justify-content: space-between;
@@ -576,7 +589,7 @@
             font-size: 20px;
         }
         .form-row {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .form-row label {
             display: block;
@@ -1265,6 +1278,43 @@
             font-weight: bold;
             font-size: 1rem;
         }
+        
+        /* ===== ESTILO PARA EL BOTÓN DE OJO EN CONTRASEÑAS ===== */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: inherit;
+            background: #ffffff;
+        }
+        .password-wrapper input:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        .toggle-password-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            background: transparent;
+            border: none;
+            z-index: 10;
+        }
+        .toggle-password-btn:hover {
+            color: #43a047;
+        }
     </style>
 </head>
 <body>
@@ -1420,7 +1470,22 @@
                                 <div class="form-usuario-field"><label>NOMBRES</label><input type="text" id="nombresUsuario" required></div>
                                 <div class="form-usuario-field"><label>APELLIDOS</label><input type="text" id="apellidosUsuario" required></div>
                                 <div class="form-usuario-field"><label>CÉDULA</label><input type="text" id="cedulaUsuario" value="" required></div>
-                                <div class="form-usuario-field"><label>CONTRASEÑA</label><input type="password" id="passwordUsuarioNuevo" value="" required></div>
+                                <!-- Campo CONTRASEÑA con ojito -->
+                                <div class="form-usuario-field">
+                                    <label>CONTRASEÑA</label>
+                                    <div class="password-wrapper">
+                                        <input type="password" id="passwordUsuarioNuevo" value="">
+                                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('passwordUsuarioNuevo', this)"><i class="fas fa-eye-slash"></i></button>
+                                    </div>
+                                </div>
+                                <!-- NUEVO CAMPO: ACTUALIZAR CONTRASEÑA con ojito - SIN PLACEHOLDER (ELIMINADO) -->
+                                <div class="form-usuario-field">
+                                    <label>ACTUALIZAR CONTRASEÑA</label>
+                                    <div class="password-wrapper">
+                                        <input type="password" id="nuevaPasswordUsuario" value="" placeholder="">
+                                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('nuevaPasswordUsuario', this)"><i class="fas fa-eye-slash"></i></button>
+                                    </div>
+                                </div>
                                 <div class="form-usuario-field"><label>USUARIO / ASESOR</label><input type="text" id="usuarioAsesor"></div>
                                 <div class="form-usuario-field"><label>SERVICIO</label><select id="servicioUsuario"><option value="">Seleccionar servicio</option></select></div>
                                 <div class="form-usuario-field">
@@ -1638,7 +1703,7 @@
         </div>
     </div>
 
-    <!-- MODAL PARA AGREGAR/EDITAR BANNER -->
+    <!-- MODAL PARA AGREGAR/EDITAR BANNER - MÁS ANCHO Y ORGANIZADO EN 2 COLUMNAS -->
     <div id="modalAgregarBanner" style="display: none;">
         <div class="modal-banner-overlay">
             <div class="modal-banner-card">
@@ -1649,109 +1714,106 @@
                 
                 <input type="hidden" id="editandoBannerIndex" value="-1">
                 
-                <!-- Tipo de contenido -->
-                <div class="form-row">
-                    <label><i class="fas fa-film"></i> Tipo de contenido</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="tipoContenido" value="imagen" checked> Imagen</label>
-                        <label><input type="radio" name="tipoContenido" value="video"> Video</label>
+                <div class="modal-banner-grid">
+                    <!-- Tipo de contenido -->
+                    <div class="form-row">
+                        <label><i class="fas fa-film"></i> Tipo de contenido</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="tipoContenido" value="imagen" checked> Imagen</label>
+                            <label><input type="radio" name="tipoContenido" value="video"> Video</label>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Tipo de fondo -->
-                <div class="form-row">
-                    <label><i class="fas fa-palette"></i> Tipo de fondo</label>
-                    <div class="tipo-fondo-group">
-                        <label><input type="radio" name="tipoFondo" value="imagen" checked> Imagen</label>
-                        <label><input type="radio" name="tipoFondo" value="color"> Color sólido</label>
+                    
+                    <!-- Tipo de fondo -->
+                    <div class="form-row">
+                        <label><i class="fas fa-palette"></i> Tipo de fondo</label>
+                        <div class="tipo-fondo-group">
+                            <label><input type="radio" name="tipoFondo" value="imagen" checked> Imagen</label>
+                            <label><input type="radio" name="tipoFondo" value="color"> Color sólido</label>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Foto de fondo -->
-                <div class="form-row" id="campoImagenFondo">
-                    <label><i class="fas fa-image"></i> Foto de fondo</label>
-                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px;">Tamaño recomendado: 1200px x 300px | Peso máximo: 2 Mb</div>
-                    <input type="file" id="bannerImagen" accept="image/*" style="padding: 8px;">
-                    <div id="imagenActualPreview" style="margin-top: 8px; display: none;">
-                        <small>Imagen actual:</small>
-                        <img id="imagenActualPreviewImg" src="" style="max-width: 100px; max-height: 50px;">
+                    
+                    <!-- Foto de fondo - ancho completo -->
+                    <div class="form-row full-width" id="campoImagenFondo">
+                        <label><i class="fas fa-image"></i> Foto de fondo</label>
+                        <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px;">Tamaño recomendado: 1200px x 300px | Peso máximo: 2 Mb</div>
+                        <input type="file" id="bannerImagen" accept="image/*" style="padding: 8px;">
+                        <div id="imagenActualPreview" style="margin-top: 8px; display: none;">
+                            <small>Imagen actual:</small>
+                            <img id="imagenActualPreviewImg" src="" style="max-width: 100px; max-height: 50px;">
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Color de fondo sólido -->
-                <div class="form-row campo-color-fondo" id="campoColorFondo" style="display: none;">
-                    <label><i class="fas fa-fill-drip"></i> Color de fondo</label>
-                    <input type="color" id="colorFondoSolido" value="#0b2b5e">
-                </div>
-                
-                <!-- Filtro -->
-                <div class="form-row" id="campoFiltro">
-                    <label><i class="fas fa-filter"></i> Filtro (solo para imagen)</label>
-                    <div class="color-input-group">
-                        <input type="color" id="filtroColor" value="#000000">
-                        <input type="range" id="filtroOpacidad" min="0" max="100" value="0" style="flex: 1;">
-                        <span id="opacidadValor" style="width: 40px;">0%</span>
+                    
+                    <!-- Color de fondo sólido - ancho completo -->
+                    <div class="form-row full-width campo-color-fondo" id="campoColorFondo" style="display: none;">
+                        <label><i class="fas fa-fill-drip"></i> Color de fondo</label>
+                        <input type="color" id="colorFondoSolido" value="#0b2b5e">
                     </div>
-                </div>
-                
-                <!-- Título -->
-                <div class="form-row">
-                    <label><i class="fas fa-heading"></i> Título</label>
-                    <div class="color-input-group" style="margin-bottom: 8px;">
-                        <span style="font-size: 0.75rem;">Color de letra:</span>
-                        <input type="color" id="tituloColor" value="#FFFFFF">
-                        <span style="font-size: 0.75rem;">Color de fondo:</span>
-                        <input type="color" id="tituloFondoColor" value="#000000">
-                        <span style="font-size: 0.75rem;">Tipografía:</span>
-                        <select id="tituloTipografia" style="width: 150px;">
-                            <option value="Arial">Arial</option>
-                            <option value="Montserrat" selected>Montserrat</option>
-                            <option value="Poppins">Poppins</option>
-                            <option value="Roboto">Roboto</option>
+                    
+                    <!-- Ajuste de imagen -->
+                    <div class="form-row">
+                        <label><i class="fas fa-image"></i> Ajuste de imagen (en TV)</label>
+                        <select id="ajusteImagen" style="width: 100%;">
+                            <option value="cover">Cubrir (Cover) - Ocupa todo, puede cortar bordes</option>
+                            <option value="contain">Contener (Contain) - Se ve toda la imagen, puede dejar bordes</option>
+                            <option value="fill">Estirar (Fill) - Llena todo, puede deformarse</option>
+                            <option value="scale-down">Escala original - Muestra la imagen en su tamaño original</option>
                         </select>
+                        <div style="font-size: 0.7rem; color: #666; margin-top: 4px;">
+                            ⚡ Cubrir: ideal para fondos | Contener: ideal para mostrar texto completo
+                        </div>
                     </div>
-                    <input type="text" id="tituloTexto" placeholder="Texto del título (máx. 80 caracteres)" maxlength="80">
-                </div>
-                
-                <!-- Subtítulo -->
-                <div class="form-row">
-                    <label><i class="fas fa-subscript"></i> Subtítulo</label>
-                    <div class="color-input-group" style="margin-bottom: 8px;">
-                        <span style="font-size: 0.75rem;">Color de letra:</span>
-                        <input type="color" id="subtituloColor" value="#FFFFFF">
-                        <span style="font-size: 0.75rem;">Color de fondo:</span>
-                        <input type="color" id="subtituloFondoColor" value="#000000">
-                        <span style="font-size: 0.75rem;">Tipografía:</span>
-                        <select id="subtituloTipografia" style="width: 150px;">
-                            <option value="Arial">Arial</option>
-                            <option value="Montserrat" selected>Montserrat</option>
-                            <option value="Poppins">Poppins</option>
-                            <option value="Roboto">Roboto</option>
-                        </select>
+                    
+                    <!-- Filtro -->
+                    <div class="form-row" id="campoFiltro">
+                        <label><i class="fas fa-filter"></i> Filtro (solo para imagen)</label>
+                        <div class="color-input-group">
+                            <input type="color" id="filtroColor" value="#000000">
+                            <input type="range" id="filtroOpacidad" min="0" max="100" value="0" style="flex: 1;">
+                            <span id="opacidadValor" style="width: 40px;">0%</span>
+                        </div>
                     </div>
-                    <textarea id="subtituloTexto" rows="2" placeholder="Texto del subtítulo (máx. 140 caracteres)" maxlength="140"></textarea>
-                </div>
-                
-                <!-- Justificación -->
-                <div class="form-row">
-                    <label><i class="fas fa-align-left"></i> Justificación</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="justificacion" value="left"> Izquierda</label>
-                        <label><input type="radio" name="justificacion" value="center" checked> Centro</label>
-                        <label><input type="radio" name="justificacion" value="right"> Derecha</label>
+                    
+                    <!-- Título - ancho completo -->
+                    <div class="form-row full-width">
+                        <label><i class="fas fa-heading"></i> Título</label>
+                        <div class="color-input-group" style="margin-bottom: 8px;">
+                            <span style="font-size: 0.75rem;">Color de letra:</span>
+                            <input type="color" id="tituloColor" value="#FFFFFF">
+                            <span style="font-size: 0.75rem;">Color de fondo:</span>
+                            <input type="color" id="tituloFondoColor" value="#000000">
+                            <span style="font-size: 0.75rem;">Tipografía:</span>
+                            <select id="tituloTipografia" style="width: 150px;">
+                                <option value="Arial">Arial</option>
+                                <option value="Montserrat" selected>Montserrat</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Roboto">Roboto</option>
+                            </select>
+                        </div>
+                        <input type="text" id="tituloTexto" placeholder="Texto del título (máx. 80 caracteres)" maxlength="80">
                     </div>
-                </div>
-                
-                <!-- Texto descriptivo para accesibilidad -->
-                <div class="form-row">
-                    <label><i class="fas fa-universal-access"></i> Texto descriptivo para accesibilidad</label>
-                    <textarea id="textoAccesibilidad" rows="2" placeholder="Describe el banner para personas con discapacidad visual" maxlength="250"></textarea>
-                </div>
-                
-                <!-- Agregar enlace -->
-                <div class="form-row">
-                    <label><i class="fas fa-link"></i> Agregar enlace</label>
-                    <input type="url" id="bannerEnlace" placeholder="https://ejemplo.com">
+                    
+                    <!-- Justificación - ancho completo -->
+                    <div class="form-row full-width">
+                        <label><i class="fas fa-align-left"></i> Justificación</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="justificacion" value="left"> Izquierda</label>
+                            <label><input type="radio" name="justificacion" value="center" checked> Centro</label>
+                            <label><input type="radio" name="justificacion" value="right"> Derecha</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Texto descriptivo para accesibilidad - ancho completo -->
+                    <div class="form-row full-width">
+                        <label><i class="fas fa-universal-access"></i> Texto descriptivo para accesibilidad</label>
+                        <textarea id="textoAccesibilidad" rows="2" placeholder="Describe el banner para personas con discapacidad visual" maxlength="250"></textarea>
+                    </div>
+                    
+                    <!-- Agregar enlace -->
+                    <div class="form-row full-width">
+                        <label><i class="fas fa-link"></i> Agregar enlace</label>
+                        <input type="url" id="bannerEnlace" placeholder="https://ejemplo.com">
+                    </div>
                 </div>
                 
                 <div class="modal-banner-actions">
@@ -1938,13 +2000,17 @@
             document.getElementById('tituloColor').value = banner.tituloColor || '#FFFFFF';
             document.getElementById('tituloFondoColor').value = banner.tituloFondoColor || '#000000';
             document.getElementById('tituloTipografia').value = banner.tituloTipografia || 'Montserrat';
-            document.getElementById('subtituloTexto').value = banner.subtitulo || '';
-            document.getElementById('subtituloColor').value = banner.subtituloColor || '#FFFFFF';
-            document.getElementById('subtituloFondoColor').value = banner.subtituloFondoColor || '#000000';
-            document.getElementById('subtituloTipografia').value = banner.subtituloTipografia || 'Montserrat';
             document.querySelector(`input[name="justificacion"][value="${banner.justificacion || 'center'}"]`).checked = true;
             document.getElementById('textoAccesibilidad').value = banner.textoAccesibilidad || '';
             document.getElementById('bannerEnlace').value = banner.enlace || '';
+            
+            // Cargar el ajuste de imagen guardado
+            const ajusteSelect = document.getElementById('ajusteImagen');
+            if(ajusteSelect && banner.ajusteImagen) {
+                ajusteSelect.value = banner.ajusteImagen;
+            } else if(ajusteSelect) {
+                ajusteSelect.value = 'cover';
+            }
             
             if(banner.url) {
                 const previewDiv = document.getElementById('imagenActualPreview');
@@ -1961,7 +2027,6 @@
         function resetearFormularioBanner() {
             document.getElementById('bannerImagen').value = '';
             document.getElementById('tituloTexto').value = '';
-            document.getElementById('subtituloTexto').value = '';
             document.getElementById('textoAccesibilidad').value = '';
             document.getElementById('bannerEnlace').value = '';
             document.getElementById('filtroOpacidad').value = '0';
@@ -1969,13 +2034,14 @@
             document.getElementById('filtroColor').value = '#000000';
             document.getElementById('tituloColor').value = '#FFFFFF';
             document.getElementById('tituloFondoColor').value = '#000000';
-            document.getElementById('subtituloColor').value = '#FFFFFF';
-            document.getElementById('subtituloFondoColor').value = '#000000';
             document.getElementById('colorFondoSolido').value = '#0b2b5e';
             document.querySelector('input[name="tipoContenido"][value="imagen"]').checked = true;
             document.querySelector('input[name="justificacion"][value="center"]').checked = true;
             document.querySelector('input[name="tipoFondo"][value="imagen"]').checked = true;
             document.getElementById('imagenActualPreview').style.display = 'none';
+            // Resetear ajuste de imagen a cover
+            const ajusteSelect = document.getElementById('ajusteImagen');
+            if(ajusteSelect) ajusteSelect.value = 'cover';
             toggleCamposPorTipoFondo();
         }
         
@@ -2000,14 +2066,11 @@
                 tituloColor: document.getElementById('tituloColor').value,
                 tituloFondoColor: document.getElementById('tituloFondoColor').value,
                 tituloTipografia: document.getElementById('tituloTipografia').value,
-                subtitulo: document.getElementById('subtituloTexto').value,
-                subtituloColor: document.getElementById('subtituloColor').value,
-                subtituloFondoColor: document.getElementById('subtituloFondoColor').value,
-                subtituloTipografia: document.getElementById('subtituloTipografia').value,
                 justificacion: document.querySelector('input[name="justificacion"]:checked').value,
                 textoAccesibilidad: document.getElementById('textoAccesibilidad').value,
                 enlace: document.getElementById('bannerEnlace').value,
                 colorFondoSolido: document.getElementById('colorFondoSolido').value,
+                ajusteImagen: document.getElementById('ajusteImagen').value,
                 fechaModificacion: new Date().toISOString()
             };
             
@@ -2083,7 +2146,7 @@
             localStorage.setItem('banners_tv', JSON.stringify(banners));
             localStorage.setItem('rotacion_duracion', duracion);
             showNotification('✅ Banners guardados correctamente para la pantalla TV', 'success');
-            mostrarSeccion('inicio');
+            renderizarListaBanners();
         }
         
         // ==================== FUNCIONES PARA MOSTRAR/OCULTAR FORMULARIO DE USUARIO ====================
@@ -2102,6 +2165,7 @@
             document.getElementById('apellidosUsuario').value = '';
             document.getElementById('cedulaUsuario').value = '';
             document.getElementById('passwordUsuarioNuevo').value = '';
+            document.getElementById('nuevaPasswordUsuario').value = '';
             document.getElementById('usuarioAsesor').value = '';
             document.getElementById('servicioUsuario').value = '';
             document.getElementById('nivelAccesoUsuario').value = 'admin';
@@ -2115,6 +2179,21 @@
         }
         
         limpiarFormularioUsuario = limpiarFormularioUsuarioOriginal;
+        
+        // ==================== FUNCIÓN PARA MOSTRAR/OCULTAR CONTRASEÑA ====================
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
         
         // ==================== FUNCIONES PARA SELECTOR MÚLTIPLE DE MÓDULOS ====================
         function toggleModulosDropdown() {
@@ -2261,8 +2340,57 @@
         let editandoUsuarioBDId = null;
         let usuariosDB = [];
         
+        // ==================== FUNCIÓN EDITAR USUARIO ====================
         function editarUsuario(usuarioData, esBD, indiceLocal) {
             mostrarFormularioUsuario();
+            
+            // Separar correctamente nombres y apellidos
+            let nombres = '';
+            let apellidos = '';
+            
+            if(usuarioData.nombres && usuarioData.apellidos) {
+                nombres = usuarioData.nombres;
+                apellidos = usuarioData.apellidos;
+            }
+            else if(usuarioData.name) {
+                const nombreCompleto = usuarioData.name;
+                const partes = nombreCompleto.trim().split(' ');
+                
+                if(partes.length === 1) {
+                    nombres = partes[0];
+                    apellidos = '';
+                } else if(partes.length === 2) {
+                    nombres = partes[0];
+                    apellidos = partes[1];
+                } else if(partes.length === 3) {
+                    nombres = partes[0] + ' ' + partes[1];
+                    apellidos = partes[2];
+                } else if(partes.length >= 4) {
+                    nombres = partes[0] + ' ' + partes[1];
+                    apellidos = partes.slice(2).join(' ');
+                }
+            }
+            else if(usuarioData.nombres) {
+                const nombreCompleto = usuarioData.nombres;
+                const partes = nombreCompleto.trim().split(' ');
+                if(partes.length === 1) {
+                    nombres = partes[0];
+                    apellidos = '';
+                } else if(partes.length === 2) {
+                    nombres = partes[0];
+                    apellidos = partes[1];
+                } else {
+                    nombres = partes[0] + ' ' + partes[1];
+                    apellidos = partes.slice(2).join(' ');
+                }
+            }
+            
+            if(nombres === '' && usuarioData.nombres) {
+                nombres = usuarioData.nombres;
+            }
+            if(apellidos === '' && usuarioData.apellidos) {
+                apellidos = usuarioData.apellidos;
+            }
             
             if(esBD) {
                 editandoUsuarioBDId = usuarioData.id;
@@ -2276,11 +2404,19 @@
                 document.getElementById('formUsuarioContainer').querySelector('h3').innerHTML = '<i class="fas fa-edit"></i> Editar Usuario';
             }
             
-            document.getElementById('nombresUsuario').value = usuarioData.nombres || '';
-            document.getElementById('apellidosUsuario').value = usuarioData.apellidos || '';
+            document.getElementById('nombresUsuario').value = nombres;
+            document.getElementById('apellidosUsuario').value = apellidos;
             document.getElementById('cedulaUsuario').value = usuarioData.identificacion || usuarioData.cedula || '';
-            document.getElementById('passwordUsuarioNuevo').value = '';
-            document.getElementById('usuarioAsesor').value = usuarioData.usuario_asesor || '';
+            
+            // Mostrar la contraseña con puntos si ya existe (solo como indicador visual)
+            if(usuarioData.password && usuarioData.password !== '') {
+                document.getElementById('passwordUsuarioNuevo').value = '********';
+            } else {
+                document.getElementById('passwordUsuarioNuevo').value = '';
+            }
+            // Limpiar el campo de nueva contraseña
+            document.getElementById('nuevaPasswordUsuario').value = '';
+            document.getElementById('usuarioAsesor').value = usuarioData.usuario_asesor || usuarioData.username || '';
             document.getElementById('servicioUsuario').value = usuarioData.servicio || '';
             document.getElementById('nivelAccesoUsuario').value = usuarioData.nivel_acceso || 'admin';
             
@@ -2299,6 +2435,8 @@
             }
         }
         
+        // ==================== FUNCIÓN MODIFICADA: actualizarUsuarioBD ====================
+        // CAMBIO: Ahora al actualizar un usuario, guarda en localStorage que debe mostrar USUARIOS después de recargar
         function actualizarUsuarioBD() {
             const nombres = document.getElementById('nombresUsuario').value.trim();
             const apellidos = document.getElementById('apellidosUsuario').value.trim();
@@ -2306,10 +2444,21 @@
             const servicioId = document.getElementById('servicioUsuario').value;
             const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
             const modulosSeleccionados = obtenerModulosSeleccionados();
-            const password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            let password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            const nuevaPassword = document.getElementById('nuevaPasswordUsuario').value.trim();
             
-            if(!nombres || !apellidos || !usuarioAsesor) {
-                showNotification('Complete los campos obligatorios (Nombres, Apellidos y Usuario/Asesor)', 'error');
+            if(password === '********' && nuevaPassword !== '') {
+                password = nuevaPassword;
+            }
+            else if(password === '********') {
+                password = '';
+            }
+            else if(nuevaPassword !== '') {
+                password = nuevaPassword;
+            }
+            
+            if(!nombres || !usuarioAsesor) {
+                showNotification('Complete los campos obligatorios (Nombres y Usuario/Asesor)', 'error');
                 return;
             }
             
@@ -2347,8 +2496,10 @@
             .then(data => {
                 if(data.success) {
                     showNotification(`Usuario actualizado correctamente`, 'success');
+                    // Guardar en localStorage que debe mostrar la sección USUARIOS después de recargar
+                    localStorage.setItem('seccionPendiente', 'usuarios');
                     ocultarFormularioUsuario();
-                    setTimeout(() => location.reload(), 1500);
+                    location.reload();
                 } else {
                     showNotification(`Error: ${data.message}`, 'error');
                 }
@@ -2363,15 +2514,26 @@
             const nombres = document.getElementById('nombresUsuario').value.trim();
             const apellidos = document.getElementById('apellidosUsuario').value.trim();
             const cedula = document.getElementById('cedulaUsuario').value.trim();
-            const password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            let password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            const nuevaPassword = document.getElementById('nuevaPasswordUsuario').value.trim();
             const usuarioAsesor = document.getElementById('usuarioAsesor').value.trim();
             const servicioId = document.getElementById('servicioUsuario').value;
             const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
             const modulosSeleccionados = obtenerModulosSeleccionados();
             
-            if(!nombres || !apellidos || !usuarioAsesor) {
+            if(!nombres || !usuarioAsesor) {
                 showNotification('Complete los campos obligatorios', 'error');
                 return;
+            }
+            
+            if(password === '********' && nuevaPassword !== '') {
+                password = nuevaPassword;
+            }
+            else if(password === '********') {
+                password = usuariosDB[editandoUsuarioId].password;
+            }
+            else if(nuevaPassword !== '') {
+                password = nuevaPassword;
             }
             
             const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId);
@@ -2380,7 +2542,7 @@
                 nombres, 
                 apellidos, 
                 cedula: usuarioAsesor, 
-                password: password || usuariosDB[editandoUsuarioId].password,
+                password: password,
                 usuario_asesor: usuarioAsesor, 
                 servicio: servicioId, 
                 servicio_nombre: servicioObj ? servicioObj.nombre_servicio : '', 
@@ -2404,7 +2566,7 @@
             const servicioId = document.getElementById('servicioUsuario').value;
             const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
             const modulosSeleccionados = obtenerModulosSeleccionados();
-            if(!nombres || !apellidos || !usuarioAsesor || !password) { showNotification('Complete los campos obligatorios', 'error'); return; }
+            if(!nombres || !usuarioAsesor || !password) { showNotification('Complete los campos obligatorios (Nombres, Usuario y Contraseña)', 'error'); return; }
             const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId);
             const nuevoUsuario = { id: Date.now(), nombres, apellidos, cedula: usuarioAsesor, password, usuario_asesor: usuarioAsesor, servicio: servicioId, servicio_nombre: servicioObj ? servicioObj.nombre_servicio : '', nivel_acceso: nivelAcceso, modulos: modulosSeleccionados };
             usuariosDB.push(nuevoUsuario);
@@ -2625,6 +2787,22 @@
         }
         
         function configurarVistaPorPermisos() {
+            // Verificar si hay una sección pendiente después de recargar
+            const seccionPendiente = localStorage.getItem('seccionPendiente');
+            if (seccionPendiente) {
+                localStorage.removeItem('seccionPendiente');
+                setTimeout(() => {
+                    if (seccionPendiente === 'usuarios') {
+                        mostrarSeccion('usuarios');
+                        cargarUsuarios();
+                        poblarSelectServiciosUsuario();
+                    } else if (seccionPendiente === 'publicidad_tv') {
+                        mostrarSeccion('publicidad_tv');
+                        cargarBanners();
+                    }
+                }, 100);
+            }
+            
             if (!esAdministrador) {
                 const sidebar = document.getElementById('mainSidebar');
                 if (sidebar) sidebar.classList.add('sidebar-hidden');
@@ -2919,7 +3097,33 @@
             } 
         }
         function detenerCicloLlamada() { if(cicloLlamadaInterval) { clearInterval(cicloLlamadaInterval); cicloLlamadaInterval = null; turnoEnCiclo = null; if(window.speechSynthesis) window.speechSynthesis.cancel(); } }
-        function iniciarCicloLlamada(numeroTurno, moduloTexto) { detenerCicloLlamada(); turnoEnCiclo = numeroTurno; const hablar = () => { if(voiceEnabled && window.speechSynthesis) { const u = new SpeechSynthesisUtterance(`Turno ${numeroTurno}, por favor acérquese al ${moduloTexto}`); u.lang = 'es-ES'; u.rate = 0.9; window.speechSynthesis.speak(u); } }; hablar(); let rep = 0; cicloLlamadaInterval = setInterval(() => { rep++; if(rep >= 24) detenerCicloLlamada(); else hablar(); }, 5000); }
+        
+        // ==================== FUNCIÓN MODIFICADA: iniciarCicloLlamada AHORA INCLUYE EL NOMBRE DEL PACIENTE ====================
+        function iniciarCicloLlamada(numeroTurno, nombrePaciente, moduloTexto) { 
+            detenerCicloLlamada(); 
+            turnoEnCiclo = numeroTurno; 
+            const hablar = () => { 
+                if(voiceEnabled && window.speechSynthesis) { 
+                    let mensaje = `Turno ${numeroTurno}`;
+                    if(nombrePaciente && nombrePaciente !== '') {
+                        mensaje += `, paciente ${nombrePaciente}`;
+                    }
+                    mensaje += `, por favor acérquese al ${moduloTexto}`;
+                    const u = new SpeechSynthesisUtterance(mensaje); 
+                    u.lang = 'es-ES'; 
+                    u.rate = 0.9; 
+                    window.speechSynthesis.speak(u); 
+                } 
+            }; 
+            hablar(); 
+            let rep = 0; 
+            cicloLlamadaInterval = setInterval(() => { 
+                rep++; 
+                if(rep >= 24) detenerCicloLlamada(); 
+                else hablar(); 
+            }, 5000); 
+        }
+        
         function seleccionarModulo(num) { moduloSeleccionado = num; document.getElementById('moduloBtnTexto').textContent = getNombreModulo(num); document.getElementById('gtModuloNombre').textContent = getNombreModulo(num); document.querySelectorAll('.modulo-option').forEach(o => o.classList.toggle('active-mod', parseInt(o.getAttribute('data-mod')) === num)); document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); if(turnoActivoModal && parseInt(turnoActivoModal.ventanilla) !== num) limpiarPanelIzquierdo(); actualizarContadoresModal(); renderizarListaTurnos(); showNotification(`📌 ${getNombreModulo(num)} seleccionado`, 'success'); }
         document.addEventListener('click', function(e) { const wrapper = document.getElementById('moduloSelectorWrapper'); if(wrapper && !wrapper.contains(e.target)) { document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); } });
 
@@ -3224,6 +3428,7 @@
             } 
         }
         
+        // ==================== FUNCIÓN MODIFICADA: llamarTurno - AHORA PASA EL NOMBRE DEL PACIENTE ====================
         function llamarTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
@@ -3231,12 +3436,16 @@
                 turnos[idx].estado = 'llamado'; 
                 turnos[idx].ventanillaAsignada = moduloSeleccionado; 
                 localStorage.setItem('turnos', JSON.stringify(turnos)); 
-                iniciarCicloLlamada(num, getNombreModulo(moduloSeleccionado)); 
+                // Obtener el nombre del paciente y el módulo
+                const nombrePaciente = turnos[idx].nombre_persona || '';
+                const moduloTexto = getNombreModulo(moduloSeleccionado);
+                // Llamar con el nombre del paciente
+                iniciarCicloLlamada(num, nombrePaciente, moduloTexto); 
                 actualizarVista(); 
                 actualizarContadoresModal(); 
                 actualizarConteoDropdown(); 
                 renderizarListaTurnos(); 
-                showNotification(`🔔 Turno ${num} llamado al ${getNombreModulo(moduloSeleccionado)}`, 'success'); 
+                showNotification(`🔔 Turno ${num} llamado al ${moduloTexto}`, 'success'); 
             } else if(idx !== -1) { 
                 showNotification(`⚠️ El turno ${num} ya fue atendido`, 'warning');
             } else {
@@ -3268,7 +3477,7 @@
             reporteFiltrado = datos; 
             const tbody = document.getElementById('reporteBody'); 
             if(!reporteFiltrado.length) { 
-                tbody.innerHTML = '<tr><td colspan="8">No hay datos en el rango de fechas seleccionado</td' + '</tr>'; 
+                tbody.innerHTML = '<table><td colspan="8">No hay datos en el rango de fechas seleccionado</td' + '</tr>'; 
                 return; 
             } 
             tbody.innerHTML = reporteFiltrado.map(d => `
@@ -3293,7 +3502,7 @@
                     <td>${d.ingreso}</td>
                     <td>${d.salida}</td>
                     <td>---</td
-                </tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
+                <tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
         function descargarReporte() { if(!reporteFiltrado.length) { showNotification('No hay datos', 'error'); return; } let csv = "ESTADO,TURNO,SERVICIO,DOCUMENTO,NOMBRE,INGRESO,SALIDA\n"; reporteFiltrado.forEach(d => csv += `"${d.estado}","${d.turno}","${d.servicio}","${d.documento}","${d.nombre}","${d.ingreso}","${d.salida}"\n`); const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `reporte_${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('Reporte descargado', 'success'); }
 
         function toggleVoice(e) { voiceEnabled = e; document.getElementById('voiceStatus').innerHTML = e ? '✅ Voz activada' : '🔇 Voz desactivada'; showNotification(e ? 'Voz activada' : 'Voz desactivada', e ? 'success' : 'info'); }
