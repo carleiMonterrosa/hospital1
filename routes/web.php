@@ -26,8 +26,10 @@ Route::get('/tv', function () { return view('tv'); })->name('tv');
 Route::get('/tv/turnos', [TurnoController::class, 'getTurnosTV'])->name('tv.turnos');
 
 // ========== RUTA PÚBLICA PARA BUSCAR PERSONA (NO REQUIERE LOGIN) ==========
-// Esta ruta es usada por el formulario de REGISTRO (público) y por GESTIÓN DE TURNOS (autenticado)
 Route::post('/buscar-persona', [TurnoController::class, 'buscarPersona'])->name('buscar.persona');
+
+// ========== RUTA PÚBLICA PARA GUARDAR PERSONA (REGISTRAR PACIENTE) ==========
+Route::post('/personas', [TurnoController::class, 'storePersona'])->name('personas.store');
 
 // ========== RUTAS PARA NIVELES DE ACCESO (PÚBLICAS PARA LA API) ==========
 Route::get('/api/niveles-acceso', [TurnoController::class, 'getNivelesAcceso']);
@@ -77,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ========== RUTAS DE PERSONAS ==========
-    Route::post('/personas', [PersonaController::class, 'store'])->name('personas.store');
+    // NOTA: La ruta POST /personas ya está definida FUERA del grupo auth (pública)
+    // Solo mantenemos las rutas específicas que necesitan autenticación
     Route::post('/personas/buscar', [PersonaController::class, 'buscarPersona'])->name('personas.buscar');
 });

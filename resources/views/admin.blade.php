@@ -547,7 +547,7 @@
             border-radius: 28px;
             padding: 32px;
             width: 90%;
-            max-width: 1000px;  /* Aumentado de 700px a 1000px para que sea más ancho */
+            max-width: 1000px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
@@ -666,7 +666,7 @@
         /* El resto de tus estilos existentes continúan igual */
         .header-hospital { background: white; border-radius: 20px; padding: 15px 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 5px solid #ffd966; }
         .header-hospital h1 { color: #0b2b5e; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
         .stat-card { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .stat-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; }
         .stat-info h3 { font-size: 0.75em; color: #666; }
@@ -683,6 +683,16 @@
         .campo { background: white; padding: 6px; border-radius: 8px; border-left: 3px solid #4caf50; }
         .campo-label { font-size: 0.6em; color: #666; }
         .campo-valor { font-size: 0.8em; font-weight: bold; color: #0b2b5e; }
+        /* Estilo para el campo zona con color diferenciado */
+        .campo-zona { background: #fff3cd; border-left: 3px solid #ffc107; }
+        .campo-zona .campo-label { color: #856404; }
+        .campo-zona .campo-valor { color: #856404; font-weight: bold; }
+        .campo-zona.urbano { background: #d4edda; border-left: 3px solid #28a745; }
+        .campo-zona.urbano .campo-label { color: #155724; }
+        .campo-zona.urbano .campo-valor { color: #155724; }
+        .campo-zona.rural { background: #f8d7da; border-left: 3px solid #dc3545; }
+        .campo-zona.rural .campo-label { color: #721c24; }
+        .campo-zona.rural .campo-valor { color: #721c24; }
         .no-encontrado-mensaje { background: #fff3cd; border: 1px solid #ffc107; border-radius: 12px; padding: 15px; margin: 10px 0; text-align: center; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .no-encontrado-mensaje i { font-size: 28px; color: #856404; margin-bottom: 8px; display: block; }
@@ -883,6 +893,9 @@
         .form-persona-group label { display: block; font-weight: 600; color: #0b2b5e; margin-bottom: 6px; font-size: 0.85rem; }
         .form-persona-group input { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 0.9rem; transition: 0.2s; }
         .form-persona-group input:focus { border-color: #ffd966; outline: none; box-shadow: 0 0 0 3px rgba(255,217,102,0.3); }
+        /* Estilo para el select de zona */
+        .form-persona-group select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 0.9rem; transition: 0.2s; background: white; }
+        .form-persona-group select:focus { border-color: #ffd966; outline: none; box-shadow: 0 0 0 3px rgba(255,217,102,0.3); }
         .modal-persona-actions { display: flex; gap: 15px; justify-content: flex-end; margin-top: 28px; }
         .btn-guardar-persona { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.2s; }
         .btn-guardar-persona:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(40,167,69,0.4); }
@@ -1315,6 +1328,89 @@
         .toggle-password-btn:hover {
             color: #43a047;
         }
+
+        /* ===== ESTILOS PARA MODAL DE CONFIRMACIÓN RURAL ===== */
+        .modal-confirmacion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 999999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-confirmacion-overlay.active {
+            display: flex;
+        }
+        .modal-confirmacion-card {
+            background: white;
+            border-radius: 28px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-confirmacion-card .icono-warning {
+            font-size: 4rem;
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+        .modal-confirmacion-card h2 {
+            color: #0b2b5e;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .modal-confirmacion-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .modal-confirmacion-card .paciente-nombre {
+            font-weight: 700;
+            color: #0b2b5e;
+            font-size: 1.1rem;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0 20px 0;
+        }
+        .modal-confirmacion-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .modal-confirmacion-buttons button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-confirmar-si {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        .btn-confirmar-si:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.4);
+        }
+        .btn-confirmar-no {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-confirmar-no:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220,53,69,0.4);
+        }
     </style>
 </head>
 <body>
@@ -1336,6 +1432,21 @@
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMACIÓN PARA PACIENTES RURALES -->
+    <div class="modal-confirmacion-overlay" id="modalConfirmacionRural">
+        <div class="modal-confirmacion-card">
+            <div class="icono-warning"><i class="fas fa-triangle-exclamation"></i></div>
+            <h2>⚠️ Paciente de Zona Rural</h2>
+            <p>Este paciente es de <strong>ZONA RURAL</strong>.</p>
+            <p style="font-size: 0.85rem; color: #888;">¿Desea continuar con la generación del turno?</p>
+            <div class="paciente-nombre" id="confirmacionPacienteNombre">Cargando...</div>
+            <div class="modal-confirmacion-buttons">
+                <button class="btn-confirmar-si" id="btnConfirmarSi"><i class="fas fa-check"></i> Sí, continuar</button>
+                <button class="btn-confirmar-no" id="btnConfirmarNo"><i class="fas fa-times"></i> No, cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Historial -->
     <div class="modal-history" id="historyModal">
         <div class="modal-content">
@@ -1351,7 +1462,7 @@
         </div>
     </div>
 
-    <!-- MODAL AGREGAR PERSONA (PACIENTE) - CAMPOS SIN PLACEHOLDER -->
+    <!-- MODAL AGREGAR PERSONA (PACIENTE) - CAMPOS SIN PLACEHOLDER CON ZONA -->
     <div id="modalAgregarPersona" class="modal-persona">
         <div class="modal-content">
             <div class="modal-header"><h2><i class="fas fa-user-plus"></i> Registrar Nuevo Paciente</h2><button class="close-modal-persona" onclick="cerrarModalPersona()">&times;</button></div>
@@ -1361,6 +1472,15 @@
                 <div class="form-persona-group"><label><i class="fas fa-user"></i> Segundo Nombre</label><input type="text" id="regSegundoNombre" placeholder=""></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Primer Apellido *</label><input type="text" id="regPrimerApellido" placeholder="" required></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Segundo Apellido</label><input type="text" id="regSegundoApellido" placeholder=""></div>
+                <!-- CAMPO ZONA AGREGADO -->
+                <div class="form-persona-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Zona  *</label>
+                    <select id="regZona" required>
+                        <option value="">Seleccionar zona...</option>
+                        <option value="U">URBANO</option>
+                        <option value="R">RURAL</option>
+                    </select>
+                </div>
                 <div class="modal-persona-actions"><button type="button" class="btn-cancelar-persona" onclick="cerrarModalPersona()">Cancelar</button><button type="submit" class="btn-guardar-persona"><i class="fas fa-save"></i> Guardar Paciente</button></div>
             </form>
         </div>
@@ -1420,10 +1540,8 @@
             <div id="seccion-inicio">
                 <div class="header-hospital"><h1><i class="fas fa-ticket-alt"></i> Gestión de Turnos</h1><p>Administre los turnos de los pacientes - Llamado en voz alta</p></div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-info"><h3>Pendientes</h3><div class="value" id="statsPendientes">0</div></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-bell"></i></div><div class="stat-info"><h3>Llamados</h3><div class="value" id="statsLlamados">0</div></div></div>
                     <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>Atendidos</h3><div class="value" id="statsAtendidos">0</div></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-trash-alt"></i></div><div class="stat-info"><h3>Eliminados</h3><div class="value" id="statsEliminados">0</div></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-location-dot"></i></div><div class="stat-info"><h3>Zona Rural</h3><div class="value" id="statsZona">0</div></div></div>
                 </div>
                 <div class="dashboard">
                     <div class="section-card">
@@ -1440,6 +1558,11 @@
                                 <div class="campo"><div class="campo-label">Segundo Nombre</div><div class="campo-valor" id="segundoNombre"></div></div>
                                 <div class="campo"><div class="campo-label">Primer Apellido</div><div class="campo-valor" id="primerApellido"></div></div>
                                 <div class="campo"><div class="campo-label">Segundo Apellido</div><div class="campo-valor" id="segundoApellido"></div></div>
+                                <!-- CAMPO PARA ZONA - AGREGADO -->
+                                <div class="campo" id="campoZona" style="display:none;">
+                                    <div class="campo-label">Zona </div>
+                                    <div class="campo-valor" id="personaZona"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="specialties-grid" id="serviciosGridInicio"></div>
@@ -2340,7 +2463,8 @@
         let editandoUsuarioBDId = null;
         let usuariosDB = [];
         
-        // ==================== FUNCIÓN EDITAR USUARIO ====================
+        // ==================== FUNCIÓN EDITAR USUARIO MODIFICADA ====================
+        // AHORA: El campo CONTRASEÑA muestra la contraseña real del usuario (en texto plano)
         function editarUsuario(usuarioData, esBD, indiceLocal) {
             mostrarFormularioUsuario();
             
@@ -2408,14 +2532,17 @@
             document.getElementById('apellidosUsuario').value = apellidos;
             document.getElementById('cedulaUsuario').value = usuarioData.identificacion || usuarioData.cedula || '';
             
-            // Mostrar la contraseña con puntos si ya existe (solo como indicador visual)
-            if(usuarioData.password && usuarioData.password !== '') {
-                document.getElementById('passwordUsuarioNuevo').value = '********';
+            // IMPORTANTE: El campo CONTRASEÑA muestra la contraseña real del usuario (no queda en blanco)
+            // Si el usuario tiene una contraseña guardada, se muestra; si no, queda vacío
+            if(usuarioData.password && usuarioData.password !== '******') {
+                document.getElementById('passwordUsuarioNuevo').value = usuarioData.password;
             } else {
                 document.getElementById('passwordUsuarioNuevo').value = '';
             }
-            // Limpiar el campo de nueva contraseña
+            
+            // Limpiar el campo de nueva contraseña (ACTUALIZAR CONTRASEÑA)
             document.getElementById('nuevaPasswordUsuario').value = '';
+            
             document.getElementById('usuarioAsesor').value = usuarioData.usuario_asesor || usuarioData.username || '';
             document.getElementById('servicioUsuario').value = usuarioData.servicio || '';
             document.getElementById('nivelAccesoUsuario').value = usuarioData.nivel_acceso || 'admin';
@@ -2435,8 +2562,7 @@
             }
         }
         
-        // ==================== FUNCIÓN MODIFICADA: actualizarUsuarioBD ====================
-        // CAMBIO: Ahora al actualizar un usuario, guarda en localStorage que debe mostrar USUARIOS después de recargar
+        // ==================== FUNCIÓN ACTUALIZAR USUARIO BD ====================
         function actualizarUsuarioBD() {
             const nombres = document.getElementById('nombresUsuario').value.trim();
             const apellidos = document.getElementById('apellidosUsuario').value.trim();
@@ -2444,17 +2570,17 @@
             const servicioId = document.getElementById('servicioUsuario').value;
             const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
             const modulosSeleccionados = obtenerModulosSeleccionados();
-            let password = document.getElementById('passwordUsuarioNuevo').value.trim();
+            
+            // CONTRASEÑA: leer el valor que el usuario escribió
+            const passwordIngresada = document.getElementById('passwordUsuarioNuevo').value.trim();
             const nuevaPassword = document.getElementById('nuevaPasswordUsuario').value.trim();
             
-            if(password === '********' && nuevaPassword !== '') {
+            // Determinar qué contraseña se usará (prioridad: nuevaPassword > passwordIngresada)
+            let password = '';
+            if (nuevaPassword !== '') {
                 password = nuevaPassword;
-            }
-            else if(password === '********') {
-                password = '';
-            }
-            else if(nuevaPassword !== '') {
-                password = nuevaPassword;
+            } else if (passwordIngresada !== '') {
+                password = passwordIngresada;
             }
             
             if(!nombres || !usuarioAsesor) {
@@ -2496,7 +2622,6 @@
             .then(data => {
                 if(data.success) {
                     showNotification(`Usuario actualizado correctamente`, 'success');
-                    // Guardar en localStorage que debe mostrar la sección USUARIOS después de recargar
                     localStorage.setItem('seccionPendiente', 'usuarios');
                     ocultarFormularioUsuario();
                     location.reload();
@@ -2526,14 +2651,11 @@
                 return;
             }
             
-            if(password === '********' && nuevaPassword !== '') {
+            if (nuevaPassword !== '') {
                 password = nuevaPassword;
             }
-            else if(password === '********') {
+            if (!password) {
                 password = usuariosDB[editandoUsuarioId].password;
-            }
-            else if(nuevaPassword !== '') {
-                password = nuevaPassword;
             }
             
             const servicioObj = serviciosDB.find(s => s.id_servicio == servicioId);
@@ -2687,6 +2809,7 @@
         let turnoEnCiclo = null;
         let modulosPermitidos = [];
         let currentModuloActivo = null;
+        let pendingTurnoData = null; // Variable para guardar datos del turno pendiente
 
         const nombreUsuarioAutenticado = @json(auth()->user()->name ?? 'Usuario');
         
@@ -2936,6 +3059,7 @@
             document.getElementById('regSegundoNombre').value = '';
             document.getElementById('regPrimerApellido').value = '';
             document.getElementById('regSegundoApellido').value = '';
+            document.getElementById('regZona').value = '';
             document.getElementById('modalAgregarPersona').style.display = 'flex';
         }
         
@@ -2948,6 +3072,7 @@
             document.getElementById('regSegundoNombre').value = '';
             document.getElementById('regPrimerApellido').value = '';
             document.getElementById('regSegundoApellido').value = '';
+            document.getElementById('regZona').value = '';
             if (cedulaBuscada !== '') {
                 document.getElementById('regIdentificacion').value = cedulaBuscada;
             }
@@ -3136,16 +3261,44 @@
             const segundo_nombre = document.getElementById('regSegundoNombre').value.trim();
             const primer_apellido = document.getElementById('regPrimerApellido').value.trim();
             const segundo_apellido = document.getElementById('regSegundoApellido').value.trim();
+            const zona = document.getElementById('regZona').value; // <--- OBTENER ZONA
+            
             if(!identificacion || !primer_nombre || !primer_apellido) { showNotification('⚠️ Complete los campos obligatorios', 'error'); return; }
             if(!/^\d+$/.test(identificacion)) { showNotification('⚠️ La identificación solo debe contener números', 'error'); return; }
+            if(!zona) { showNotification('⚠️ Seleccione una zona (URBANO o RURAL)', 'error'); return; }
+            
             const btnGuardar = document.querySelector('#formRegistrarPersona button[type="submit"]');
             const textoOriginal = btnGuardar.innerHTML;
             btnGuardar.disabled = true; btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             try {
-                const response = await fetch('/personas', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 'Accept': 'application/json' }, body: JSON.stringify({ identificacion, primer_nombre, segundo_nombre: segundo_nombre || null, primer_apellido, segundo_apellido: segundo_apellido || null }) });
+                const response = await fetch('/personas', { 
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), 
+                        'Accept': 'application/json' 
+                    }, 
+                    body: JSON.stringify({ 
+                        identificacion, 
+                        primer_nombre, 
+                        segundo_nombre: segundo_nombre || null, 
+                        primer_apellido, 
+                        segundo_apellido: segundo_apellido || null,
+                        zona: zona  // <--- ENVIAR ZONA
+                    }) 
+                });
                 const data = await response.json();
-                if(response.ok && data.success) { showNotification('✅ Paciente registrado exitosamente', 'success'); cerrarModalPersona(); document.getElementById('cedula').value = identificacion; await buscarPersona(); }
-                else { let msg = data.message || 'Error al registrar el paciente'; if(data.errors) msg = Object.values(data.errors).flat().join(', '); showNotification('❌ ' + msg, 'error'); }
+                if(response.ok && data.success) { 
+                    showNotification('✅ Paciente registrado exitosamente', 'success'); 
+                    cerrarModalPersona(); 
+                    document.getElementById('cedula').value = identificacion; 
+                    await buscarPersona(); 
+                }
+                else { 
+                    let msg = data.message || 'Error al registrar el paciente'; 
+                    if(data.errors) msg = Object.values(data.errors).flat().join(', '); 
+                    showNotification('❌ ' + msg, 'error'); 
+                }
             } catch(e) { showNotification('❌ Error de conexión con el servidor', 'error'); }
             finally { btnGuardar.disabled = false; btnGuardar.innerHTML = textoOriginal; }
         }
@@ -3168,6 +3321,31 @@
                     document.getElementById('segundoNombre').innerHTML = personaActual.segundo_nombre || '---';
                     document.getElementById('primerApellido').innerHTML = personaActual.primer_apellido || '---';
                     document.getElementById('segundoApellido').innerHTML = personaActual.segundo_apellido || '---';
+                    
+                    // ========== MOSTRAR ZONA ==========
+                    const campoZona = document.getElementById('campoZona');
+                    const personaZona = document.getElementById('personaZona');
+                    if (personaActual.zona && personaActual.zona !== '') {
+                        // Mostrar la zona con colores según el valor
+                        let zonaTexto = '';
+                        let zonaClase = '';
+                        if (personaActual.zona === 'U') {
+                            zonaTexto = 'URBANO';
+                            zonaClase = 'urbano';
+                        } else if (personaActual.zona === 'R') {
+                            zonaTexto = 'RURAL';
+                            zonaClase = 'rural';
+                        } else {
+                            zonaTexto = personaActual.zona;
+                        }
+                        personaZona.textContent = zonaTexto;
+                        campoZona.className = 'campo ' + zonaClase;
+                        campoZona.style.display = 'block';
+                    } else {
+                        campoZona.style.display = 'none';
+                    }
+                    // ========== FIN MOSTRAR ZONA ==========
+                    
                     document.getElementById('personaInfo').style.display = 'block';
                     document.querySelectorAll('.specialty-card').forEach(c => c.classList.remove('disabled'));
                     resultadoDiv.innerHTML = `<div style="background:#d4edda;border:1px solid #28a745;border-radius:12px;padding:12px;margin-bottom:15px;text-align:center;"><i class="fas fa-check-circle" style="color:#28a745;"></i><strong>✅ Paciente encontrado</strong></div>`;
@@ -3477,7 +3655,7 @@
             reporteFiltrado = datos; 
             const tbody = document.getElementById('reporteBody'); 
             if(!reporteFiltrado.length) { 
-                tbody.innerHTML = '<table><td colspan="8">No hay datos en el rango de fechas seleccionado</td' + '</tr>'; 
+                tbody.innerHTML = '<tr><td colspan="8">No hay datos en el rango de fechas seleccionado</td' + '</tr>'; 
                 return; 
             } 
             tbody.innerHTML = reporteFiltrado.map(d => `
@@ -3502,24 +3680,25 @@
                     <td>${d.ingreso}</td>
                     <td>${d.salida}</td>
                     <td>---</td
-                <tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
+                </tr>`).join(''); showNotification(`Encontrados ${resultados.length}`, 'success'); }
         function descargarReporte() { if(!reporteFiltrado.length) { showNotification('No hay datos', 'error'); return; } let csv = "ESTADO,TURNO,SERVICIO,DOCUMENTO,NOMBRE,INGRESO,SALIDA\n"; reporteFiltrado.forEach(d => csv += `"${d.estado}","${d.turno}","${d.servicio}","${d.documento}","${d.nombre}","${d.ingreso}","${d.salida}"\n`); const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `reporte_${new Date().toISOString().split('T')[0]}.csv`; link.click(); showNotification('Reporte descargado', 'success'); }
 
         function toggleVoice(e) { voiceEnabled = e; document.getElementById('voiceStatus').innerHTML = e ? '✅ Voz activada' : '🔇 Voz desactivada'; showNotification(e ? 'Voz activada' : 'Voz desactivada', e ? 'success' : 'info'); }
         function showNotification(m, t) { const n = document.getElementById('notification'); n.textContent = m; n.style.background = t === 'success' ? '#28a745' : t === 'error' ? '#dc3545' : '#ffc107'; n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 3000); }
         function cerrarHistorial() { document.getElementById('historyModal').style.display = 'none'; }
         function limpiarHistorial() { if(confirm('¿Limpiar historial? Se conservan turnos activos')) { let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); turnos = turnos.filter(t => t.estado === 'pendiente' || t.estado === 'llamado'); localStorage.setItem('turnos', JSON.stringify(turnos)); actualizarVista(); cerrarHistorial(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); } }
+        
+        // ==================== FUNCIÓN ACTUALIZAR VISTA MODIFICADA ====================
+        // AHORA: El contador Zona cuenta SOLO los turnos atendidos con zona RURAL (R)
         function actualizarVista() { 
             const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
-            const pend = turnos.filter(t => t.estado === 'pendiente'); 
-            const llam = turnos.filter(t => t.estado === 'llamado'); 
             const ate = turnos.filter(t => t.estado === 'atendido'); 
-            const elim = turnos.filter(t => t.estado === 'eliminado'); 
-            document.getElementById('statsPendientes').innerHTML = pend.length; 
-            document.getElementById('statsLlamados').innerHTML = llam.length; 
+            // Contar SOLO atendidos con zona RURAL
+            const rurales = turnos.filter(t => t.estado === 'atendido' && t.zona === 'R'); 
             document.getElementById('statsAtendidos').innerHTML = ate.length; 
-            document.getElementById('statsEliminados').innerHTML = elim.length; 
+            document.getElementById('statsZona').innerHTML = rurales.length; 
         }
+        
         function formatearFechaLocal(f) { if(!f) return ''; const d = new Date(f); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`; }
         function loadCounters() { const s = localStorage.getItem('turnCounters'); if(s) turnCounters = JSON.parse(s); else saveCounters(); }
         function saveCounters() { localStorage.setItem('turnCounters', JSON.stringify(turnCounters)); }
@@ -3580,7 +3759,7 @@
                         apellidos: '',
                         cedula: usuarioBD.username,
                         identificacion: usuarioBD.identificacion,
-                        password: '******',
+                        password: usuarioBD.password || '',
                         usuario_asesor: usuarioBD.usuario_asesor || usuarioBD.username,
                         servicio: usuarioBD.servicio || '',
                         servicio_nombre: servicioNombre,
@@ -3655,43 +3834,114 @@
         document.getElementById('cedula').addEventListener('keypress', e => { if(e.key === 'Enter') buscarPersona(); });
         document.getElementById('btnBuscar').addEventListener('click', buscarPersona);
         
-        document.getElementById('generateBtn').addEventListener('click', async () => {
-            if(!selectedSpecialty || !personaActual) { showNotification('Seleccione especialidad', 'warning'); return; }
-            const btn = document.getElementById('generateBtn');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-            try {
-                const servicioObj = serviciosDB.find(s => s.id_servicio == selectedSpecialty);
-                const prefix = servicioObj ? servicioObj.nombre_servicio.substring(0, 3).toUpperCase() : 'MED';
-                if(!turnCounters[selectedSpecialty]) turnCounters[selectedSpecialty] = 0;
-                turnCounters[selectedSpecialty]++;
-                if(turnCounters[selectedSpecialty] > 99) turnCounters[selectedSpecialty] = 1;
-                const turnoCompleto = `${prefix}-${String(turnCounters[selectedSpecialty]).padStart(2,'0')}`;
+        // ==================== GENERAR TURNO MODIFICADO CON CONFIRMACIÓN RURAL ====================
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            if(!selectedSpecialty || !personaActual) { 
+                showNotification('Seleccione especialidad', 'warning'); 
+                return; 
+            }
+            
+            // Verificar si el paciente es RURAL
+            if (personaActual.zona === 'R') {
+                // Mostrar modal de confirmación
                 const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim();
-                let ventanillaAsignada = 1;
-                if(servicioObj) { const n = servicioObj.nombre_servicio.toLowerCase(); if(n.includes('odontologia') || n.includes('odontología')) ventanillaAsignada = 2; else if(n.includes('laboratorio')) ventanillaAsignada = 3; else if(n.includes('rayos') || n.includes('radiologia')) ventanillaAsignada = 4; }
-                const turno = { id: Date.now() + '-' + Math.random().toString(36).substr(2,9), numero: turnoCompleto, persona_id: personaActual.id, identificacion: personaActual.identificacion, nombre_persona: nombreCompleto, especialidad: selectedSpecialty, nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty, ventanilla: ventanillaAsignada, timestamp: new Date().toISOString(), estado: 'pendiente' };
-                saveCounters();
-                const turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-                turnos.push(turno);
-                localStorage.setItem('turnos', JSON.stringify(turnos));
-                document.getElementById('turnoGeneradoNumero').textContent = turnoCompleto;
-                document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
-                document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
-                document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(ventanillaAsignada)}`;
-                document.getElementById('turnoGeneradoModal').style.display = 'block';
-                showNotification(`Turno ${turnoCompleto} generado`, 'success');
-                document.getElementById('cedula').value = '';
-                document.getElementById('resultadoBusqueda').innerHTML = '';
-                document.getElementById('personaInfo').style.display = 'none';
-                personaActual = null;
-                document.querySelectorAll('.specialty-card').forEach(c => { c.classList.remove('selected'); c.classList.add('disabled'); });
-                selectedSpecialty = null;
-                btn.disabled = true;
-                actualizarVista();
-                if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
-            } catch(error) { showNotification('Error al generar turno', 'error'); }
-            finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno'; }
+                document.getElementById('confirmacionPacienteNombre').textContent = `👤 ${nombreCompleto}`;
+                document.getElementById('modalConfirmacionRural').classList.add('active');
+                
+                // Guardar referencia para ejecutar después
+                const btn = this;
+                pendingTurnoData = { btn, personaActual, selectedSpecialty };
+                return;
+            }
+            
+            // Si es URBANO o sin zona, generar directamente
+            ejecutarGenerarTurno(this);
         });
+
+        // Botón SÍ en el modal de confirmación
+        document.getElementById('btnConfirmarSi').addEventListener('click', function() {
+            document.getElementById('modalConfirmacionRural').classList.remove('active');
+            if (pendingTurnoData) {
+                ejecutarGenerarTurno(pendingTurnoData.btn);
+                pendingTurnoData = null;
+            }
+        });
+
+        // Botón NO en el modal de confirmación
+        document.getElementById('btnConfirmarNo').addEventListener('click', function() {
+            document.getElementById('modalConfirmacionRural').classList.remove('active');
+            pendingTurnoData = null;
+            showNotification('❌ Generación de turno cancelada', 'error');
+            // Reactivar el botón
+            if (pendingTurnoData && pendingTurnoData.btn) {
+                pendingTurnoData.btn.disabled = false;
+                pendingTurnoData.btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
+            }
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('modalConfirmacionRural').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                pendingTurnoData = null;
+                if (pendingTurnoData && pendingTurnoData.btn) {
+                    pendingTurnoData.btn.disabled = false;
+                    pendingTurnoData.btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
+                }
+            }
+        });
+
+        function ejecutarGenerarTurno(btn) {
+            const servicioObj = serviciosDB.find(s => s.id_servicio == selectedSpecialty);
+            const prefix = servicioObj ? servicioObj.nombre_servicio.substring(0, 3).toUpperCase() : 'MED';
+            if(!turnCounters[selectedSpecialty]) turnCounters[selectedSpecialty] = 0;
+            turnCounters[selectedSpecialty]++;
+            if(turnCounters[selectedSpecialty] > 99) turnCounters[selectedSpecialty] = 1;
+            const turnoCompleto = `${prefix}-${String(turnCounters[selectedSpecialty]).padStart(2,'0')}`;
+            const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim();
+            let ventanillaAsignada = 1;
+            if(servicioObj) { 
+                const n = servicioObj.nombre_servicio.toLowerCase(); 
+                if(n.includes('odontologia') || n.includes('odontología')) ventanillaAsignada = 2; 
+                else if(n.includes('laboratorio')) ventanillaAsignada = 3; 
+                else if(n.includes('rayos') || n.includes('radiologia')) ventanillaAsignada = 4; 
+            }
+            const turno = { 
+                id: Date.now() + '-' + Math.random().toString(36).substr(2,9), 
+                numero: turnoCompleto, 
+                persona_id: personaActual.id, 
+                identificacion: personaActual.identificacion, 
+                nombre_persona: nombreCompleto, 
+                especialidad: selectedSpecialty, 
+                nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty, 
+                ventanilla: ventanillaAsignada, 
+                timestamp: new Date().toISOString(), 
+                estado: 'pendiente',
+                zona: personaActual.zona || ''  
+            };
+            saveCounters();
+            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            turnos.push(turno);
+            localStorage.setItem('turnos', JSON.stringify(turnos));
+            document.getElementById('turnoGeneradoNumero').textContent = turnoCompleto;
+            document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
+            document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
+            document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(ventanillaAsignada)}`;
+            document.getElementById('turnoGeneradoModal').style.display = 'block';
+            showNotification(`Turno ${turnoCompleto} generado`, 'success');
+            document.getElementById('cedula').value = '';
+            document.getElementById('resultadoBusqueda').innerHTML = '';
+            document.getElementById('personaInfo').style.display = 'none';
+            personaActual = null;
+            document.querySelectorAll('.specialty-card').forEach(c => { 
+                c.classList.remove('selected'); 
+                c.classList.add('disabled'); 
+            });
+            selectedSpecialty = null;
+            btn.disabled = true;
+            actualizarVista();
+            if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
+        }
 
         window.addEventListener('storage', () => { actualizarVista(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); });
         setInterval(actualizarVista, 1000);

@@ -20,7 +20,43 @@ class TurnoController extends Controller
         return view('admin', compact('permisos', 'usuariosBD'));
     }
 
-    // Buscar persona por identificación (cédula) - CORREGIDO con campo USUARIO
+    // ========== FUNCIÓN PARA GUARDAR PERSONA (PACIENTE) CON ZONA ==========
+    public function storePersona(Request $request)
+    {
+        try {
+            $request->validate([
+                'identificacion' => 'required|string|max:250|unique:personas,identificacion',
+                'primer_nombre' => 'required|string|max:50',
+                'segundo_nombre' => 'nullable|string|max:50',
+                'primer_apellido' => 'required|string|max:50',
+                'segundo_apellido' => 'nullable|string|max:50',
+                'zona' => 'required|in:U,R'  // Validar que sea U o R
+            ]);
+
+            $persona = Persona::create([
+                'identificacion' => $request->identificacion,
+                'primer_nombre' => $request->primer_nombre,
+                'segundo_nombre' => $request->segundo_nombre,
+                'primer_apellido' => $request->primer_apellido,
+                'segundo_apellido' => $request->segundo_apellido,
+                'zona' => $request->zona  // Guardar U o R
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Paciente registrado correctamente',
+                'persona' => $persona
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al registrar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Buscar persona por identificación (cédula) - MODIFICADO: ahora trae el campo zona
     public function buscarPersona(Request $request)
     {
         try {
@@ -28,7 +64,7 @@ class TurnoController extends Controller
                 'identificacion' => 'required|string|min:3|max:20'
             ]);
 
-            // Buscar en la tabla personas
+            // Buscar en la tabla personas - AHORA TRAE EL CAMPO ZONA
             $persona = Persona::where('identificacion', $request->identificacion)->first();
 
             if ($persona) {
@@ -42,6 +78,14 @@ class TurnoController extends Controller
                     $usuarioGenerado = preg_replace('/[^a-z0-9.]/', '', $usuarioGenerado);
                 }
                 
+                // Convertir zona: U = URBANO, R = RURAL
+                $zonaTexto = '';
+                if ($persona->zona === 'U') {
+                    $zonaTexto = 'URBANO';
+                } elseif ($persona->zona === 'R') {
+                    $zonaTexto = 'RURAL';
+                }
+                
                 return response()->json([
                     'success' => true,
                     'persona' => [
@@ -51,6 +95,8 @@ class TurnoController extends Controller
                         'primer_apellido' => $persona->primer_apellido ?? '',
                         'segundo_apellido' => $persona->segundo_apellido ?? '',
                         'usuario' => $usuarioGenerado,
+                        'zona' => $persona->zona ?? '',      // Valor original: U o R
+                        'zona_texto' => $zonaTexto,           // Texto: URBANO o RURAL
                     ]
                 ]);
             } else {

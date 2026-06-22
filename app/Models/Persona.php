@@ -26,7 +26,8 @@ class Persona extends Model
         'primer_nombre',
         'segundo_nombre',
         'primer_apellido',
-        'segundo_apellido'
+        'segundo_apellido',
+        'zona'  // <--- AGREGADO
     ];
 
     // Accesor para obtener el nombre completo

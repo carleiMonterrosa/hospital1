@@ -15,13 +15,14 @@ class PersonaController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validar los datos
+            // Validar los datos - AGREGADO CAMPO ZONA
             $validator = Validator::make($request->all(), [
                 'identificacion' => 'required|string|max:20|unique:personas,identificacion',
                 'primer_nombre' => 'required|string|max:50',
                 'segundo_nombre' => 'nullable|string|max:50',
                 'primer_apellido' => 'required|string|max:50',
                 'segundo_apellido' => 'nullable|string|max:50',
+                'zona' => 'required|string|in:U,R',  // <--- AGREGADO
             ]);
 
             if ($validator->fails()) {
@@ -31,13 +32,14 @@ class PersonaController extends Controller
                 ], 422);
             }
 
-            // Crear la persona
+            // Crear la persona - AGREGADO CAMPO ZONA
             $persona = Persona::create([
                 'identificacion' => $request->identificacion,
                 'primer_nombre' => $request->primer_nombre,
                 'segundo_nombre' => $request->segundo_nombre,
                 'primer_apellido' => $request->primer_apellido,
                 'segundo_apellido' => $request->segundo_apellido,
+                'zona' => $request->zona,  // <--- AGREGADO
             ]);
 
             return response()->json([
@@ -56,7 +58,7 @@ class PersonaController extends Controller
 
     /**
      * Search for a person by identification.
-     * Ahora también genera un nombre de usuario automático
+     * Ahora también genera un nombre de usuario automático y trae la zona
      */
     public function buscarPersona(Request $request)
     {
@@ -80,6 +82,14 @@ class PersonaController extends Controller
                     $usuarioGenerado = preg_replace('/[^a-z0-9.]/', '', $usuarioGenerado);
                 }
                 
+                // Convertir zona: U = URBANO, R = RURAL
+                $zonaTexto = '';
+                if ($persona->zona === 'U') {
+                    $zonaTexto = 'URBANO';
+                } elseif ($persona->zona === 'R') {
+                    $zonaTexto = 'RURAL';
+                }
+                
                 return response()->json([
                     'success' => true,
                     'persona' => [
@@ -89,6 +99,8 @@ class PersonaController extends Controller
                         'primer_apellido' => $persona->primer_apellido,
                         'segundo_apellido' => $persona->segundo_apellido,
                         'usuario' => $user ? $user->username : $usuarioGenerado,
+                        'zona' => $persona->zona ?? '',      // Valor original: U o R
+                        'zona_texto' => $zonaTexto,           // Texto: URBANO o RURAL
                     ]
                 ]);
             } else {
