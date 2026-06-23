@@ -666,7 +666,7 @@
         /* El resto de tus estilos existentes continúan igual */
         .header-hospital { background: white; border-radius: 20px; padding: 15px 25px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-left: 5px solid #ffd966; }
         .header-hospital h1 { color: #0b2b5e; }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
         .stat-card { background: white; border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .stat-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; }
         .stat-info h3 { font-size: 0.75em; color: #666; }
@@ -1541,7 +1541,9 @@
                 <div class="header-hospital"><h1><i class="fas fa-ticket-alt"></i> Gestión de Turnos</h1><p>Administre los turnos de los pacientes - Llamado en voz alta</p></div>
                 <div class="stats-grid">
                     <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>Atendidos</h3><div class="value" id="statsAtendidos">0</div></div></div>
-                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-location-dot"></i></div><div class="stat-info"><h3>Zona Rural</h3><div class="value" id="statsZona">0</div></div></div>
+                    <div class="stat-card"><div class="stat-icon"><i class="fas fa-location-dot"></i></div><div class="stat-info"><h3>Atendidos Zona Rural</h3><div class="value" id="statsZona">0</div></div></div>
+                    <!-- NUEVA TARJETA: Total por atender Zona Rural -->
+                    <div class="stat-card"><div class="stat-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i class="fas fa-clock"></i></div><div class="stat-info"><h3>Total por atender Zona Rural</h3><div class="value" id="statsZonaPendiente">0</div></div></div>
                 </div>
                 <div class="dashboard">
                     <div class="section-card">
@@ -3690,13 +3692,18 @@
         
         // ==================== FUNCIÓN ACTUALIZAR VISTA MODIFICADA ====================
         // AHORA: El contador Zona cuenta SOLO los turnos atendidos con zona RURAL (R)
+        // Y el contador "Total por atender Zona Rural" cuenta los turnos PENDIENTES o LLAMADOS con zona RURAL
         function actualizarVista() { 
             const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const ate = turnos.filter(t => t.estado === 'atendido'); 
             // Contar SOLO atendidos con zona RURAL
-            const rurales = turnos.filter(t => t.estado === 'atendido' && t.zona === 'R'); 
+            const ruralesAtendidos = turnos.filter(t => t.estado === 'atendido' && t.zona === 'R'); 
+            // Contar SOLO pendientes o llamados con zona RURAL
+            const ruralesPendientes = turnos.filter(t => (t.estado === 'pendiente' || t.estado === 'llamado') && t.zona === 'R');
+            
             document.getElementById('statsAtendidos').innerHTML = ate.length; 
-            document.getElementById('statsZona').innerHTML = rurales.length; 
+            document.getElementById('statsZona').innerHTML = ruralesAtendidos.length;
+            document.getElementById('statsZonaPendiente').innerHTML = ruralesPendientes.length;
         }
         
         function formatearFechaLocal(f) { if(!f) return ''; const d = new Date(f); return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`; }
