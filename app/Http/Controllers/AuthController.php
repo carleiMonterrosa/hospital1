@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Persona;
+use App\Models\ConfiguracionEmpresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,10 +12,22 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // Mostrar vista de login
+    // Mostrar vista de login - MODIFICADO para pasar configuración de empresa
     public function showLogin()
     {
-        return view('login');
+        // Obtener la configuración de la empresa desde la base de datos
+        $configuracion = ConfiguracionEmpresa::first();
+        
+        // Si no existe configuración, crear una por defecto
+        if (!$configuracion) {
+            $configuracion = ConfiguracionEmpresa::create([
+                'nombre_empresa' => 'E.S.E HOSPITAL LOCAL SAN PABLO',
+                'direccion_empresa' => 'Dirección no registrada',
+                'logo_empresa_url' => null,
+            ]);
+        }
+        
+        return view('login', compact('configuracion'));
     }
 
     // Procesar login - ACEPTA EMAIL O USERNAME Y VERIFICA PERMISO DE LOGIN
@@ -68,10 +81,22 @@ class AuthController extends Controller
             ->withInput();
     }
 
-    // Mostrar vista de registro
+    // Mostrar vista de registro - MODIFICADO para pasar configuración de empresa
     public function showRegister()
     {
-        return view('register');
+        // Obtener la configuración de la empresa desde la base de datos
+        $configuracion = ConfiguracionEmpresa::first();
+        
+        // Si no existe configuración, crear una por defecto
+        if (!$configuracion) {
+            $configuracion = ConfiguracionEmpresa::create([
+                'nombre_empresa' => 'E.S.E HOSPITAL LOCAL SAN PABLO',
+                'direccion_empresa' => 'Dirección no registrada',
+                'logo_empresa_url' => null,
+            ]);
+        }
+        
+        return view('register', compact('configuracion'));
     }
 
     // ========== REGISTRO CORREGIDO ==========

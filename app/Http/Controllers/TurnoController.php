@@ -5,22 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Persona;
 use App\Models\Turno;
 use App\Models\User;
+use App\Models\ConfiguracionEmpresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TurnoController extends Controller
 {
-    // Mostrar vista del admin - CORREGIDO para pasar los permisos del usuario
+    // Mostrar vista del admin - CORREGIDO para pasar los permisos del usuario Y LA CONFIGURACIÓN
     public function admin()
     {
         $user = auth()->user();
         $permisos = $user->permisos ?? [];
         $usuariosBD = User::select('id', 'name', 'username', 'usuario_asesor', 'identificacion', 'servicio', 'nivel_acceso', 'modulos', 'permisos')->get();
         
-        return view('admin', compact('permisos', 'usuariosBD'));
+        // 🔥 OBTENER LA CONFIGURACIÓN DE LA EMPRESA 🔥
+        $configuracion = ConfiguracionEmpresa::first();
+        
+        return view('admin', compact('permisos', 'usuariosBD', 'configuracion'));
     }
 
-    // ========== FUNCIÓN PARA GUARDAR PERSONA (PACIENTE) CON ZONA ==========
+    // ========== FUNCIÓN PARA GUARDAR PERSONA (PACIENTE) CON ZONA Y FECHA DE NACIMIENTO ==========
     public function storePersona(Request $request)
     {
         try {
@@ -30,7 +35,8 @@ class TurnoController extends Controller
                 'segundo_nombre' => 'nullable|string|max:50',
                 'primer_apellido' => 'required|string|max:50',
                 'segundo_apellido' => 'nullable|string|max:50',
-                'zona' => 'required|in:U,R'  // Validar que sea U o R
+                'zona' => 'required|in:U,R',
+                'fecha_nacimiento' => 'required|date' // NUEVO: validación para fecha de nacimiento
             ]);
 
             $persona = Persona::create([
@@ -39,7 +45,8 @@ class TurnoController extends Controller
                 'segundo_nombre' => $request->segundo_nombre,
                 'primer_apellido' => $request->primer_apellido,
                 'segundo_apellido' => $request->segundo_apellido,
-                'zona' => $request->zona  // Guardar U o R
+                'zona' => $request->zona,
+                'fecha_nacimiento' => $request->fecha_nacimiento // NUEVO: guardar fecha de nacimiento
             ]);
 
             return response()->json([
@@ -56,7 +63,7 @@ class TurnoController extends Controller
         }
     }
 
-    // Buscar persona por identificación (cédula) - MODIFICADO: ahora trae el campo zona
+    // Buscar persona por identificación (cédula) - AHORA TRAE EL CAMPO ZONA Y FECHA DE NACIMIENTO
     public function buscarPersona(Request $request)
     {
         try {
@@ -64,7 +71,7 @@ class TurnoController extends Controller
                 'identificacion' => 'required|string|min:3|max:20'
             ]);
 
-            // Buscar en la tabla personas - AHORA TRAE EL CAMPO ZONA
+            // Buscar en la tabla personas - TRAE CAMPO ZONA Y FECHA_NACIMIENTO
             $persona = Persona::where('identificacion', $request->identificacion)->first();
 
             if ($persona) {
@@ -95,8 +102,9 @@ class TurnoController extends Controller
                         'primer_apellido' => $persona->primer_apellido ?? '',
                         'segundo_apellido' => $persona->segundo_apellido ?? '',
                         'usuario' => $usuarioGenerado,
-                        'zona' => $persona->zona ?? '',      // Valor original: U o R
-                        'zona_texto' => $zonaTexto,           // Texto: URBANO o RURAL
+                        'zona' => $persona->zona ?? '',
+                        'zona_texto' => $zonaTexto,
+                        'fecha_nacimiento' => $persona->fecha_nacimiento ?? '' // NUEVO: enviar fecha de nacimiento
                     ]
                 ]);
             } else {
@@ -498,6 +506,118 @@ class TurnoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al guardar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // ==================== NUEVOS MÉTODOS PARA CONFIGURACIÓN DE EMPRESA ====================
+
+    /**
+     * Obtener la configuración de la empresa
+     */
+    public function getConfiguracion()
+    {
+        try {
+            $config = ConfiguracionEmpresa::first();
+            
+            if ($config) {
+                return response()->json([
+                    'success' => true,
+                    'configuracion' => [
+                        'id' => $config->id,
+                        'nombre_empresa' => $config->nombre_empresa,
+                        'direccion_empresa' => $config->direccion_empresa,
+                        'logo_empresa_url' => $config->logo_empresa_url,
+                        'imagen_fondo_login' => $config->imagen_fondo_login,
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'configuracion' => null
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cargar configuración: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Guardar o actualizar la configuración de la empresa
+     */
+    public function guardarConfiguracion(Request $request)
+    {
+        try {
+            $request->validate([
+                'nombre_empresa' => 'required|string|max:150',
+                'direccion_empresa' => 'nullable|string|max:255',
+                'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'fondo_login' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+            ]);
+
+            $config = ConfiguracionEmpresa::first();
+
+            if (!$config) {
+                $config = new ConfiguracionEmpresa();
+            }
+
+            $config->nombre_empresa = $request->nombre_empresa;
+            $config->direccion_empresa = $request->direccion_empresa;
+
+            // Subir el logo si se envió
+            if ($request->hasFile('logo')) {
+                // Eliminar logo anterior si existe
+                if ($config->logo_empresa_url) {
+                    $oldPath = str_replace('/storage/', '', $config->logo_empresa_url);
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                $file = $request->file('logo');
+                $filename = 'logo_empresa_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('logos', $filename, 'public');
+                $config->logo_empresa_url = '/storage/' . $path;
+            }
+
+            // ========== SUBIR IMAGEN DE FONDO DEL LOGIN ==========
+            if ($request->hasFile('fondo_login')) {
+                // Eliminar fondo anterior si existe
+                if ($config->imagen_fondo_login) {
+                    $oldPath = str_replace('/storage/', '', $config->imagen_fondo_login);
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                $file = $request->file('fondo_login');
+                $filename = 'fondo_login_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('fondos_login', $filename, 'public');
+                $config->imagen_fondo_login = '/storage/' . $path;
+            }
+            // ==========================================================
+
+            $config->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Configuración guardada correctamente',
+                'configuracion' => [
+                    'id' => $config->id,
+                    'nombre_empresa' => $config->nombre_empresa,
+                    'direccion_empresa' => $config->direccion_empresa,
+                    'logo_empresa_url' => $config->logo_empresa_url,
+                    'imagen_fondo_login' => $config->imagen_fondo_login,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar configuración: ' . $e->getMessage()
             ], 500);
         }
     }

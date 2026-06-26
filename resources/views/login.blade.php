@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Iniciar Sesión - Hospital San Pablo</title>
+    <title>Iniciar Sesión - {{ $configuracion->nombre_empresa ?? 'Hospital San Pablo' }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
@@ -58,23 +58,21 @@
 
         .left-panel-bg {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70%;
-            height: 70%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             transition: all 0.3s ease;
             z-index: 2;
-            border-radius: 30px;
             opacity: 0.95;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
         }
 
         .left-panel:hover .left-panel-bg {
-            transform: translate(-50%, -50%) scale(1.02);
+            transform: scale(1.02);
             opacity: 1;
         }
 
@@ -219,12 +217,20 @@
             margin-bottom: 35px;
         }
 
+        .login-header .logo-empresa {
+            max-width: 120px;
+            max-height: 80px;
+            margin-bottom: 15px;
+            object-fit: contain;
+            display: inline-block;
+        }
+
         .login-header h1 {
             background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 12px;
         }
@@ -521,8 +527,8 @@
 
         @media (max-width: 900px) {
             .left-panel-bg {
-                width: 75%;
-                height: 75%;
+                width: 100%;
+                height: 100%;
             }
         }
 
@@ -547,8 +553,8 @@
                 bottom: 10px;
             }
             .left-panel-bg {
-                width: 55%;
-                height: 55%;
+                width: 100%;
+                height: 100%;
             }
             .login-container {
                 max-width: 100%;
@@ -558,7 +564,12 @@
 </head>
 <body>
     <div class="left-panel" id="leftPanel">
-        <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ asset('images/hospital-bg.jpg') }}');"></div>
+        <!-- IMAGEN DE FONDO DINÁMICA DESDE LA BASE DE DATOS -->
+        <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ 
+            (isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login) 
+                ? asset($configuracion->imagen_fondo_login) 
+                : asset('images/hospital-bg.jpg') 
+        }}');"></div>
         <div class="bubbles-container" id="bubblesContainer"></div>
         <div class="corner-decoration corner-tl"></div>
         <div class="corner-decoration corner-tr"></div>
@@ -570,7 +581,15 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <h1><i class="fas fa-hospital-user"></i> E.S.E HOSPITAL LOCAL SAN PABLO</h1>
+                    <!-- LOGO DINÁMICO DE LA EMPRESA -->
+                    @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
+                        <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
+                    @else
+                        <i class="fas fa-hospital-user" style="font-size: 3.5rem; color: #2e7d32; margin-bottom: 10px; display: block;"></i>
+                    @endif
+                    
+                    <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
+                    <h1><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SAN PABLO' }}</h1>
                     <p>Bienvenido de vuelta</p>
                     <div class="badge"><i class="fas fa-shield-alt"></i> Acceso seguro</div>
                 </div>
@@ -689,21 +708,24 @@
             }
         }
 
+        // Función para cargar el fondo desde la BD o localStorage
         function cargarFondo() {
-            const fondoGuardado = localStorage.getItem('loginBackgroundImage');
             const panelBg = document.getElementById('panelBg');
             
-            if (fondoGuardado && fondoGuardado !== '') {
-                panelBg.style.backgroundImage = `url('${fondoGuardado}')`;
+            // Verificar si hay imagen de fondo en la base de datos
+            @if(isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login)
+                // Si hay imagen en la BD, usarla con CONTAIN (se ve completa y nítida)
+                panelBg.style.backgroundImage = `url('{{ asset($configuracion->imagen_fondo_login) }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';
                 panelBg.style.backgroundPosition = 'center';
-            } else {
+            @else
+                // Si no hay imagen en la BD, usar la imagen por defecto
                 panelBg.style.backgroundImage = `url('{{ asset('images/hospital-bg.jpg') }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';
                 panelBg.style.backgroundPosition = 'center';
-            }
+            @endif
         }
 
         function subirFondo() {
@@ -718,7 +740,7 @@
                         const imagenBase64 = event.target.result;
                         localStorage.setItem('loginBackgroundImage', imagenBase64);
                         cargarFondo();
-                        mostrarNotificacion('✅ Imagen de fondo actualizada', 'success');
+                        mostrarNotificacion('✅ Imagen de fondo actualizada (solo en este navegador)', 'success');
                     };
                     reader.readAsDataURL(file);
                 }

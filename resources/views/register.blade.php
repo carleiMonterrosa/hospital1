@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Registrar Usuario - Hospital San Pablo</title>
+    <title>Registrar Usuario - {{ $configuracion->nombre_empresa ?? 'Hospital San Pablo' }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
@@ -41,9 +41,20 @@
             margin-bottom: 55px;
         }
 
+        .register-header .logo-empresa {
+            max-width: 80px;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
         .register-header h1 {
             background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             color: transparent;
             font-size: 3.5rem;
             font-weight: 800;
@@ -52,14 +63,7 @@
             align-items: center;
             justify-content: center;
             gap: 20px;
-        }
-
-        .hospital-logo-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
         }
 
         .register-header h1 i {
@@ -408,7 +412,7 @@
             .register-header h1 i {
                 font-size: 2.2rem;
             }
-            .hospital-logo-img {
+            .register-header .logo-empresa {
                 width: 50px;
                 height: 50px;
             }
@@ -439,7 +443,16 @@
         <div class="register-card">
 
             <div class="register-header">
-                <h1><img src="{{ asset('images/hls.jpg') }}" alt="Logo" class="hospital-logo-img"> E.S.E HOSPITAL LOCAL SAN PABLO</h1>
+                <h1>
+                    <!-- LOGO DINÁMICO DE LA EMPRESA -->
+                    @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
+                        <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
+                    @else
+                        <i class="fas fa-hospital-user"></i>
+                    @endif
+                    <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
+                    {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SAN PABLO' }}
+                </h1>
                 <p>Registro de Usuario</p>
                 <div class="badge"><i class="fas fa-notes-medical"></i> Datos personales</div>
             </div>

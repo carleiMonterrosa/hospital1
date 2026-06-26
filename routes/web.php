@@ -35,6 +35,9 @@ Route::post('/personas', [TurnoController::class, 'storePersona'])->name('person
 Route::get('/api/niveles-acceso', [TurnoController::class, 'getNivelesAcceso']);
 Route::post('/api/niveles-acceso', [TurnoController::class, 'storeNivelAcceso']);
 
+// ========== RUTA PÚBLICA PARA OBTENER CONFIGURACIÓN DE EMPRESA (PARA TV Y LOGIN) ==========
+Route::get('/api/configuracion-empresa', [TurnoController::class, 'getConfiguracion']);
+
 // ========== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) ==========
 Route::middleware(['auth'])->group(function () {
     // Ruta principal - Admin
@@ -82,4 +85,8 @@ Route::middleware(['auth'])->group(function () {
     // NOTA: La ruta POST /personas ya está definida FUERA del grupo auth (pública)
     // Solo mantenemos las rutas específicas que necesitan autenticación
     Route::post('/personas/buscar', [PersonaController::class, 'buscarPersona'])->name('personas.buscar');
+
+    // ========== NUEVAS RUTAS PARA CONFIGURACIÓN DE EMPRESA (PROTEGIDAS) ==========
+    Route::get('/api/configuracion-empresa', [TurnoController::class, 'getConfiguracion']);
+    Route::post('/api/configuracion-empresa', [TurnoController::class, 'guardarConfiguracion']);
 });

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Administrador Turnos - Hospital San Pablo</title>
+    <title>Administrador Turnos - {{ $configuracion->nombre_empresa ?? 'Hospital San Pablo' }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* ===== TODOS TUS ESTILOS EXISTENTES (MANTENIDOS IGUALES) ===== */
@@ -28,8 +28,24 @@
             display: flex;
             flex-direction: column;
         }
-        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,215,0,0.3); margin-bottom: 15px; }
-        .sidebar-header h2 { font-size: 1.4em; color: #ffd966; }
+        .sidebar-header { 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 1px solid rgba(255,215,0,0.3); 
+            margin-bottom: 15px; 
+        }
+        .sidebar-header .logo-empresa {
+            max-width: 80px;
+            max-height: 60px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        .sidebar-header h2 { 
+            font-size: 1.2em; 
+            color: #ffd966; 
+            word-wrap: break-word;
+        }
         .nav-menu { flex: 1; padding: 0 15px; }
         .nav-section { margin-bottom: 20px; }
         .nav-section-title { color: #ffd966; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-left: 10px; font-weight: 600; }
@@ -693,6 +709,14 @@
         .campo-zona.rural { background: #f8d7da; border-left: 3px solid #dc3545; }
         .campo-zona.rural .campo-label { color: #721c24; }
         .campo-zona.rural .campo-valor { color: #721c24; }
+        
+        /* ===== NUEVO ESTILO PARA EL CAMPO EDAD ===== */
+        .campo-edad { background: #e8f0fe; border-left: 3px solid #1565c0; }
+        .campo-edad .campo-label { color: #0d47a1; }
+        .campo-edad .campo-valor { color: #0d47a1; font-weight: bold; }
+        .campo-edad .campo-valor i { color: #1565c0; margin-right: 4px; }
+        /* ===== FIN NUEVO ESTILO ===== */
+        
         .no-encontrado-mensaje { background: #fff3cd; border: 1px solid #ffc107; border-radius: 12px; padding: 15px; margin: 10px 0; text-align: center; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .no-encontrado-mensaje i { font-size: 28px; color: #856404; margin-bottom: 8px; display: block; }
@@ -1411,6 +1435,106 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(220,53,69,0.4);
         }
+        
+        /* ===== ESTILOS PARA SECCIÓN CONFIGURACIÓN ===== */
+        .configuracion-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .configuracion-section h2 {
+            color: #0b2b5e;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        .configuracion-section .form-group {
+            margin-bottom: 25px;
+        }
+        .configuracion-section .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .configuracion-section .form-group label i {
+            color: #ffd966;
+            margin-right: 8px;
+        }
+        .configuracion-section .form-group input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .configuracion-section .form-group input[type="text"]:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        .configuracion-section .form-group input[type="file"] {
+            width: 100%;
+            padding: 12px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+        }
+        .configuracion-section .form-group input[type="file"]:hover {
+            border-color: #ffd966;
+        }
+        .configuracion-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .btn-guardar-config {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-guardar-config:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.4);
+        }
+        .btn-cancelar-config {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-cancelar-config:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        .modo-trabajador .configuracion-section {
+            border-radius: 0;
+            margin: 0;
+            max-width: 100%;
+            padding: 28px;
+            min-height: calc(100vh - 70px);
+        }
     </style>
 </head>
 <body>
@@ -1462,7 +1586,7 @@
         </div>
     </div>
 
-    <!-- MODAL AGREGAR PERSONA (PACIENTE) - CAMPOS SIN PLACEHOLDER CON ZONA -->
+    <!-- MODAL AGREGAR PERSONA (PACIENTE) - CON FECHA DE NACIMIENTO -->
     <div id="modalAgregarPersona" class="modal-persona">
         <div class="modal-content">
             <div class="modal-header"><h2><i class="fas fa-user-plus"></i> Registrar Nuevo Paciente</h2><button class="close-modal-persona" onclick="cerrarModalPersona()">&times;</button></div>
@@ -1472,23 +1596,41 @@
                 <div class="form-persona-group"><label><i class="fas fa-user"></i> Segundo Nombre</label><input type="text" id="regSegundoNombre" placeholder=""></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Primer Apellido *</label><input type="text" id="regPrimerApellido" placeholder="" required></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Segundo Apellido</label><input type="text" id="regSegundoApellido" placeholder=""></div>
-                <!-- CAMPO ZONA AGREGADO -->
+                <!-- CAMPO ZONA -->
                 <div class="form-persona-group">
-                    <label><i class="fas fa-map-marker-alt"></i> Zona  *</label>
+                    <label><i class="fas fa-map-marker-alt"></i> Zona *</label>
                     <select id="regZona" required>
                         <option value="">Seleccionar zona...</option>
                         <option value="U">URBANO</option>
                         <option value="R">RURAL</option>
                     </select>
                 </div>
-                <div class="modal-persona-actions"><button type="button" class="btn-cancelar-persona" onclick="cerrarModalPersona()">Cancelar</button><button type="submit" class="btn-guardar-persona"><i class="fas fa-save"></i> Guardar Paciente</button></div>
+                <!-- ===== NUEVO CAMPO: FECHA DE NACIMIENTO ===== -->
+                <div class="form-persona-group">
+                    <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento *</label>
+                    <input type="date" id="regFechaNacimiento" required>
+                </div>
+                <!-- ===== FIN NUEVO CAMPO ===== -->
+                <div class="modal-persona-actions">
+                    <button type="button" class="btn-cancelar-persona" onclick="cerrarModalPersona()">Cancelar</button>
+                    <button type="submit" class="btn-guardar-persona"><i class="fas fa-save"></i> Guardar Paciente</button>
+                </div>
             </form>
         </div>
     </div>
 
     <div class="app-layout">
         <div class="sidebar" id="mainSidebar">
-            <div class="sidebar-header"><h2><i class="fas fa-hospital-user"></i> E.S.E HOSPITAL LOCAL SANPABLO</h2></div>
+            <div class="sidebar-header">
+                <!-- LOGO DINÁMICO DE LA EMPRESA -->
+                @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
+                    <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
+                @else
+                    <i class="fas fa-hospital-user" style="font-size: 2.5rem; color: #ffd966; display: block; margin: 0 auto 10px auto;"></i>
+                @endif
+                <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
+                <h2><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SANPABLO' }}</h2>
+            </div>
             <div class="nav-menu">
                 <!-- INICIO -->
                 <div class="nav-section">
@@ -1511,11 +1653,14 @@
                     <div class="nav-item" id="navPerfil" onclick="verificarAcceso('perfil')"><i class="fas fa-id-card"></i><span>Perfil</span></div>
                 </div>
                 
-                <!-- PUBLICIDAD TV - NUEVA SECCIÓN SEPARADA (SIN RESTRICCIÓN DE PERMISOS) -->
+                <!-- PUBLICIDAD TV + CONFIGURACIÓN -->
                 <div class="nav-section">
-                    <div class="nav-section-title" style="margin-top: 15px; border-top: 1px solid rgba(255,215,0,0.3); padding-top: 15px;">PUBLICIDAD</div>
+                    <div class="nav-section-title" style="margin-top: 15px; border-top: 1px solid rgba(255,215,0,0.3); padding-top: 15px;">PARAMETRO DE CONFIGURACION</div>
                     <div class="nav-item" id="navPublicidadTV" onclick="mostrarSeccion('publicidad_tv')">
                         <i class="fas fa-tv"></i><span>Publicidad TV</span>
+                    </div>
+                    <div class="nav-item" onclick="mostrarSeccion('configuracion')">
+                        <i class="fas fa-cog"></i><span>Configuración</span>
                     </div>
                 </div>
                 
@@ -1542,7 +1687,6 @@
                 <div class="stats-grid">
                     <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>Atendidos</h3><div class="value" id="statsAtendidos">0</div></div></div>
                     <div class="stat-card"><div class="stat-icon"><i class="fas fa-location-dot"></i></div><div class="stat-info"><h3>Atendidos Zona Rural</h3><div class="value" id="statsZona">0</div></div></div>
-                    <!-- NUEVA TARJETA: Total por atender Zona Rural -->
                     <div class="stat-card"><div class="stat-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);"><i class="fas fa-clock"></i></div><div class="stat-info"><h3>Total por atender Zona Rural</h3><div class="value" id="statsZonaPendiente">0</div></div></div>
                 </div>
                 <div class="dashboard">
@@ -1560,11 +1704,21 @@
                                 <div class="campo"><div class="campo-label">Segundo Nombre</div><div class="campo-valor" id="segundoNombre"></div></div>
                                 <div class="campo"><div class="campo-label">Primer Apellido</div><div class="campo-valor" id="primerApellido"></div></div>
                                 <div class="campo"><div class="campo-label">Segundo Apellido</div><div class="campo-valor" id="segundoApellido"></div></div>
-                                <!-- CAMPO PARA ZONA - AGREGADO -->
                                 <div class="campo" id="campoZona" style="display:none;">
                                     <div class="campo-label">Zona </div>
                                     <div class="campo-valor" id="personaZona"></div>
                                 </div>
+                                <!-- ===== NUEVO CAMPO: FECHA DE NACIMIENTO ===== -->
+                                <div class="campo" id="campoFechaNacimiento" style="display:none;">
+                                    <div class="campo-label">Fecha de Nacimiento</div>
+                                    <div class="campo-valor" id="personaFechaNacimiento"></div>
+                                </div>
+                                <!-- ===== NUEVO CAMPO: EDAD (se muestra junto a la fecha) ===== -->
+                                <div class="campo campo-edad" id="campoEdad" style="display:none;">
+                                    <div class="campo-label"><i class="fas fa-cake-candles"></i> Edad</div>
+                                    <div class="campo-valor" id="personaEdad"></div>
+                                </div>
+                                <!-- ===== FIN NUEVO CAMPO EDAD ===== -->
                             </div>
                         </div>
                         <div class="specialties-grid" id="serviciosGridInicio"></div>
@@ -1595,7 +1749,6 @@
                                 <div class="form-usuario-field"><label>NOMBRES</label><input type="text" id="nombresUsuario" required></div>
                                 <div class="form-usuario-field"><label>APELLIDOS</label><input type="text" id="apellidosUsuario" required></div>
                                 <div class="form-usuario-field"><label>CÉDULA</label><input type="text" id="cedulaUsuario" value="" required></div>
-                                <!-- Campo CONTRASEÑA con ojito -->
                                 <div class="form-usuario-field">
                                     <label>CONTRASEÑA</label>
                                     <div class="password-wrapper">
@@ -1603,7 +1756,6 @@
                                         <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('passwordUsuarioNuevo', this)"><i class="fas fa-eye-slash"></i></button>
                                     </div>
                                 </div>
-                                <!-- NUEVO CAMPO: ACTUALIZAR CONTRASEÑA con ojito - SIN PLACEHOLDER (ELIMINADO) -->
                                 <div class="form-usuario-field">
                                     <label>ACTUALIZAR CONTRASEÑA</label>
                                     <div class="password-wrapper">
@@ -1691,7 +1843,6 @@
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-stethoscope"></i> Servicios</h4><p>Gestionar servicios médicos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_servicios" value="1"> Sí</label><label><input type="radio" name="permiso_servicios" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-chart-bar"></i> Reportes</h4><p>Ver reportes de turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_reportes" value="1"> Sí</label><label><input type="radio" name="permiso_reportes" value="0" checked> No</label></div></div>
                         <div class="permiso-item"><div class="permiso-info"><h4><i class="fas fa-users"></i> Atender Turnos</h4><p>Gestionar y atender turnos</p></div><div class="permiso-buttons"><label><input type="radio" name="permiso_atender_turnos" value="1"> Sí</label><label><input type="radio" name="permiso_atender_turnos" value="0" checked> No</label></div></div>
-                        <!-- NUEVO PERMISO: PUBLICIDAD TV -->
                         <div class="permiso-item">
                             <div class="permiso-info">
                                 <h4><i class="fas fa-tv"></i> Publicidad TV</h4>
@@ -1733,7 +1884,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN ATENDER TURNOS (SIN BOTÓN FINALIZAR) -->
+            <!-- SECCIÓN ATENDER TURNOS -->
             <div id="seccion-atender" style="display:none;">
                 <div class="atender-section">
                     <div class="atender-header">
@@ -1785,7 +1936,7 @@
                 </div>
             </div>
             
-            <!-- SECCIÓN AGREGAR NIVEL DE ACCESO (para trabajadores) -->
+            <!-- SECCIÓN AGREGAR NIVEL DE ACCESO -->
             <div id="seccion-agregar-nivel" style="display:none;">
                 <div class="agregar-nivel-section">
                     <h2><i class="fas fa-plus-circle"></i> Agregar Nivel de Acceso</h2>
@@ -1825,10 +1976,58 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SECCIÓN CONFIGURACIÓN CON NUEVO CAMPO PARA IMAGEN DE FONDO DEL LOGIN -->
+            <div id="seccion-configuracion" style="display:none;">
+                <div class="configuracion-section">
+                    <h2><i class="fas fa-cog"></i> Configuración del Sistema</h2>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-building"></i> Nombre de la empresa</label>
+                        <input type="text" id="nombreEmpresa" placeholder="Ej: Hospital San Pablo" value="{{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SANPABLO' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Logo de la empresa</label>
+                        <input type="file" id="logoEmpresa" accept="image/*">
+                        @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
+                            <div style="margin-top: 8px;">
+                                <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo actual" style="max-width: 150px; max-height: 80px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px;">
+                                <small style="display: block; color: #666; margin-top: 4px;">Logo actual</small>
+                            </div>
+                        @endif
+                        <div style="margin-top: 8px; font-size: 0.8rem; color: #888;">Formatos permitidos: JPG, PNG, SVG | Tamaño máximo: 2MB</div>
+                    </div>
+                    
+                    <!-- ===== NUEVO CAMPO: IMAGEN DE FONDO DEL LOGIN ===== -->
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> Imagen de fondo del login</label>
+                        <input type="file" id="fondoLogin" accept="image/*">
+                        @if(isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login)
+                            <div style="margin-top: 8px;">
+                                <img src="{{ asset($configuracion->imagen_fondo_login) }}" alt="Fondo actual" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid #e2e8f0; padding: 4px;">
+                                <small style="display: block; color: #666; margin-top: 4px;">Imagen de fondo actual</small>
+                            </div>
+                        @endif
+                        <div style="margin-top: 8px; font-size: 0.8rem; color: #888;">Formatos permitidos: JPG, PNG | Tamaño máximo: 5MB | Recomendado: 1200x800px</div>
+                    </div>
+                    <!-- ===== FIN NUEVO CAMPO ===== -->
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-map-pin"></i> Dirección de la empresa</label>
+                        <input type="text" id="direccionEmpresa" placeholder="Ej: Calle 10 # 20-30, Centro" value="{{ $configuracion->direccion_empresa ?? 'Calle Principal # 1-20, San Pablo' }}">
+                    </div>
+                    
+                    <div class="configuracion-actions">
+                        <button class="btn-cancelar-config" onclick="mostrarSeccion('inicio')"><i class="fas fa-times"></i> Cancelar</button>
+                        <button class="btn-guardar-config" onclick="guardarConfiguracion()"><i class="fas fa-save"></i> Guardar Configuración</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL PARA AGREGAR/EDITAR BANNER - MÁS ANCHO Y ORGANIZADO EN 2 COLUMNAS -->
+    <!-- MODAL PARA AGREGAR/EDITAR BANNER -->
     <div id="modalAgregarBanner" style="display: none;">
         <div class="modal-banner-overlay">
             <div class="modal-banner-card">
@@ -1840,7 +2039,6 @@
                 <input type="hidden" id="editandoBannerIndex" value="-1">
                 
                 <div class="modal-banner-grid">
-                    <!-- Tipo de contenido -->
                     <div class="form-row">
                         <label><i class="fas fa-film"></i> Tipo de contenido</label>
                         <div class="radio-group">
@@ -1849,7 +2047,6 @@
                         </div>
                     </div>
                     
-                    <!-- Tipo de fondo -->
                     <div class="form-row">
                         <label><i class="fas fa-palette"></i> Tipo de fondo</label>
                         <div class="tipo-fondo-group">
@@ -1858,7 +2055,6 @@
                         </div>
                     </div>
                     
-                    <!-- Foto de fondo - ancho completo -->
                     <div class="form-row full-width" id="campoImagenFondo">
                         <label><i class="fas fa-image"></i> Foto de fondo</label>
                         <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px;">Tamaño recomendado: 1200px x 300px | Peso máximo: 2 Mb</div>
@@ -1869,13 +2065,11 @@
                         </div>
                     </div>
                     
-                    <!-- Color de fondo sólido - ancho completo -->
                     <div class="form-row full-width campo-color-fondo" id="campoColorFondo" style="display: none;">
                         <label><i class="fas fa-fill-drip"></i> Color de fondo</label>
                         <input type="color" id="colorFondoSolido" value="#0b2b5e">
                     </div>
                     
-                    <!-- Ajuste de imagen -->
                     <div class="form-row">
                         <label><i class="fas fa-image"></i> Ajuste de imagen (en TV)</label>
                         <select id="ajusteImagen" style="width: 100%;">
@@ -1889,7 +2083,6 @@
                         </div>
                     </div>
                     
-                    <!-- Filtro -->
                     <div class="form-row" id="campoFiltro">
                         <label><i class="fas fa-filter"></i> Filtro (solo para imagen)</label>
                         <div class="color-input-group">
@@ -1899,7 +2092,6 @@
                         </div>
                     </div>
                     
-                    <!-- Título - ancho completo -->
                     <div class="form-row full-width">
                         <label><i class="fas fa-heading"></i> Título</label>
                         <div class="color-input-group" style="margin-bottom: 8px;">
@@ -1918,7 +2110,6 @@
                         <input type="text" id="tituloTexto" placeholder="Texto del título (máx. 80 caracteres)" maxlength="80">
                     </div>
                     
-                    <!-- Justificación - ancho completo -->
                     <div class="form-row full-width">
                         <label><i class="fas fa-align-left"></i> Justificación</label>
                         <div class="radio-group">
@@ -1928,13 +2119,11 @@
                         </div>
                     </div>
                     
-                    <!-- Texto descriptivo para accesibilidad - ancho completo -->
                     <div class="form-row full-width">
                         <label><i class="fas fa-universal-access"></i> Texto descriptivo para accesibilidad</label>
                         <textarea id="textoAccesibilidad" rows="2" placeholder="Describe el banner para personas con discapacidad visual" maxlength="250"></textarea>
                     </div>
                     
-                    <!-- Agregar enlace -->
                     <div class="form-row full-width">
                         <label><i class="fas fa-link"></i> Agregar enlace</label>
                         <input type="url" id="bannerEnlace" placeholder="https://ejemplo.com">
@@ -1985,7 +2174,7 @@
         </div>
     </div>
 
-    <!-- MODAL PARA AGREGAR NIVEL DE ACCESO (CAMPO EN BLANCO) -->
+    <!-- MODAL PARA AGREGAR NIVEL DE ACCESO -->
     <div id="modalNivelAcceso" style="display: none;">
         <div class="modal-nivel-overlay">
             <div class="modal-nivel-card">
@@ -2013,6 +2202,54 @@
         let banners = [];
         let bannerEditandoIndex = -1;
         let serviciosDB = [];
+        
+        // ==================== FUNCIÓN GUARDAR CONFIGURACIÓN ====================
+        function guardarConfiguracion() {
+            const nombreEmpresa = document.getElementById('nombreEmpresa').value.trim();
+            const direccionEmpresa = document.getElementById('direccionEmpresa').value.trim();
+            const logoFile = document.getElementById('logoEmpresa').files[0];
+            const fondoFile = document.getElementById('fondoLogin').files[0];
+            
+            if (!nombreEmpresa) {
+                showNotification('⚠️ El nombre de la empresa es obligatorio', 'warning');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('nombre_empresa', nombreEmpresa);
+            formData.append('direccion_empresa', direccionEmpresa);
+            
+            if (logoFile) {
+                formData.append('logo', logoFile);
+            }
+            
+            if (fondoFile) {
+                formData.append('fondo_login', fondoFile);
+            }
+            
+            showNotification('💾 Guardando configuración...', 'info');
+            
+            fetch('/api/configuracion-empresa', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('✅ Configuración guardada correctamente', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showNotification('❌ Error: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('❌ Error de conexión con el servidor', 'error');
+            });
+        }
         
         // ==================== FUNCIONES PARA BANNERS ====================
         function cargarBanners() {
@@ -2062,7 +2299,6 @@
             }).join('');
         }
         
-        // Configurar opacidad
         document.getElementById('filtroOpacidad')?.addEventListener('input', function() {
             document.getElementById('opacidadValor').textContent = this.value + '%';
         });
@@ -2129,7 +2365,6 @@
             document.getElementById('textoAccesibilidad').value = banner.textoAccesibilidad || '';
             document.getElementById('bannerEnlace').value = banner.enlace || '';
             
-            // Cargar el ajuste de imagen guardado
             const ajusteSelect = document.getElementById('ajusteImagen');
             if(ajusteSelect && banner.ajusteImagen) {
                 ajusteSelect.value = banner.ajusteImagen;
@@ -2164,7 +2399,6 @@
             document.querySelector('input[name="justificacion"][value="center"]').checked = true;
             document.querySelector('input[name="tipoFondo"][value="imagen"]').checked = true;
             document.getElementById('imagenActualPreview').style.display = 'none';
-            // Resetear ajuste de imagen a cover
             const ajusteSelect = document.getElementById('ajusteImagen');
             if(ajusteSelect) ajusteSelect.value = 'cover';
             toggleCamposPorTipoFondo();
@@ -2305,7 +2539,6 @@
         
         limpiarFormularioUsuario = limpiarFormularioUsuarioOriginal;
         
-        // ==================== FUNCIÓN PARA MOSTRAR/OCULTAR CONTRASEÑA ====================
         function togglePasswordVisibility(inputId, button) {
             const input = document.getElementById(inputId);
             const icon = button.querySelector('i');
@@ -2320,7 +2553,6 @@
             }
         }
         
-        // ==================== FUNCIONES PARA SELECTOR MÚLTIPLE DE MÓDULOS ====================
         function toggleModulosDropdown() {
             const dropdown = document.getElementById('modulosDropdown');
             dropdown.classList.toggle('open');
@@ -2465,12 +2697,9 @@
         let editandoUsuarioBDId = null;
         let usuariosDB = [];
         
-        // ==================== FUNCIÓN EDITAR USUARIO MODIFICADA ====================
-        // AHORA: El campo CONTRASEÑA muestra la contraseña real del usuario (en texto plano)
         function editarUsuario(usuarioData, esBD, indiceLocal) {
             mostrarFormularioUsuario();
             
-            // Separar correctamente nombres y apellidos
             let nombres = '';
             let apellidos = '';
             
@@ -2534,15 +2763,12 @@
             document.getElementById('apellidosUsuario').value = apellidos;
             document.getElementById('cedulaUsuario').value = usuarioData.identificacion || usuarioData.cedula || '';
             
-            // IMPORTANTE: El campo CONTRASEÑA muestra la contraseña real del usuario (no queda en blanco)
-            // Si el usuario tiene una contraseña guardada, se muestra; si no, queda vacío
             if(usuarioData.password && usuarioData.password !== '******') {
                 document.getElementById('passwordUsuarioNuevo').value = usuarioData.password;
             } else {
                 document.getElementById('passwordUsuarioNuevo').value = '';
             }
             
-            // Limpiar el campo de nueva contraseña (ACTUALIZAR CONTRASEÑA)
             document.getElementById('nuevaPasswordUsuario').value = '';
             
             document.getElementById('usuarioAsesor').value = usuarioData.usuario_asesor || usuarioData.username || '';
@@ -2564,7 +2790,6 @@
             }
         }
         
-        // ==================== FUNCIÓN ACTUALIZAR USUARIO BD ====================
         function actualizarUsuarioBD() {
             const nombres = document.getElementById('nombresUsuario').value.trim();
             const apellidos = document.getElementById('apellidosUsuario').value.trim();
@@ -2573,11 +2798,9 @@
             const nivelAcceso = document.getElementById('nivelAccesoUsuario').value;
             const modulosSeleccionados = obtenerModulosSeleccionados();
             
-            // CONTRASEÑA: leer el valor que el usuario escribió
             const passwordIngresada = document.getElementById('passwordUsuarioNuevo').value.trim();
             const nuevaPassword = document.getElementById('nuevaPasswordUsuario').value.trim();
             
-            // Determinar qué contraseña se usará (prioridad: nuevaPassword > passwordIngresada)
             let password = '';
             if (nuevaPassword !== '') {
                 password = nuevaPassword;
@@ -2811,10 +3034,37 @@
         let turnoEnCiclo = null;
         let modulosPermitidos = [];
         let currentModuloActivo = null;
-        let pendingTurnoData = null; // Variable para guardar datos del turno pendiente
+        let pendingTurnoData = null;
 
         const nombreUsuarioAutenticado = @json(auth()->user()->name ?? 'Usuario');
         
+        // ==================== FUNCIÓN PARA CALCULAR EDAD ====================
+        function calcularEdad(fechaNacimiento) {
+            if (!fechaNacimiento || fechaNacimiento === '') return 'No disponible';
+            
+            const hoy = new Date();
+            const nacimiento = new Date(fechaNacimiento);
+            
+            if (isNaN(nacimiento.getTime())) return 'No disponible';
+            
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const mesActual = hoy.getMonth();
+            const mesNacimiento = nacimiento.getMonth();
+            const diaActual = hoy.getDate();
+            const diaNacimiento = nacimiento.getDate();
+            
+            // Si aún no ha cumplido años este año, restar 1
+            if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
+                edad--;
+            }
+            
+            // Si la edad es negativa (fecha futura), mostrar 0
+            if (edad < 0) return '0 años';
+            
+            return edad + ' años';
+        }
+        // ==================== FIN FUNCIÓN CALCULAR EDAD ====================
+
         function esSuperAdministrador() {
             const permisosRequeridos = ['login', 'inicio', 'agregar_paciente', 'usuarios', 'servicios', 'reportes', 'atender_turnos', 'perfil', 'publicidad_tv'];
             for (const permiso of permisosRequeridos) {
@@ -2838,7 +3088,8 @@
                 'atender_turnos': { seccion: 'atender', nombre: 'Gestionar Turnos', icono: 'fas fa-stethoscope' },
                 'perfil': { seccion: 'perfil', nombre: 'Mi Perfil', icono: 'fas fa-id-card' },
                 'agregar_nivel_acceso': { seccion: 'agregar_nivel', nombre: 'Agregar Nivel de Acceso', icono: 'fas fa-plus-circle' },
-                'publicidad_tv': { seccion: 'publicidad_tv', nombre: 'Publicidad TV', icono: 'fas fa-tv' }
+                'publicidad_tv': { seccion: 'publicidad_tv', nombre: 'Publicidad TV', icono: 'fas fa-tv' },
+                'configuracion': { seccion: 'configuracion', nombre: 'Configuración', icono: 'fas fa-cog' }
             };
             
             for (const [key, value] of Object.entries(userPermissions)) {
@@ -2907,12 +3158,13 @@
                     document.getElementById('nuevoNivelAccesoSeccion').value = '';
                 } else if (seccion === 'publicidad_tv') {
                     cargarBanners();
+                } else if (seccion === 'configuracion') {
+                    // No se necesita cargar nada especial
                 }
             }
         }
         
         function configurarVistaPorPermisos() {
-            // Verificar si hay una sección pendiente después de recargar
             const seccionPendiente = localStorage.getItem('seccionPendiente');
             if (seccionPendiente) {
                 localStorage.removeItem('seccionPendiente');
@@ -2961,6 +3213,8 @@
                         document.getElementById('nuevoNivelAccesoSeccion').value = '';
                     } else if (currentModuloActivo.seccion === 'publicidad_tv') {
                         cargarBanners();
+                    } else if (currentModuloActivo.seccion === 'configuracion') {
+                        // No se necesita cargar nada especial
                     }
                 } else {
                     mostrarAccesoDenegado();
@@ -3003,7 +3257,8 @@
                 'reportes': 'reportes', 
                 'perfil': 'perfil',
                 'agregar_nivel_acceso': 'agregar_nivel_acceso',
-                'publicidad_tv': 'publicidad_tv'
+                'publicidad_tv': 'publicidad_tv',
+                'configuracion': 'configuracion'
             };
             const key = moduloMap[moduloId];
             if (!key) return false;
@@ -3062,6 +3317,7 @@
             document.getElementById('regPrimerApellido').value = '';
             document.getElementById('regSegundoApellido').value = '';
             document.getElementById('regZona').value = '';
+            document.getElementById('regFechaNacimiento').value = '';
             document.getElementById('modalAgregarPersona').style.display = 'flex';
         }
         
@@ -3075,6 +3331,7 @@
             document.getElementById('regPrimerApellido').value = '';
             document.getElementById('regSegundoApellido').value = '';
             document.getElementById('regZona').value = '';
+            document.getElementById('regFechaNacimiento').value = '';
             if (cedulaBuscada !== '') {
                 document.getElementById('regIdentificacion').value = cedulaBuscada;
             }
@@ -3090,6 +3347,7 @@
             document.getElementById('seccion-atender').style.display = 'none';
             document.getElementById('seccion-agregar-nivel').style.display = 'none';
             document.getElementById('seccion-publicidad-tv').style.display = 'none';
+            document.getElementById('seccion-configuracion').style.display = 'none';
             
             if (esAdministrador) {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -3137,6 +3395,12 @@
                 if (esAdministrador) document.getElementById('navPublicidadTV').classList.add('active');
                 cargarBanners();
             }
+            else if(sec === 'configuracion') {
+                document.getElementById('seccion-configuracion').style.display = 'block';
+                if (esAdministrador) {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                }
+            }
         }
 
         function cargarPermisosDesdeLocalStorage() {
@@ -3171,7 +3435,8 @@
                 atender_turnos: document.querySelector('input[name="permiso_atender_turnos"]:checked').value === '1' ? 1 : 0,
                 agregar_nivel_acceso: document.querySelector('input[name="permiso_agregar_nivel_acceso"]:checked').value === '1' ? 1 : 0,
                 publicidad_tv: document.querySelector('input[name="permiso_publicidad_tv"]:checked').value === '1' ? 1 : 0,
-                perfil: document.querySelector('input[name="permiso_perfil"]:checked').value === '1' ? 1 : 0
+                perfil: document.querySelector('input[name="permiso_perfil"]:checked').value === '1' ? 1 : 0,
+                configuracion: document.querySelector('input[name="permiso_configuracion"]:checked')?.value === '1' ? 1 : 0
             };
             showNotification(`💾 Guardando permisos para usuario: ${username}...`, 'info');
             fetch('/guardar-permisos-usuario', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }, body: JSON.stringify({ username, permisos }) })
@@ -3225,7 +3490,6 @@
         }
         function detenerCicloLlamada() { if(cicloLlamadaInterval) { clearInterval(cicloLlamadaInterval); cicloLlamadaInterval = null; turnoEnCiclo = null; if(window.speechSynthesis) window.speechSynthesis.cancel(); } }
         
-        // ==================== FUNCIÓN MODIFICADA: iniciarCicloLlamada AHORA INCLUYE EL NOMBRE DEL PACIENTE ====================
         function iniciarCicloLlamada(numeroTurno, nombrePaciente, moduloTexto) { 
             detenerCicloLlamada(); 
             turnoEnCiclo = numeroTurno; 
@@ -3256,6 +3520,7 @@
 
         function cerrarModalPersona() { document.getElementById('modalAgregarPersona').style.display = 'none'; document.getElementById('formRegistrarPersona').reset(); }
 
+        // ==================== FUNCIÓN REGISTRAR PERSONA MODIFICADA CON FECHA DE NACIMIENTO ====================
         async function registrarPersona(event) {
             event.preventDefault();
             const identificacion = document.getElementById('regIdentificacion').value.trim();
@@ -3263,11 +3528,13 @@
             const segundo_nombre = document.getElementById('regSegundoNombre').value.trim();
             const primer_apellido = document.getElementById('regPrimerApellido').value.trim();
             const segundo_apellido = document.getElementById('regSegundoApellido').value.trim();
-            const zona = document.getElementById('regZona').value; // <--- OBTENER ZONA
+            const zona = document.getElementById('regZona').value;
+            const fecha_nacimiento = document.getElementById('regFechaNacimiento').value;
             
             if(!identificacion || !primer_nombre || !primer_apellido) { showNotification('⚠️ Complete los campos obligatorios', 'error'); return; }
             if(!/^\d+$/.test(identificacion)) { showNotification('⚠️ La identificación solo debe contener números', 'error'); return; }
             if(!zona) { showNotification('⚠️ Seleccione una zona (URBANO o RURAL)', 'error'); return; }
+            if(!fecha_nacimiento) { showNotification('⚠️ Seleccione la fecha de nacimiento', 'error'); return; }
             
             const btnGuardar = document.querySelector('#formRegistrarPersona button[type="submit"]');
             const textoOriginal = btnGuardar.innerHTML;
@@ -3286,7 +3553,8 @@
                         segundo_nombre: segundo_nombre || null, 
                         primer_apellido, 
                         segundo_apellido: segundo_apellido || null,
-                        zona: zona  // <--- ENVIAR ZONA
+                        zona: zona,
+                        fecha_nacimiento: fecha_nacimiento
                     }) 
                 });
                 const data = await response.json();
@@ -3305,6 +3573,7 @@
             finally { btnGuardar.disabled = false; btnGuardar.innerHTML = textoOriginal; }
         }
 
+        // ==================== FUNCIÓN BUSCAR PERSONA MODIFICADA CON CÁLCULO DE EDAD ====================
         async function buscarPersona() {
             const ced = document.getElementById('cedula').value.trim();
             cedulaActual = ced;
@@ -3324,11 +3593,9 @@
                     document.getElementById('primerApellido').innerHTML = personaActual.primer_apellido || '---';
                     document.getElementById('segundoApellido').innerHTML = personaActual.segundo_apellido || '---';
                     
-                    // ========== MOSTRAR ZONA ==========
                     const campoZona = document.getElementById('campoZona');
                     const personaZona = document.getElementById('personaZona');
                     if (personaActual.zona && personaActual.zona !== '') {
-                        // Mostrar la zona con colores según el valor
                         let zonaTexto = '';
                         let zonaClase = '';
                         if (personaActual.zona === 'U') {
@@ -3346,7 +3613,29 @@
                     } else {
                         campoZona.style.display = 'none';
                     }
-                    // ========== FIN MOSTRAR ZONA ==========
+                    
+                    // ===== MOSTRAR FECHA DE NACIMIENTO =====
+                    const campoFechaNacimiento = document.getElementById('campoFechaNacimiento');
+                    const personaFechaNacimiento = document.getElementById('personaFechaNacimiento');
+                    if (personaActual.fecha_nacimiento && personaActual.fecha_nacimiento !== '') {
+                        personaFechaNacimiento.textContent = personaActual.fecha_nacimiento;
+                        campoFechaNacimiento.style.display = 'block';
+                    } else {
+                        campoFechaNacimiento.style.display = 'none';
+                    }
+                    // ===== FIN MOSTRAR FECHA DE NACIMIENTO =====
+                    
+                    // ===== NUEVO: CALCULAR Y MOSTRAR EDAD =====
+                    const campoEdad = document.getElementById('campoEdad');
+                    const personaEdad = document.getElementById('personaEdad');
+                    if (personaActual.fecha_nacimiento && personaActual.fecha_nacimiento !== '') {
+                        const edadCalculada = calcularEdad(personaActual.fecha_nacimiento);
+                        personaEdad.innerHTML = `<i class="fas fa-cake-candles"></i> ${edadCalculada}`;
+                        campoEdad.style.display = 'block';
+                    } else {
+                        campoEdad.style.display = 'none';
+                    }
+                    // ===== FIN CALCULAR Y MOSTRAR EDAD =====
                     
                     document.getElementById('personaInfo').style.display = 'block';
                     document.querySelectorAll('.specialty-card').forEach(c => c.classList.remove('disabled'));
@@ -3608,7 +3897,6 @@
             } 
         }
         
-        // ==================== FUNCIÓN MODIFICADA: llamarTurno - AHORA PASA EL NOMBRE DEL PACIENTE ====================
         function llamarTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
@@ -3616,10 +3904,8 @@
                 turnos[idx].estado = 'llamado'; 
                 turnos[idx].ventanillaAsignada = moduloSeleccionado; 
                 localStorage.setItem('turnos', JSON.stringify(turnos)); 
-                // Obtener el nombre del paciente y el módulo
                 const nombrePaciente = turnos[idx].nombre_persona || '';
                 const moduloTexto = getNombreModulo(moduloSeleccionado);
-                // Llamar con el nombre del paciente
                 iniciarCicloLlamada(num, nombrePaciente, moduloTexto); 
                 actualizarVista(); 
                 actualizarContadoresModal(); 
@@ -3690,15 +3976,10 @@
         function cerrarHistorial() { document.getElementById('historyModal').style.display = 'none'; }
         function limpiarHistorial() { if(confirm('¿Limpiar historial? Se conservan turnos activos')) { let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); turnos = turnos.filter(t => t.estado === 'pendiente' || t.estado === 'llamado'); localStorage.setItem('turnos', JSON.stringify(turnos)); actualizarVista(); cerrarHistorial(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); } }
         
-        // ==================== FUNCIÓN ACTUALIZAR VISTA MODIFICADA ====================
-        // AHORA: El contador Zona cuenta SOLO los turnos atendidos con zona RURAL (R)
-        // Y el contador "Total por atender Zona Rural" cuenta los turnos PENDIENTES o LLAMADOS con zona RURAL
         function actualizarVista() { 
             const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const ate = turnos.filter(t => t.estado === 'atendido'); 
-            // Contar SOLO atendidos con zona RURAL
             const ruralesAtendidos = turnos.filter(t => t.estado === 'atendido' && t.zona === 'R'); 
-            // Contar SOLO pendientes o llamados con zona RURAL
             const ruralesPendientes = turnos.filter(t => (t.estado === 'pendiente' || t.estado === 'llamado') && t.zona === 'R');
             
             document.getElementById('statsAtendidos').innerHTML = ate.length; 
@@ -3841,31 +4122,25 @@
         document.getElementById('cedula').addEventListener('keypress', e => { if(e.key === 'Enter') buscarPersona(); });
         document.getElementById('btnBuscar').addEventListener('click', buscarPersona);
         
-        // ==================== GENERAR TURNO MODIFICADO CON CONFIRMACIÓN RURAL ====================
         document.getElementById('generateBtn').addEventListener('click', async function() {
             if(!selectedSpecialty || !personaActual) { 
                 showNotification('Seleccione especialidad', 'warning'); 
                 return; 
             }
             
-            // Verificar si el paciente es RURAL
             if (personaActual.zona === 'R') {
-                // Mostrar modal de confirmación
                 const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim();
                 document.getElementById('confirmacionPacienteNombre').textContent = `👤 ${nombreCompleto}`;
                 document.getElementById('modalConfirmacionRural').classList.add('active');
                 
-                // Guardar referencia para ejecutar después
                 const btn = this;
                 pendingTurnoData = { btn, personaActual, selectedSpecialty };
                 return;
             }
             
-            // Si es URBANO o sin zona, generar directamente
             ejecutarGenerarTurno(this);
         });
 
-        // Botón SÍ en el modal de confirmación
         document.getElementById('btnConfirmarSi').addEventListener('click', function() {
             document.getElementById('modalConfirmacionRural').classList.remove('active');
             if (pendingTurnoData) {
@@ -3874,19 +4149,16 @@
             }
         });
 
-        // Botón NO en el modal de confirmación
         document.getElementById('btnConfirmarNo').addEventListener('click', function() {
             document.getElementById('modalConfirmacionRural').classList.remove('active');
             pendingTurnoData = null;
             showNotification('❌ Generación de turno cancelada', 'error');
-            // Reactivar el botón
             if (pendingTurnoData && pendingTurnoData.btn) {
                 pendingTurnoData.btn.disabled = false;
                 pendingTurnoData.btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
             }
         });
 
-        // Cerrar modal haciendo clic fuera
         document.getElementById('modalConfirmacionRural').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('active');
