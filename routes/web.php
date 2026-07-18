@@ -38,6 +38,11 @@ Route::post('/api/niveles-acceso', [TurnoController::class, 'storeNivelAcceso'])
 // ========== RUTA PÚBLICA PARA OBTENER CONFIGURACIÓN DE EMPRESA (PARA TV Y LOGIN) ==========
 Route::get('/api/configuracion-empresa', [TurnoController::class, 'getConfiguracion']);
 
+// ========== RUTA PRINCIPAL CON /hospital1 (NUEVO) ==========
+Route::get('/hospital1', function () {
+    return redirect('/');
+});
+
 // ========== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) ==========
 Route::middleware(['auth'])->group(function () {
     // Ruta principal - Admin

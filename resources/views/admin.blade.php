@@ -1628,8 +1628,14 @@
                 @else
                     <i class="fas fa-hospital-user" style="font-size: 2.5rem; color: #ffd966; display: block; margin: 0 auto 10px auto;"></i>
                 @endif
-                <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
-                <h2><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SANPABLO' }}</h2>
+                <!-- NOMBRE DINÁMICO DE LA EMPRESA Y DIRECCIÓN -->
+                <h2 style="margin-bottom: 2px;"><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SANPABLO' }}</h2>
+                @if(isset($configuracion) && $configuracion && $configuracion->direccion_empresa)
+                    <div style="font-size: 0.55rem; color: #c7d2fe; margin-top: 2px; padding: 0 5px; border-top: 1px solid rgba(255,215,0,0.2); padding-top: 6px;">
+                        <i class="fas fa-map-pin" style="font-size: 0.5rem; margin-right: 4px;"></i>
+                        {{ $configuracion->direccion_empresa }}
+                    </div>
+                @endif
             </div>
             <div class="nav-menu">
                 <!-- INICIO -->

@@ -135,7 +135,6 @@ html, body {
     margin-bottom: 50px;
 }
 
-/* ===== LETRAS MÁS PEQUEÑAS Y BONITAS ===== */
 .banner-titulo {
     font-size: 1.8em;
     font-weight: 600;
@@ -320,6 +319,48 @@ let indiceActual = 0;
 let intervaloRotacion = null;
 let duracionSegundos = 10;
 
+// ===== NUEVA FUNCIÓN: OBTENER TURNOS DEL SERVIDOR =====
+async function obtenerTurnosDelServidor() {
+    try {
+        const response = await fetch('/api/turnos-llamados');
+        if (!response.ok) throw new Error('Error al obtener turnos');
+        const data = await response.json();
+        return data.turnos || [];
+    } catch (error) {
+        console.error('Error obteniendo turnos del servidor:', error);
+        // Fallback: intentar leer de localStorage (por si está en el mismo dispositivo)
+        try {
+            const data = localStorage.getItem('turnos');
+            const turnos = data ? JSON.parse(data) : [];
+            return turnos.filter(t => t.estado === 'llamado');
+        } catch(e) { return []; }
+    }
+}
+
+// ===== NUEVA FUNCIÓN: CARGAR TURNOS DESDE EL SERVIDOR =====
+async function cargarTurnos() {
+    try {
+        const llamados = await obtenerTurnosDelServidor();
+        const lista = document.getElementById("turnsList");
+        
+        if(llamados.length === 0) {
+            lista.innerHTML = "<div style='text-align:center; padding:40px; color:#999;'>📭 No hay turnos</div>";
+            return;
+        }
+        
+        // Mostrar solo los primeros 10
+        const turnosMostrar = llamados.slice(0, 10);
+        lista.innerHTML = turnosMostrar.map(t => `
+            <div class="turn-row parpadeando">
+                <span style="color:#1aa39a;">${t.numero}</span>
+                <span style="font-size:18px;">👤 ${t.nombre_persona || 'Paciente'}</span>
+                <span style="background:#eee; padding:5px 15px; border-radius:20px;">MÓDULO ${t.ventanilla || 1}</span>
+            </div>
+        `).join('');
+    } catch(e) { console.error(e); }
+}
+
+// ===== FUNCIONES PARA BANNERS (SIN CAMBIOS) =====
 function cargarDatosBanners() {
     try {
         const dataStr = localStorage.getItem('banners_tv');
@@ -437,32 +478,13 @@ function actualizarReloj(){
     document.getElementById("hora").innerText = ahora.toLocaleTimeString();
 }
 
-function cargarTurnos() {
-    try {
-        const data = localStorage.getItem('turnos');
-        const turnos = data ? JSON.parse(data) : [];
-        const lista = document.getElementById("turnsList");
-        const llamados = turnos.filter(t => t.estado === 'llamado').slice(0, 10);
-        if(llamados.length === 0) {
-            lista.innerHTML = "<div style='text-align:center; padding:40px; color:#999;'>📭 No hay turnos</div>";
-            return;
-        }
-        lista.innerHTML = llamados.map(t => `
-            <div class="turn-row parpadeando">
-                <span style="color:#1aa39a;">${t.numero}</span>
-                <span style="font-size:18px;">👤 ${t.nombre_persona || 'Paciente'}</span>
-                <span style="background:#eee; padding:5px 15px; border-radius:20px;">MÓDULO ${t.ventanilla}</span>
-            </div>
-        `).join('');
-    } catch(e) { console.error(e); }
-}
-
+// ===== INICIALIZAR =====
 actualizarReloj();
 cargarDatosBanners();
-cargarTurnos();
+cargarTurnos(); // Ahora obtiene del servidor
 setInterval(actualizarReloj, 1000);
-setInterval(cargarTurnos, 2000);
-setInterval(cargarDatosBanners, 3000);
+setInterval(cargarTurnos, 3000); // Actualiza cada 3 segundos
+setInterval(cargarDatosBanners, 5000);
 </script>
 </body>
 </html>
