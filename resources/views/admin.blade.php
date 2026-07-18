@@ -3864,40 +3864,13 @@
             }
         }
         
-        // ============================================================
-        // 🔥 FUNCIÓN ATENDER TURNO MODIFICADA - GUARDA EN BASE DE DATOS
-        // ============================================================
         function atenderTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
             if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
-                // Actualizar en localStorage
                 turnos[idx].estado = 'atendido'; 
                 turnos[idx].salida = new Date().toISOString(); 
                 localStorage.setItem('turnos', JSON.stringify(turnos)); 
-                
-                // 🔥 GUARDAR EN BASE DE DATOS
-                const turnoId = turnos[idx].id;
-                if (turnoId) {
-                    fetch(`/turnos/${turnoId}/estado`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ estado: 'atendido' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('✅ Turno atendido en la base de datos');
-                        } else {
-                            console.warn('⚠️ No se pudo actualizar en BD:', data.message);
-                        }
-                    })
-                    .catch(error => console.error('❌ Error al actualizar en BD:', error));
-                }
-                
                 showNotification(`✅ Turno ${num} atendido correctamente`, 'success'); 
                 if(turnoEnCiclo === num) detenerCicloLlamada(); 
                 if(turnoActivoModal && turnoActivoModal.numero === num) limpiarPanelIzquierdo(); 
@@ -3930,40 +3903,13 @@
             } 
         }
         
-        // ============================================================
-        // 🔥 FUNCIÓN LLAMAR TURNO MODIFICADA - GUARDA EN BASE DE DATOS
-        // ============================================================
         function llamarTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
             if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
-                // Actualizar en localStorage
                 turnos[idx].estado = 'llamado'; 
                 turnos[idx].ventanillaAsignada = moduloSeleccionado; 
                 localStorage.setItem('turnos', JSON.stringify(turnos)); 
-                
-                // 🔥 GUARDAR EN BASE DE DATOS
-                const turnoId = turnos[idx].id;
-                if (turnoId) {
-                    fetch(`/turnos/${turnoId}/estado`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ estado: 'llamado' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('✅ Turno llamado en la base de datos');
-                        } else {
-                            console.warn('⚠️ No se pudo actualizar en BD:', data.message);
-                        }
-                    })
-                    .catch(error => console.error('❌ Error al actualizar en BD:', error));
-                }
-                
                 const nombrePaciente = turnos[idx].nombre_persona || '';
                 const moduloTexto = getNombreModulo(moduloSeleccionado);
                 iniciarCicloLlamada(num, nombrePaciente, moduloTexto); 
@@ -4230,9 +4176,6 @@
             }
         });
 
-        // ============================================================
-        // 🔥 FUNCIÓN GENERAR TURNO MODIFICADA - GUARDA EN BASE DE DATOS
-        // ============================================================
         function ejecutarGenerarTurno(btn) {
             const servicioObj = serviciosDB.find(s => s.id_servicio == selectedSpecialty);
             const prefix = servicioObj ? servicioObj.nombre_servicio.substring(0, 3).toUpperCase() : 'MED';
@@ -4248,74 +4191,41 @@
                 else if(n.includes('laboratorio')) ventanillaAsignada = 3; 
                 else if(n.includes('rayos') || n.includes('radiologia')) ventanillaAsignada = 4; 
             }
-            
-            // 🔥 GUARDAR EN BASE DE DATOS
-            fetch('/generar-turno', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    persona_id: personaActual.identificacion,
-                    identificacion: personaActual.identificacion,
-                    nombre_completo: nombreCompleto,
-                    especialidad: selectedSpecialty
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // También guardar en localStorage para compatibilidad
-                    const turno = { 
-                        id: data.turno_id || Date.now() + '-' + Math.random().toString(36).substr(2,9),
-                        numero: data.turno || turnoCompleto,
-                        persona_id: personaActual.identificacion,
-                        identificacion: personaActual.identificacion,
-                        nombre_persona: nombreCompleto,
-                        especialidad: selectedSpecialty,
-                        nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty,
-                        ventanilla: data.ventanilla || ventanillaAsignada,
-                        timestamp: new Date().toISOString(),
-                        estado: 'pendiente',
-                        zona: personaActual.zona || '',
-                        salida: null
-                    };
-                    
-                    const turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-                    turnos.push(turno);
-                    localStorage.setItem('turnos', JSON.stringify(turnos));
-                    saveCounters();
-                    
-                    document.getElementById('turnoGeneradoNumero').textContent = data.turno || turnoCompleto;
-                    document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
-                    document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
-                    document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(data.ventanilla || ventanillaAsignada)}`;
-                    document.getElementById('turnoGeneradoModal').style.display = 'block';
-                    showNotification(`Turno ${data.turno || turnoCompleto} generado`, 'success');
-                    
-                    document.getElementById('cedula').value = '';
-                    document.getElementById('resultadoBusqueda').innerHTML = '';
-                    document.getElementById('personaInfo').style.display = 'none';
-                    personaActual = null;
-                    document.querySelectorAll('.specialty-card').forEach(c => { 
-                        c.classList.remove('selected'); 
-                        c.classList.add('disabled'); 
-                    });
-                    selectedSpecialty = null;
-                    btn.disabled = true;
-                    actualizarVista();
-                    if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
-                } else {
-                    showNotification('❌ Error al generar turno: ' + data.message, 'error');
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('❌ Error de conexión al generar turno', 'error');
-                btn.disabled = false;
+            const turno = { 
+                id: Date.now() + '-' + Math.random().toString(36).substr(2,9), 
+                numero: turnoCompleto, 
+                persona_id: personaActual.id, 
+                identificacion: personaActual.identificacion, 
+                nombre_persona: nombreCompleto, 
+                especialidad: selectedSpecialty, 
+                nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty, 
+                ventanilla: ventanillaAsignada, 
+                timestamp: new Date().toISOString(), 
+                estado: 'pendiente',
+                zona: personaActual.zona || ''  
+            };
+            saveCounters();
+            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            turnos.push(turno);
+            localStorage.setItem('turnos', JSON.stringify(turnos));
+            document.getElementById('turnoGeneradoNumero').textContent = turnoCompleto;
+            document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
+            document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
+            document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(ventanillaAsignada)}`;
+            document.getElementById('turnoGeneradoModal').style.display = 'block';
+            showNotification(`Turno ${turnoCompleto} generado`, 'success');
+            document.getElementById('cedula').value = '';
+            document.getElementById('resultadoBusqueda').innerHTML = '';
+            document.getElementById('personaInfo').style.display = 'none';
+            personaActual = null;
+            document.querySelectorAll('.specialty-card').forEach(c => { 
+                c.classList.remove('selected'); 
+                c.classList.add('disabled'); 
             });
+            selectedSpecialty = null;
+            btn.disabled = true;
+            actualizarVista();
+            if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
         }
 
         window.addEventListener('storage', () => { actualizarVista(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); });
