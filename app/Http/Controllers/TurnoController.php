@@ -621,4 +621,45 @@ class TurnoController extends Controller
             ], 500);
         }
     }
+
+    // ==================== NUEVO MÉTODO PARA LA TV - TURNOS LLAMADOS ====================
+    
+    /**
+     * Obtener los turnos con estado 'llamado' para la pantalla de TV
+     * Esta ruta es pública y no requiere autenticación
+     */
+    public function turnosLlamados()
+    {
+        try {
+            // Obtener turnos con estado 'llamado' de la base de datos
+            $turnos = Turno::where('estado', 'llamado')
+                ->orderBy('updated_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($turno) {
+                    return [
+                        'id' => $turno->id,
+                        'numero' => $turno->numero,
+                        'nombre_persona' => $turno->nombre_persona,
+                        'ventanilla' => $turno->ventanilla,
+                        'estado' => $turno->estado,
+                        'nombre_especialidad' => $turno->nombre_especialidad,
+                        'created_at' => $turno->created_at,
+                        'updated_at' => $turno->updated_at,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'turnos' => $turnos
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener turnos llamados: ' . $e->getMessage(),
+                'turnos' => []
+            ], 500);
+        }
+    }
 }

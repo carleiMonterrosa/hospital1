@@ -25,6 +25,9 @@ Route::get('/superadmin/permisos/{id}', [SuperAdminController::class, 'obtenerPe
 Route::get('/tv', function () { return view('tv'); })->name('tv');
 Route::get('/tv/turnos', [TurnoController::class, 'getTurnosTV'])->name('tv.turnos');
 
+// ===== NUEVA RUTA PARA QUE LA TV CONSULTE TURNOS LLAMADOS DESDE LA BD =====
+Route::get('/api/turnos-llamados', [TurnoController::class, 'turnosLlamados'])->name('api.turnos.llamados');
+
 // ========== RUTA PÚBLICA PARA BUSCAR PERSONA (NO REQUIERE LOGIN) ==========
 Route::post('/buscar-persona', [TurnoController::class, 'buscarPersona'])->name('buscar.persona');
 
