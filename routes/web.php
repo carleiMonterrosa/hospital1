@@ -7,6 +7,8 @@ use App\Http\Controllers\HistorialLlamadoController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SuperAdminController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 
 // ========== RUTAS DE AUTENTICACIÓN (PÚBLICAS) ==========
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -25,9 +27,6 @@ Route::get('/superadmin/permisos/{id}', [SuperAdminController::class, 'obtenerPe
 Route::get('/tv', function () { return view('tv'); })->name('tv');
 Route::get('/tv/turnos', [TurnoController::class, 'getTurnosTV'])->name('tv.turnos');
 
-// ===== NUEVA RUTA PARA QUE LA TV CONSULTE TURNOS LLAMADOS DESDE LA BD =====
-Route::get('/api/turnos-llamados', [TurnoController::class, 'turnosLlamados'])->name('api.turnos.llamados');
-
 // ========== RUTA PÚBLICA PARA BUSCAR PERSONA (NO REQUIERE LOGIN) ==========
 Route::post('/buscar-persona', [TurnoController::class, 'buscarPersona'])->name('buscar.persona');
 
@@ -45,6 +44,55 @@ Route::get('/api/configuracion-empresa', [TurnoController::class, 'getConfigurac
 Route::get('/hospital1', function () {
     return redirect('/');
 });
+
+// ============================================================
+// 🔥 RUTAS DE TURNOS - DEBEN ESTAR FUERA DEL GRUPO AUTH O DENTRO
+// ============================================================
+
+// 🔥 Ruta para GUARDAR turnos (POST) - la usa atenderTurno() y generarTurno()
+Route::post('/api/turnos', [TurnoController::class, 'store']);
+
+// 🔥 Ruta para OBTENER turnos (GET) - para reportes y TV - CORREGIDO ✅
+Route::get('/api/turnos', function () {
+    try {
+        // 🔥 CORREGIDO: 'fecha_creacion' NO existe en la tabla 'turnos'
+        // Se cambió a 'id_turno' que SI existe
+        $turnos = DB::table('turnos')->orderBy('id_turno', 'desc')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $turnos
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener turnos: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
+// 🔥 Ruta para OBTENER turnos por módulo - CORREGIDO ✅
+Route::get('/api/turnos/modulo/{id}', function ($id) {
+    try {
+        // 🔥 CORREGIDO: 'fecha_creacion' NO existe en la tabla 'turnos'
+        // Se cambió a 'id_turno' que SI existe
+        $turnos = DB::table('turnos')
+            ->where('id_modulo', $id)
+            ->orderBy('id_turno', 'desc')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $turnos
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener turnos del módulo: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
+// ========== 🔥 NUEVA RUTA PÚBLICA PARA OBTENER TURNOS EN ESPERA POR MÓDULO ==========
+Route::get('/turnos/en-espera', [TurnoController::class, 'getTurnosEnEspera'])->name('turnos.en.espera');
 
 // ========== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) ==========
 Route::middleware(['auth'])->group(function () {
@@ -66,7 +114,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/eliminar-usuario/{id}', [TurnoController::class, 'eliminarUsuario'])->name('eliminar.usuario');
 
     // ========== RUTAS DE TURNOS ==========
-    Route::post('/generar-turno', [TurnoController::class, 'generarTurno'])->name('generar.turno');
+    // 🔥 CAMBIO IMPORTANTE: /generar-turno ahora usa store() que SÍ guarda en BD
+    Route::post('/generar-turno', [TurnoController::class, 'store'])->name('generar.turno');
     Route::post('/turnos/{id}/estado', [TurnoController::class, 'cambiarEstado'])->name('turnos.estado');
 
     // ========== RUTAS DE SERVICIOS ==========
@@ -90,11 +139,28 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ========== RUTAS DE PERSONAS ==========
-    // NOTA: La ruta POST /personas ya está definida FUERA del grupo auth (pública)
-    // Solo mantenemos las rutas específicas que necesitan autenticación
     Route::post('/personas/buscar', [PersonaController::class, 'buscarPersona'])->name('personas.buscar');
 
     // ========== NUEVAS RUTAS PARA CONFIGURACIÓN DE EMPRESA (PROTEGIDAS) ==========
     Route::get('/api/configuracion-empresa', [TurnoController::class, 'getConfiguracion']);
     Route::post('/api/configuracion-empresa', [TurnoController::class, 'guardarConfiguracion']);
+});
+
+// ========== 🔥 RUTA PARA LIMPIAR CACHÉ (ÚTIL PARA PRUEBAS) ==========
+Route::get('/limpiar-cache', function() {
+    try {
+        Artisan::call('view:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        return response()->json([
+            'success' => true,
+            'message' => '✅ Caché de Laravel limpiada correctamente'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => '❌ Error al limpiar caché: ' . $e->getMessage()
+        ], 500);
+    }
 });

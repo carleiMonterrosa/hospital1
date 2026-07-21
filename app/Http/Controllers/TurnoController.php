@@ -12,20 +12,17 @@ use Illuminate\Support\Facades\Storage;
 
 class TurnoController extends Controller
 {
-    // Mostrar vista del admin - CORREGIDO para pasar los permisos del usuario Y LA CONFIGURACIÓN
     public function admin()
     {
         $user = auth()->user();
         $permisos = $user->permisos ?? [];
         $usuariosBD = User::select('id', 'name', 'username', 'usuario_asesor', 'identificacion', 'servicio', 'nivel_acceso', 'modulos', 'permisos')->get();
         
-        // 🔥 OBTENER LA CONFIGURACIÓN DE LA EMPRESA 🔥
         $configuracion = ConfiguracionEmpresa::first();
         
         return view('admin', compact('permisos', 'usuariosBD', 'configuracion'));
     }
 
-    // ========== FUNCIÓN PARA GUARDAR PERSONA (PACIENTE) CON ZONA Y FECHA DE NACIMIENTO ==========
     public function storePersona(Request $request)
     {
         try {
@@ -36,7 +33,7 @@ class TurnoController extends Controller
                 'primer_apellido' => 'required|string|max:50',
                 'segundo_apellido' => 'nullable|string|max:50',
                 'zona' => 'required|in:U,R',
-                'fecha_nacimiento' => 'required|date' // NUEVO: validación para fecha de nacimiento
+                'fecha_nacimiento' => 'required|date'
             ]);
 
             $persona = Persona::create([
@@ -46,7 +43,7 @@ class TurnoController extends Controller
                 'primer_apellido' => $request->primer_apellido,
                 'segundo_apellido' => $request->segundo_apellido,
                 'zona' => $request->zona,
-                'fecha_nacimiento' => $request->fecha_nacimiento // NUEVO: guardar fecha de nacimiento
+                'fecha_nacimiento' => $request->fecha_nacimiento
             ]);
 
             return response()->json([
@@ -63,7 +60,6 @@ class TurnoController extends Controller
         }
     }
 
-    // Buscar persona por identificación (cédula) - AHORA TRAE EL CAMPO ZONA Y FECHA DE NACIMIENTO
     public function buscarPersona(Request $request)
     {
         try {
@@ -71,21 +67,17 @@ class TurnoController extends Controller
                 'identificacion' => 'required|string|min:3|max:20'
             ]);
 
-            // Buscar en la tabla personas - TRAE CAMPO ZONA Y FECHA_NACIMIENTO
             $persona = Persona::where('identificacion', $request->identificacion)->first();
 
             if ($persona) {
-                // Generar nombre de usuario automático: primer_nombre.primer_apellido
                 $usuarioGenerado = '';
                 if ($persona->primer_nombre && $persona->primer_apellido) {
                     $usuarioGenerado = strtolower(
                         trim($persona->primer_nombre) . '.' . trim($persona->primer_apellido)
                     );
-                    // Limpiar caracteres especiales y acentos
                     $usuarioGenerado = preg_replace('/[^a-z0-9.]/', '', $usuarioGenerado);
                 }
                 
-                // Convertir zona: U = URBANO, R = RURAL
                 $zonaTexto = '';
                 if ($persona->zona === 'U') {
                     $zonaTexto = 'URBANO';
@@ -104,7 +96,7 @@ class TurnoController extends Controller
                         'usuario' => $usuarioGenerado,
                         'zona' => $persona->zona ?? '',
                         'zona_texto' => $zonaTexto,
-                        'fecha_nacimiento' => $persona->fecha_nacimiento ?? '' // NUEVO: enviar fecha de nacimiento
+                        'fecha_nacimiento' => $persona->fecha_nacimiento ?? ''
                     ]
                 ]);
             } else {
@@ -121,7 +113,6 @@ class TurnoController extends Controller
         }
     }
 
-    // ========== MÉTODO MODIFICADO: Buscar usuario por username O por identificación ==========
     public function buscarUsuarioPorUsername(Request $request)
     {
         $request->validate([
@@ -130,7 +121,6 @@ class TurnoController extends Controller
 
         $busqueda = $request->username;
         
-        // Buscar por username O por identificacion
         $usuario = User::where('username', $busqueda)
                         ->orWhere('identificacion', $busqueda)
                         ->first();
@@ -181,7 +171,6 @@ class TurnoController extends Controller
         }
     }
 
-    // ========== MÉTODO MODIFICADO: Guardar los permisos de un usuario en columna JSON ==========
     public function guardarPermisosUsuario(Request $request)
     {
         $request->validate([
@@ -189,7 +178,6 @@ class TurnoController extends Controller
             'permisos' => 'required|array'
         ]);
 
-        // Buscar por username O por identificacion
         $usuario = User::where('username', $request->username)
                         ->orWhere('identificacion', $request->username)
                         ->first();
@@ -201,7 +189,6 @@ class TurnoController extends Controller
             ]);
         }
 
-        // Guardar permisos en la columna JSON 'permisos'
         $usuario->permisos = $request->permisos;
         $usuario->save();
 
@@ -211,110 +198,373 @@ class TurnoController extends Controller
         ]);
     }
 
-    // Generar nuevo turno
-    public function generarTurno(Request $request)
+    /**
+     * 🔥 CORREGIDO: Guarda un nuevo turno en la base de datos
+     * Ahora guarda también el nombre del paciente en nombre_persona
+     * El estado SIEMPRE es 'espera' (no acepta otro valor)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
     {
-        $request->validate([
-            'persona_id' => 'required|string',
-            'identificacion' => 'required|string',
-            'nombre_completo' => 'required|string',
-            'especialidad' => 'required|in:consulta-externa,odontologia,laboratorio,rayos-x'
-        ]);
+        try {
+            // Validar los datos recibidos
+            $request->validate([
+                'identificacion' => 'required|string|max:250',
+                'id_modulo' => 'required|integer|min:1|max:8',
+                'fecha_turno' => 'nullable|date'
+                // 🔥 ELIMINADO: 'estado' de la validación para que no pueda ser enviado
+            ]);
 
-        $persona = Persona::where('identificacion', $request->persona_id)->first();
-        if (!$persona) {
+            // 🔥 id_modulo se guarda DIRECTAMENTE como viene de la interfaz
+            $id_modulo_real = (int)$request->id_modulo;
+
+            // 🔥 OBTENER EL NOMBRE DE LA ESPECIALIDAD SEGÚN EL MÓDULO
+            $nombresEspecialidades = [
+                1 => 'Consulta Externa',
+                2 => 'Odontología',
+                3 => 'Laboratorio Clínico',
+                4 => 'Rayos X',
+                5 => 'Consulta Externa',
+                6 => 'Odontología',
+                7 => 'Laboratorio Clínico',
+                8 => 'Rayos X'
+            ];
+            $especialidad = $nombresEspecialidades[$id_modulo_real] ?? 'Consulta Externa';
+
+            // 🔥 OBTENER EL NOMBRE DEL PACIENTE DESDE LA TABLA PERSONAS
+            $persona = Persona::where('identificacion', $request->identificacion)->first();
+            $nombrePersona = 'Paciente';
+            if ($persona) {
+                $nombrePersona = trim(
+                    ($persona->primer_nombre ?? '') . ' ' . 
+                    ($persona->segundo_nombre ?? '') . ' ' . 
+                    ($persona->primer_apellido ?? '') . ' ' . 
+                    ($persona->segundo_apellido ?? '')
+                );
+                $nombrePersona = preg_replace('/\s+/', ' ', $nombrePersona);
+                if (empty($nombrePersona)) {
+                    $nombrePersona = 'Paciente';
+                }
+            }
+
+            // Preparar los datos para guardar
+            $data = [
+                'identificacion_paciente' => $request->identificacion,
+                'id_modulo' => $id_modulo_real,
+                'fecha_turno' => $request->fecha_turno ?? now(),
+                'estado' => 'espera', // 🔥 SIEMPRE 'espera' - NO SE PUEDE CAMBIAR DESDE EL FRONTEND
+                'especialidad' => $especialidad,
+                'nombre_persona' => $nombrePersona
+            ];
+
+            // Guardar en la tabla turnos
+            $id = DB::table('turnos')->insertGetId($data, 'id_turno');
+
+            // Obtener el turno recién creado
+            $turno = DB::table('turnos')->where('id_turno', $id)->first();
+
+            // Generar número de turno con prefijo
+            $prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+            $prefijo = $prefijos[($id_modulo_real - 1) % 4] ?? 'CON';
+            $numeroTurno = $prefijo . '-' . str_pad($id, 2, '0', STR_PAD_LEFT);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Turno {$numeroTurno} generado correctamente",
+                'data' => [
+                    'id_turno' => $id,
+                    'numero_turno' => $numeroTurno,
+                    'identificacion_paciente' => $turno->identificacion_paciente,
+                    'id_modulo' => $turno->id_modulo,
+                    'especialidad' => $turno->especialidad,
+                    'fecha_turno' => $turno->fecha_turno,
+                    'estado' => $turno->estado, // Siempre será 'espera'
+                    'nombre_persona' => $turno->nombre_persona
+                ]
+            ]);
+
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Persona no encontrada'
-            ], 404);
+                'message' => 'Error al guardar turno: ' . $e->getMessage()
+            ], 500);
         }
-
-        $especialidades = [
-            'consulta-externa' => ['nombre' => 'Consulta Externa', 'prefijo' => 'CON', 'ventanilla' => 1],
-            'odontologia' => ['nombre' => 'Odontología', 'prefijo' => 'ODO', 'ventanilla' => 2],
-            'laboratorio' => ['nombre' => 'Laboratorio', 'prefijo' => 'LAB', 'ventanilla' => 3],
-            'rayos-x' => ['nombre' => 'Rayos X', 'prefijo' => 'RAY', 'ventanilla' => 4],
-        ];
-
-        $esp = $especialidades[$request->especialidad];
-        
-        $ultimoTurno = Turno::where('especialidad', $request->especialidad)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $numeroSimple = $ultimoTurno ? $ultimoTurno->numero_simple + 1 : 1;
-        
-        if ($numeroSimple > 50) {
-            $numeroSimple = 1;
-        }
-
-        $formattedTurn = str_pad($numeroSimple, 2, '0', STR_PAD_LEFT);
-        $turnoCompleto = $esp['prefijo'] . '-' . $formattedTurn;
-
-        $turno = Turno::create([
-            'numero' => $turnoCompleto,
-            'numero_simple' => $numeroSimple,
-            'persona_id' => $persona->identificacion,
-            'identificacion' => $persona->identificacion,
-            'nombre_persona' => $request->nombre_completo,
-            'especialidad' => $request->especialidad,
-            'nombre_especialidad' => $esp['nombre'],
-            'ventanilla' => $esp['ventanilla'],
-            'estado' => 'pendiente',
-            'fecha' => now()->toDateString(),
-            'hora' => now()->toTimeString()
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'turno' => $turnoCompleto,
-            'ventanilla' => $esp['ventanilla'],
-            'message' => "Turno {$turnoCompleto} generado para {$request->nombre_completo}"
-        ]);
     }
 
-    // Obtener turnos para la pantalla TV
+    /**
+     * Genera un turno (método alternativo que redirige a store)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function generarTurno(Request $request)
+    {
+        return $this->store($request);
+    }
+
+    /**
+     * 🔥 CORREGIDO: Genera un turno directamente desde el formulario
+     * Ahora guarda también el nombre del paciente
+     * El estado SIEMPRE es 'espera'
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function generarTurnoDesdeFormulario(Request $request)
+    {
+        try {
+            $identificacion = $request->input('identificacion');
+            $id_modulo = $request->input('id_modulo');
+            
+            if (!$identificacion || !$id_modulo) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Faltan datos: identificación y módulo son requeridos',
+                    'datos_recibidos' => $request->all()
+                ], 400);
+            }
+            
+            // 🔥 id_modulo se guarda DIRECTAMENTE
+            $id_modulo_real = (int)$id_modulo;
+
+            $nombresEspecialidades = [
+                1 => 'Consulta Externa',
+                2 => 'Odontología',
+                3 => 'Laboratorio Clínico',
+                4 => 'Rayos X',
+                5 => 'Consulta Externa',
+                6 => 'Odontología',
+                7 => 'Laboratorio Clínico',
+                8 => 'Rayos X'
+            ];
+            $especialidad = $nombresEspecialidades[$id_modulo_real] ?? 'Consulta Externa';
+
+            // 🔥 OBTENER EL NOMBRE DEL PACIENTE
+            $persona = Persona::where('identificacion', $identificacion)->first();
+            $nombrePersona = 'Paciente';
+            if ($persona) {
+                $nombrePersona = trim(
+                    ($persona->primer_nombre ?? '') . ' ' . 
+                    ($persona->segundo_nombre ?? '') . ' ' . 
+                    ($persona->primer_apellido ?? '') . ' ' . 
+                    ($persona->segundo_apellido ?? '')
+                );
+                $nombrePersona = preg_replace('/\s+/', ' ', $nombrePersona);
+                if (empty($nombrePersona)) {
+                    $nombrePersona = 'Paciente';
+                }
+            }
+            
+            $id = DB::table('turnos')->insertGetId([
+                'identificacion_paciente' => $identificacion,
+                'id_modulo' => $id_modulo_real,
+                'fecha_turno' => now(),
+                'estado' => 'espera', // 🔥 SIEMPRE 'espera'
+                'especialidad' => $especialidad,
+                'nombre_persona' => $nombrePersona
+            ], 'id_turno');
+            
+            $turno = DB::table('turnos')->where('id_turno', $id)->first();
+            
+            $prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+            $prefijo = $prefijos[($id_modulo_real - 1) % 4] ?? 'CON';
+            $numeroTurno = $prefijo . '-' . str_pad($id, 2, '0', STR_PAD_LEFT);
+            
+            return response()->json([
+                'success' => true,
+                'message' => "✅ Turno {$numeroTurno} generado correctamente",
+                'data' => [
+                    'id_turno' => $id,
+                    'numero_turno' => $numeroTurno,
+                    'identificacion_paciente' => $turno->identificacion_paciente,
+                    'id_modulo' => $turno->id_modulo,
+                    'especialidad' => $turno->especialidad,
+                    'fecha_turno' => $turno->fecha_turno,
+                    'estado' => $turno->estado, // Siempre será 'espera'
+                    'nombre_persona' => $turno->nombre_persona
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => '❌ Error al generar turno: ' . $e->getMessage(),
+                'linea_error' => $e->getLine(),
+                'archivo_error' => $e->getFile()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔥 CORREGIDO: Obtiene los turnos en ESPERA para la pantalla de TV
+     * Solo muestra los turnos que están en estado 'espera'
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTurnosTV()
     {
-        $turnos = Turno::with('persona')
-            ->whereIn('estado', ['pendiente', 'llamado'])
-            ->orderBy('created_at', 'asc')
-            ->get();
+        try {
+            // 🔥 CAMBIADO: SOLO mostrar turnos en 'espera'
+            $turnos = DB::table('turnos')
+                ->where('estado', 'espera') // Solo turnos en espera
+                ->orderBy('id_turno', 'asc')
+                ->get();
 
-        $primerosPorVentanilla = [];
-        for ($i = 1; $i <= 4; $i++) {
-            $primerosPorVentanilla[$i] = $turnos->where('ventanilla', $i)->first();
+            $primerosPorVentanilla = [];
+            for ($i = 1; $i <= 4; $i++) {
+                $primerosPorVentanilla[$i] = $turnos->where('id_modulo', $i)->first();
+            }
+
+            $otrosTurnos = $turnos->filter(function ($turno) use ($primerosPorVentanilla) {
+                return !in_array($turno->id_turno, array_column($primerosPorVentanilla, 'id_turno'));
+            })->values();
+
+            $turnosMapeados = $turnos->map(function ($turno) {
+                $prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+                $prefijo = $prefijos[($turno->id_modulo - 1) % 4] ?? 'CON';
+                $turno->numero = $prefijo . '-' . str_pad($turno->id_turno, 2, '0', STR_PAD_LEFT);
+                return $turno;
+            });
+
+            return response()->json([
+                'success' => true,
+                'turnos' => $turnosMapeados,
+                'primeros' => $primerosPorVentanilla,
+                'otros' => $otrosTurnos
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        $otrosTurnos = $turnos->filter(function ($turno) use ($primerosPorVentanilla) {
-            return !in_array($turno->id, array_column($primerosPorVentanilla, 'id'));
-        })->values();
-
-        return response()->json([
-            'turnos' => $turnos,
-            'primeros' => $primerosPorVentanilla,
-            'otros' => $otrosTurnos
-        ]);
     }
 
-    // Cambiar estado de un turno
+    /**
+     * 🔥 NUEVO: Obtiene los turnos en ESPERA para el módulo específico
+     * Este método es para "Ver Turnos" en el panel de administración
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTurnosEnEspera(Request $request)
+    {
+        try {
+            $modulo = $request->input('modulo', 1);
+            
+            $turnos = DB::table('turnos')
+                ->where('estado', 'espera')
+                ->where('id_modulo', $modulo)
+                ->whereDate('fecha_turno', now()->toDateString())
+                ->orderBy('id_turno', 'asc')
+                ->get();
+
+            // Agregar número de turno
+            $turnos = $turnos->map(function ($turno) {
+                $prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+                $prefijo = $prefijos[($turno->id_modulo - 1) % 4] ?? 'CON';
+                $turno->numero = $prefijo . '-' . str_pad($turno->id_turno, 2, '0', STR_PAD_LEFT);
+                return $turno;
+            });
+
+            return response()->json([
+                'success' => true,
+                'turnos' => $turnos,
+                'total' => $turnos->count(),
+                'modulo' => $modulo
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener turnos en espera: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Cambia el estado de un turno específico
+     * Usar: 'llamado' para atender/llamar, 'atendido' para finalizar
+     * 
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function cambiarEstado(Request $request, $id)
     {
-        $request->validate([
-            'estado' => 'required|in:pendiente,llamado,atendido,eliminado'
-        ]);
+        try {
+            $request->validate([
+                'estado' => 'required|in:espera,llamado,atendido,eliminado'
+            ]);
 
-        $turno = Turno::findOrFail($id);
-        $turno->estado = $request->estado;
-        $turno->save();
+            $turno = DB::table('turnos')->where('id_turno', $id)->first();
+            
+            if (!$turno) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Turno no encontrado'
+                ], 404);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => "Turno {$turno->numero} actualizado a {$request->estado}"
-        ]);
+            DB::table('turnos')
+                ->where('id_turno', $id)
+                ->update([
+                    'estado' => $request->estado
+                ]);
+
+            $prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+            $prefijo = $prefijos[($turno->id_modulo - 1) % 4] ?? 'CON';
+            $numeroTurno = $prefijo . '-' . str_pad($id, 2, '0', STR_PAD_LEFT);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Turno {$numeroTurno} actualizado a {$request->estado}"
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cambiar estado: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    // Obtener un usuario por su username
+    /**
+     * 🔥 NUEVO: Elimina un turno de la base de datos
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        try {
+            $turno = DB::table('turnos')->where('id_turno', $id)->first();
+            
+            if (!$turno) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Turno no encontrado'
+                ], 404);
+            }
+
+            DB::table('turnos')->where('id_turno', $id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Turno eliminado correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar turno: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function obtenerUsuarioPorUsername($username)
     {
         $usuario = User::where('username', $username)->first();
@@ -341,7 +591,6 @@ class TurnoController extends Controller
         ]);
     }
 
-    // Actualizar un usuario existente
     public function actualizarUsuario(Request $request, $id)
     {
         try {
@@ -422,7 +671,6 @@ class TurnoController extends Controller
         }
     }
 
-    // Eliminar un usuario
     public function eliminarUsuario($id)
     {
         try {
@@ -457,11 +705,6 @@ class TurnoController extends Controller
         }
     }
 
-    // ==================== MÉTODOS PARA NIVELES DE ACCESO ====================
-    
-    /**
-     * Obtener todos los niveles de acceso de la base de datos
-     */
     public function getNivelesAcceso()
     {
         try {
@@ -478,9 +721,6 @@ class TurnoController extends Controller
         }
     }
 
-    /**
-     * Guardar un nuevo nivel de acceso en la base de datos
-     */
     public function storeNivelAcceso(Request $request)
     {
         try {
@@ -510,11 +750,6 @@ class TurnoController extends Controller
         }
     }
 
-    // ==================== NUEVOS MÉTODOS PARA CONFIGURACIÓN DE EMPRESA ====================
-
-    /**
-     * Obtener la configuración de la empresa
-     */
     public function getConfiguracion()
     {
         try {
@@ -545,9 +780,6 @@ class TurnoController extends Controller
         }
     }
 
-    /**
-     * Guardar o actualizar la configuración de la empresa
-     */
     public function guardarConfiguracion(Request $request)
     {
         try {
@@ -567,9 +799,7 @@ class TurnoController extends Controller
             $config->nombre_empresa = $request->nombre_empresa;
             $config->direccion_empresa = $request->direccion_empresa;
 
-            // Subir el logo si se envió
             if ($request->hasFile('logo')) {
-                // Eliminar logo anterior si existe
                 if ($config->logo_empresa_url) {
                     $oldPath = str_replace('/storage/', '', $config->logo_empresa_url);
                     if (Storage::disk('public')->exists($oldPath)) {
@@ -583,9 +813,7 @@ class TurnoController extends Controller
                 $config->logo_empresa_url = '/storage/' . $path;
             }
 
-            // ========== SUBIR IMAGEN DE FONDO DEL LOGIN ==========
             if ($request->hasFile('fondo_login')) {
-                // Eliminar fondo anterior si existe
                 if ($config->imagen_fondo_login) {
                     $oldPath = str_replace('/storage/', '', $config->imagen_fondo_login);
                     if (Storage::disk('public')->exists($oldPath)) {
@@ -598,7 +826,6 @@ class TurnoController extends Controller
                 $path = $file->storeAs('fondos_login', $filename, 'public');
                 $config->imagen_fondo_login = '/storage/' . $path;
             }
-            // ==========================================================
 
             $config->save();
 
@@ -618,47 +845,6 @@ class TurnoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al guardar configuración: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    // ==================== NUEVO MÉTODO PARA LA TV - TURNOS LLAMADOS ====================
-    
-    /**
-     * Obtener los turnos con estado 'llamado' para la pantalla de TV
-     * Esta ruta es pública y no requiere autenticación
-     */
-    public function turnosLlamados()
-    {
-        try {
-            // Obtener turnos con estado 'llamado' de la base de datos
-            $turnos = Turno::where('estado', 'llamado')
-                ->orderBy('updated_at', 'desc')
-                ->limit(10)
-                ->get()
-                ->map(function ($turno) {
-                    return [
-                        'id' => $turno->id,
-                        'numero' => $turno->numero,
-                        'nombre_persona' => $turno->nombre_persona,
-                        'ventanilla' => $turno->ventanilla,
-                        'estado' => $turno->estado,
-                        'nombre_especialidad' => $turno->nombre_especialidad,
-                        'created_at' => $turno->created_at,
-                        'updated_at' => $turno->updated_at,
-                    ];
-                });
-
-            return response()->json([
-                'success' => true,
-                'turnos' => $turnos
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener turnos llamados: ' . $e->getMessage(),
-                'turnos' => []
             ], 500);
         }
     }

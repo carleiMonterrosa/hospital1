@@ -1935,7 +1935,7 @@
                                 </div>
                             </div>
                             <div class="modulo-info-box"><div class="modulo-nombre" id="gtModuloNombre">MÓDULO 1</div><div class="modulo-contadores"><span class="contador-badge activos"><i class="fas fa-clock"></i> ACTIVOS: <span id="gtContActivos">0</span></span><span class="contador-badge atendidos"><i class="fas fa-check"></i> ATENDIDOS: <span id="gtContAtendidos">0</span></span><span class="contador-badge totales"><i class="fas fa-list"></i> TOTALES: <span id="gtContTotales">0</span></span></div></div>
-                            <button class="btn-ver-turnos-modal" onclick="toggleListaTurnos()"><i class="fas fa-eye"></i> Ver Turnos</button>
+                            <button class="btn-ver-turnos-modal" onclick="verTurnosModal()"><i class="fas fa-eye"></i> Ver Turnos</button>
                             <div class="turnos-espera-lista" id="turnos-espera-lista"><div id="turnosEsperaBody"></div></div>
                         </div>
                     </div>
@@ -2986,6 +2986,10 @@
             }
         }
         
+        // ================================================================
+        // 🔥 FUNCIÓN CORREGIDA: cargarServiciosCompletos()
+        // AHORA usa el NOMBRE del servicio como value, NO el ID
+        // ================================================================
         function cargarServiciosCompletos() {
             const servicioSelect = document.getElementById('gtServicioFiltro');
             if (!servicioSelect) return;
@@ -2993,7 +2997,7 @@
             if (serviciosDB.length > 0) {
                 serviciosDB.filter(s => s.activo).forEach(servicio => {
                     const option = document.createElement('option');
-                    option.value = servicio.id_servicio;
+                    option.value = servicio.nombre_servicio;
                     option.textContent = servicio.nombre_servicio;
                     servicioSelect.appendChild(option);
                 });
@@ -3059,12 +3063,10 @@
             const diaActual = hoy.getDate();
             const diaNacimiento = nacimiento.getDate();
             
-            // Si aún no ha cumplido años este año, restar 1
             if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
                 edad--;
             }
             
-            // Si la edad es negativa (fecha futura), mostrar 0
             if (edad < 0) return '0 años';
             
             return edad + ' años';
@@ -3150,11 +3152,12 @@
                     if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
                     if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                         limpiarPanelIzquierdo();
-                        actualizarContadoresModal();
-                        actualizarConteoDropdown();
-                        renderizarListaTurnos();
-                        cargarServiciosCompletos();
-                        limpiarModulosDropdown();
+                        cargarTurnosDesdeBD();
+                        setTimeout(() => {
+                            renderizarListaTurnos();
+                            actualizarContadoresModal();
+                            actualizarConteoDropdown();
+                        }, 500);
                     }
                 } else if (seccion === 'reportes') {
                     setTimeout(() => generarReporte(), 200);
@@ -3205,11 +3208,12 @@
                         if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
                         if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                             limpiarPanelIzquierdo();
-                            actualizarContadoresModal();
-                            actualizarConteoDropdown();
-                            renderizarListaTurnos();
-                            cargarServiciosCompletos();
-                            limpiarModulosDropdown();
+                            cargarTurnosDesdeBD();
+                            setTimeout(() => {
+                                renderizarListaTurnos();
+                                actualizarContadoresModal();
+                                actualizarConteoDropdown();
+                            }, 500);
                         }
                     } else if (currentModuloActivo.seccion === 'reportes') {
                         setTimeout(() => generarReporte(), 200);
@@ -3299,11 +3303,12 @@
                     if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
                     if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                         limpiarPanelIzquierdo();
-                        actualizarContadoresModal();
-                        actualizarConteoDropdown();
-                        renderizarListaTurnos();
-                        cargarServiciosCompletos();
-                        limpiarModulosDropdown();
+                        cargarTurnosDesdeBD();
+                        setTimeout(() => {
+                            renderizarListaTurnos();
+                            actualizarContadoresModal();
+                            actualizarConteoDropdown();
+                        }, 500);
                     }
                 }
                 else { 
@@ -3391,6 +3396,12 @@
                 cargarNombreUsuario();
                 cargarServiciosCompletos();
                 limpiarModulosDropdown();
+                cargarTurnosDesdeBD();
+                setTimeout(() => {
+                    renderizarListaTurnos();
+                    actualizarContadoresModal();
+                    actualizarConteoDropdown();
+                }, 500);
             }
             else if(sec === 'agregar_nivel') {
                 document.getElementById('seccion-agregar-nivel').style.display = 'block';
@@ -3484,10 +3495,40 @@
         function getNombreModulo(modulo) { return `MÓDULO ${modulo}`; }
         function toggleModuloDropdown() { const btn = document.getElementById('moduloBtnClick'); const dropdown = document.getElementById('moduloDropdownM'); btn.classList.toggle('open'); dropdown.classList.toggle('open'); actualizarConteoDropdown(); }
         function actualizarConteoDropdown() { 
-            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
+            let turnosCombinados = [];
+            const idsVistos = new Set();
+            
+            const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
+            const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
+            
+            turnosBD.forEach(t => {
+                if (!idsVistos.has(t.id_turno)) {
+                    idsVistos.add(t.id_turno);
+                    turnosCombinados.push(t);
+                }
+            });
+            turnosLocal.forEach(t => {
+                const id = t.id_turno || t.id;
+                if (!idsVistos.has(id)) {
+                    idsVistos.add(id);
+                    turnosCombinados.push(t);
+                }
+            });
+            
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
+            
+            const moduloAEspecialidad = {
+                1: 'Consulta Externa',
+                2: 'Odontología',
+                3: 'Laboratorio Clínico',
+                4: 'Rayos X'
+            };
+            
             for(let mod = 1; mod <= 6; mod++) { 
-                let lista = servicioFiltro ? turnos.filter(t => String(t.especialidad) === String(servicioFiltro)) : turnos.filter(t => parseInt(t.ventanilla) === mod); 
+                const especialidad = moduloAEspecialidad[mod] || 'Consulta Externa';
+                let lista = servicioFiltro ? 
+                    turnosCombinados.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
+                    turnosCombinados.filter(t => t.especialidad === especialidad);
                 const activos = lista.filter(t => t.estado === 'pendiente' || t.estado === 'llamado').length; 
                 const atendidos = lista.filter(t => t.estado === 'atendido').length; 
                 const el = document.getElementById(`countMod${mod}`); 
@@ -3521,7 +3562,18 @@
             }, 5000); 
         }
         
-        function seleccionarModulo(num) { moduloSeleccionado = num; document.getElementById('moduloBtnTexto').textContent = getNombreModulo(num); document.getElementById('gtModuloNombre').textContent = getNombreModulo(num); document.querySelectorAll('.modulo-option').forEach(o => o.classList.toggle('active-mod', parseInt(o.getAttribute('data-mod')) === num)); document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); if(turnoActivoModal && parseInt(turnoActivoModal.ventanilla) !== num) limpiarPanelIzquierdo(); actualizarContadoresModal(); renderizarListaTurnos(); showNotification(`📌 ${getNombreModulo(num)} seleccionado`, 'success'); }
+        function seleccionarModulo(num) { 
+            moduloSeleccionado = num; 
+            document.getElementById('moduloBtnTexto').textContent = getNombreModulo(num); 
+            document.getElementById('gtModuloNombre').textContent = getNombreModulo(num); 
+            document.querySelectorAll('.modulo-option').forEach(o => o.classList.toggle('active-mod', parseInt(o.getAttribute('data-mod')) === num)); 
+            document.getElementById('moduloBtnClick').classList.remove('open'); 
+            document.getElementById('moduloDropdownM').classList.remove('open'); 
+            if(turnoActivoModal && parseInt(turnoActivoModal.id_modulo) !== num) limpiarPanelIzquierdo(); 
+            actualizarContadoresModal(); 
+            renderizarListaTurnos(); 
+            showNotification(`📌 ${getNombreModulo(num)} seleccionado`, 'success'); 
+        }
         document.addEventListener('click', function(e) { const wrapper = document.getElementById('moduloSelectorWrapper'); if(wrapper && !wrapper.contains(e.target)) { document.getElementById('moduloBtnClick').classList.remove('open'); document.getElementById('moduloDropdownM').classList.remove('open'); } });
 
         function cerrarModalPersona() { document.getElementById('modalAgregarPersona').style.display = 'none'; document.getElementById('formRegistrarPersona').reset(); }
@@ -3804,16 +3856,52 @@
                 gtSegundoApellido.classList.remove('vacio');
             }
             const gtModuloNombre = document.getElementById('gtModuloNombre');
-            if(gtModuloNombre) gtModuloNombre.textContent = getNombreModulo(turno.ventanilla || moduloSeleccionado);
+            if(gtModuloNombre) gtModuloNombre.textContent = getNombreModulo(turno.id_modulo || moduloSeleccionado);
             document.querySelectorAll('.turno-espera-item').forEach(el => el.classList.remove('seleccionado')); 
             const itemEl = document.querySelector(`.turno-espera-item[data-num="${turno.numero}"]`); 
             if(itemEl) itemEl.classList.add('seleccionado'); 
         }
         
+        // ================================================================
+        // 🔥 ACTUALIZAR CONTADORES MODAL - CORREGIDO para usar id_modulo
+        // ================================================================
         function actualizarContadoresModal() { 
-            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
+            let turnosCombinados = [];
+            const idsVistos = new Set();
+            
+            const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
+            const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
+            
+            turnosBD.forEach(t => {
+                if (!idsVistos.has(t.id_turno)) {
+                    idsVistos.add(t.id_turno);
+                    turnosCombinados.push(t);
+                }
+            });
+            turnosLocal.forEach(t => {
+                const id = t.id_turno || t.id;
+                if (!idsVistos.has(id)) {
+                    idsVistos.add(id);
+                    turnosCombinados.push(t);
+                }
+            });
+            
+            // 🔥 OBTENER EL NOMBRE DE LA ESPECIALIDAD SEGÚN EL MÓDULO SELECCIONADO
+            const moduloAEspecialidad = {
+                1: 'Consulta Externa',
+                2: 'Odontología',
+                3: 'Laboratorio Clínico',
+                4: 'Rayos X'
+            };
+            const especialidadSeleccionada = moduloAEspecialidad[moduloSeleccionado] || 'Consulta Externa';
+            
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
-            let lista = servicioFiltro ? turnos.filter(t => String(t.especialidad) === String(servicioFiltro)) : turnos.filter(t => parseInt(t.ventanilla) === moduloSeleccionado); 
+            
+            // 🔥 FILTRAR POR ESPECIALIDAD (NOMBRE) o por ID_MODULO
+            let lista = servicioFiltro ? 
+                turnosCombinados.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
+                turnosCombinados.filter(t => t.id_modulo === moduloSeleccionado);
+            
             const gtContActivos = document.getElementById('gtContActivos');
             if(gtContActivos) gtContActivos.textContent = lista.filter(t => t.estado === 'pendiente' || t.estado === 'llamado').length;
             const gtContAtendidos = document.getElementById('gtContAtendidos');
@@ -3822,13 +3910,64 @@
             if(gtContTotales) gtContTotales.textContent = lista.length;
         }
         
+        // ================================================================
+        // 🔥 RENDERIZAR LISTA DE TURNOS - CORREGIDO para filtrar por ESPECIALIDAD
+        // ================================================================
         function renderizarListaTurnos() { 
-            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
+            let turnosCombinados = [];
+            const idsVistos = new Set();
+            
+            const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
+            const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
+            
+            // 🔥 SI NO HAY TURNOS EN LOCALSTORAGE, CARGAR DESDE BD
+            if (turnosLocal.length === 0 && turnosBD.length === 0) {
+                cargarTurnosDesdeBD();
+                return;
+            }
+            
+            turnosBD.forEach(t => {
+                if (!idsVistos.has(t.id_turno)) {
+                    idsVistos.add(t.id_turno);
+                    turnosCombinados.push(t);
+                }
+            });
+            turnosLocal.forEach(t => {
+                const id = t.id_turno || t.id;
+                if (!idsVistos.has(id)) {
+                    idsVistos.add(id);
+                    turnosCombinados.push(t);
+                }
+            });
+            
+            if (turnosCombinados.length === 0) {
+                const body = document.getElementById('turnosEsperaBody');
+                if (body) {
+                    body.innerHTML = `<div style="text-align:center;padding:20px;color:#888;font-size:0.85rem;"><i class="fas fa-inbox" style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>No hay turnos en espera</div>`;
+                }
+                actualizarContadoresModal();
+                return;
+            }
+            
+            localStorage.setItem('turnos', JSON.stringify(turnosCombinados));
+            
+            // 🔥 OBTENER EL NOMBRE DE LA ESPECIALIDAD SEGÚN EL MÓDULO SELECCIONADO
+            const moduloAEspecialidad = {
+                1: 'Consulta Externa',
+                2: 'Odontología',
+                3: 'Laboratorio Clínico',
+                4: 'Rayos X'
+            };
+            const especialidadSeleccionada = moduloAEspecialidad[moduloSeleccionado] || 'Consulta Externa';
+            
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
-            let activos = turnos.filter(t => t.estado !== 'atendido');
+            let activos = turnosCombinados.filter(t => t.estado !== 'atendido' && t.estado !== 'eliminado');
+            
+            // 🔥 CORREGIDO: Filtrar por ESPECIALIDAD (NOMBRE) o por ID_MODULO
             let espera = servicioFiltro ? 
                 activos.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
-                activos.filter(t => parseInt(t.ventanilla) === moduloSeleccionado);
+                activos.filter(t => t.id_modulo === moduloSeleccionado);
+            
             const turnosUnicos = [];
             const numerosVistos = new Set();
             for (const turno of espera) {
@@ -3837,40 +3976,84 @@
                     turnosUnicos.push(turno);
                 }
             }
+            
             turnosUnicos.sort((a, b) => {
                 if (a.estado === 'llamado' && b.estado !== 'llamado') return -1;
                 if (a.estado !== 'llamado' && b.estado === 'llamado') return 1;
-                return 0;
+                const numA = parseInt(a.numero ? a.numero.replace(/[^0-9]/g, '') : 0);
+                const numB = parseInt(b.numero ? b.numero.replace(/[^0-9]/g, '') : 0);
+                return numA - numB;
             });
+            
             const body = document.getElementById('turnosEsperaBody'); 
             if(!body) return;
+            
             if(turnosUnicos.length === 0) { 
                 body.innerHTML = `<div style="text-align:center;padding:20px;color:#888;font-size:0.85rem;"><i class="fas fa-inbox" style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>No hay turnos en espera</div>`; 
+                actualizarContadoresModal();
                 return; 
             } 
-            body.innerHTML = turnosUnicos.map(t => `<div class="turno-espera-item ${turnoActivoModal && turnoActivoModal.numero === t.numero ? 'seleccionado' : ''}" data-num="${t.numero}">
-                <div style="flex:1; cursor:pointer;" onclick='cargarTurnoEnPanel(${JSON.stringify(t)})'>
-                    <div class="turno-espera-num">${t.numero}</div>
-                    <div class="turno-espera-pac">${t.nombre_persona || 'Paciente'} · ${t.nombreEspecialidad || 'MED'}</div>
-                </div>
-                <div class="turno-actions-lista">
-                    <button class="btn-llamar-lista" onclick="event.stopPropagation(); llamarTurno('${t.numero}')"><i class="fas fa-bell"></i> Llamar</button>
-                    <button class="btn-atender-lista" onclick="event.stopPropagation(); atenderTurno('${t.numero}')"><i class="fas fa-check"></i> Atender</button>
-                </div>
-            </div>`).join(''); 
+            
+            body.innerHTML = turnosUnicos.map(t => {
+                const nombrePaciente = t.nombre_persona || 'Paciente';
+                const especialidad = t.nombreEspecialidad || t.especialidad || 'Consulta';
+                const isSeleccionado = turnoActivoModal && turnoActivoModal.numero === t.numero ? 'seleccionado' : '';
+                const claseLlamado = t.estado === 'llamado' ? 'parpadeando' : '';
+                
+                return `<div class="turno-espera-item ${isSeleccionado} ${claseLlamado}" data-num="${t.numero}">
+                    <div style="flex:1; cursor:pointer;" onclick='cargarTurnoEnPanel(${JSON.stringify(t)})'>
+                        <div class="turno-espera-num">${t.numero}</div>
+                        <div class="turno-espera-pac">${nombrePaciente} · ${especialidad}</div>
+                    </div>
+                    <div class="turno-actions-lista">
+                        <button class="btn-llamar-lista" onclick="event.stopPropagation(); llamarTurno('${t.numero}')"><i class="fas fa-bell"></i> Llamar</button>
+                        <button class="btn-atender-lista" onclick="event.stopPropagation(); atenderTurno('${t.numero}')"><i class="fas fa-check"></i> Atender</button>
+                    </div>
+                </div>`;
+            }).join(''); 
+            
             if(turnoActivoModal) {
                 const item = document.querySelector(`.turno-espera-item[data-num="${turnoActivoModal.numero}"]`);
                 if(item) item.classList.add('seleccionado');
             }
+            
+            actualizarContadoresModal();
+            actualizarConteoDropdown();
         }
         
         function atenderTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
+            
             if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
+                // 🔥 MARCAR COMO ATENDIDO EN LOCAL
                 turnos[idx].estado = 'atendido'; 
                 turnos[idx].salida = new Date().toISOString(); 
-                localStorage.setItem('turnos', JSON.stringify(turnos)); 
+                localStorage.setItem('turnos', JSON.stringify(turnos));
+                
+                const idTurno = turnos[idx].id_turno || turnos[idx].id;
+                
+                // 🔥 ACTUALIZAR EN LA BASE DE DATOS
+                if(idTurno) {
+                    fetch(`/turnos/${idTurno}/estado`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({ estado: 'atendido' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            console.log(`✅ Turno ${num} atendido en la BD`);
+                        } else {
+                            console.error('❌ Error al atender turno en BD:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error en fetch:', error));
+                }
+                
                 showNotification(`✅ Turno ${num} atendido correctamente`, 'success'); 
                 if(turnoEnCiclo === num) detenerCicloLlamada(); 
                 if(turnoActivoModal && turnoActivoModal.numero === num) limpiarPanelIzquierdo(); 
@@ -3879,6 +4062,9 @@
                 actualizarConteoDropdown(); 
                 if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); 
                 renderizarListaTurnos();
+                
+                // 🔥 RECARGAR TURNOS DESDE BD PARA SINCRONIZAR
+                setTimeout(cargarTurnosDesdeBD, 500);
             } else if(idx !== -1) { 
                 showNotification(`⚠️ El turno ${num} ya fue atendido`, 'warning'); 
             } else { 
@@ -3890,33 +4076,73 @@
             atenderTurno(num);
         }
         
-        function filtrarPorServicio() { actualizarContadoresModal(); actualizarConteoDropdown(); renderizarListaTurnos(); }
+        function filtrarPorServicio() { 
+            actualizarContadoresModal(); 
+            actualizarConteoDropdown(); 
+            renderizarListaTurnos(); 
+        }
         
-        function toggleListaTurnos() { 
+        // ================================================================
+        // 🔥 FUNCIÓN verTurnosModal - CONSULTA LA BD
+        // ================================================================
+        function verTurnosModal() { 
             listaTurnosVisible = !listaTurnosVisible; 
             const lista = document.getElementById('turnos-espera-lista'); 
             if(listaTurnosVisible) { 
                 lista.classList.add('visible'); 
-                renderizarListaTurnos(); 
+                cargarTurnosDesdeBD();
+                setTimeout(() => {
+                    renderizarListaTurnos();
+                }, 500);
             } else { 
                 lista.classList.remove('visible'); 
             } 
         }
         
+        // ================================================================
+        // 🔥 FUNCIÓN LLAMAR TURNO (GUARDA EN BASE DE DATOS)
+        // ================================================================
         function llamarTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
             const idx = turnos.findIndex(t => t.numero === num); 
+            
             if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
                 turnos[idx].estado = 'llamado'; 
                 turnos[idx].ventanillaAsignada = moduloSeleccionado; 
-                localStorage.setItem('turnos', JSON.stringify(turnos)); 
+                localStorage.setItem('turnos', JSON.stringify(turnos));
+                
+                const idTurno = turnos[idx].id_turno || turnos[idx].id;
+                
+                if(idTurno) {
+                    fetch(`/turnos/${idTurno}/estado`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({ estado: 'llamado' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            console.log('✅ Turno llamado en la BD');
+                            cargarTurnosDesdeBD();
+                        } else {
+                            console.error('❌ Error al llamar turno en BD:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error en fetch:', error));
+                }
+                
                 const nombrePaciente = turnos[idx].nombre_persona || '';
                 const moduloTexto = getNombreModulo(moduloSeleccionado);
                 iniciarCicloLlamada(num, nombrePaciente, moduloTexto); 
+                
                 actualizarVista(); 
-                actualizarContadoresModal(); 
-                actualizarConteoDropdown(); 
-                renderizarListaTurnos(); 
+                renderizarListaTurnos();
+                actualizarContadoresModal();
+                actualizarConteoDropdown();
+                
                 showNotification(`🔔 Turno ${num} llamado al ${moduloTexto}`, 'success'); 
             } else if(idx !== -1) { 
                 showNotification(`⚠️ El turno ${num} ya fue atendido`, 'warning');
@@ -4176,56 +4402,387 @@
             }
         });
 
+        // ================================================================
+        // 🔥 FUNCIÓN PRINCIPAL: GENERAR TURNO Y GUARDAR EN BASE DE DATOS (CORREGIDA)
+        // ================================================================
         function ejecutarGenerarTurno(btn) {
             const servicioObj = serviciosDB.find(s => s.id_servicio == selectedSpecialty);
-            const prefix = servicioObj ? servicioObj.nombre_servicio.substring(0, 3).toUpperCase() : 'MED';
-            if(!turnCounters[selectedSpecialty]) turnCounters[selectedSpecialty] = 0;
-            turnCounters[selectedSpecialty]++;
-            if(turnCounters[selectedSpecialty] > 99) turnCounters[selectedSpecialty] = 1;
-            const turnoCompleto = `${prefix}-${String(turnCounters[selectedSpecialty]).padStart(2,'0')}`;
-            const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim();
-            let ventanillaAsignada = 1;
+            
+            let id_modulo = 1;
             if(servicioObj) { 
                 const n = servicioObj.nombre_servicio.toLowerCase(); 
-                if(n.includes('odontologia') || n.includes('odontología')) ventanillaAsignada = 2; 
-                else if(n.includes('laboratorio')) ventanillaAsignada = 3; 
-                else if(n.includes('rayos') || n.includes('radiologia')) ventanillaAsignada = 4; 
+                if(n.includes('odontologia') || n.includes('odontología')) id_modulo = 2; 
+                else if(n.includes('laboratorio')) id_modulo = 3; 
+                else if(n.includes('rayos') || n.includes('radiologia')) id_modulo = 4; 
             }
-            const turno = { 
-                id: Date.now() + '-' + Math.random().toString(36).substr(2,9), 
-                numero: turnoCompleto, 
-                persona_id: personaActual.id, 
-                identificacion: personaActual.identificacion, 
-                nombre_persona: nombreCompleto, 
-                especialidad: selectedSpecialty, 
-                nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty, 
-                ventanilla: ventanillaAsignada, 
-                timestamp: new Date().toISOString(), 
-                estado: 'pendiente',
-                zona: personaActual.zona || ''  
-            };
-            saveCounters();
-            const turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-            turnos.push(turno);
-            localStorage.setItem('turnos', JSON.stringify(turnos));
-            document.getElementById('turnoGeneradoNumero').textContent = turnoCompleto;
-            document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
-            document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
-            document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(ventanillaAsignada)}`;
-            document.getElementById('turnoGeneradoModal').style.display = 'block';
-            showNotification(`Turno ${turnoCompleto} generado`, 'success');
-            document.getElementById('cedula').value = '';
-            document.getElementById('resultadoBusqueda').innerHTML = '';
-            document.getElementById('personaInfo').style.display = 'none';
-            personaActual = null;
-            document.querySelectorAll('.specialty-card').forEach(c => { 
-                c.classList.remove('selected'); 
-                c.classList.add('disabled'); 
-            });
-            selectedSpecialty = null;
+            
+            const identificacion = personaActual.identificacion;
+            const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim().replace(/\s+/g, ' ');
+            
             btn.disabled = true;
-            actualizarVista();
-            if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            
+            const datosTurno = {
+                identificacion: identificacion,
+                id_modulo: id_modulo,
+                estado: 'espera',
+                nombre_persona: nombreCompleto
+            };
+            
+            fetch('/generar-turno', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(datosTurno)
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
+                
+                if (data.success) {
+                    // 🔥 CREAR UN SOLO TURNO CON EL NOMBRE CORRECTO
+                    const nuevoTurno = {
+                        id: data.id_turno,
+                        id_turno: data.id_turno,
+                        numero: data.numero_turno,
+                        persona_id: personaActual.id,
+                        identificacion: identificacion,
+                        nombre_persona: nombreCompleto,
+                        especialidad: data.especialidad || servicioObj?.nombre_servicio || selectedSpecialty,
+                        nombreEspecialidad: servicioObj ? servicioObj.nombre_servicio : selectedSpecialty,
+                        id_modulo: id_modulo,
+                        timestamp: data.fecha_turno || new Date().toISOString(),
+                        estado: 'espera',
+                        zona: personaActual.zona || ''
+                    };
+                    
+                    // 🔥 OBTENER TURNOS ACTUALES Y LIMPIAR
+                    let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+                    
+                    // ELIMINAR TODOS LOS TURNOS CON "undefined" EN EL NOMBRE
+                    turnos = turnos.filter(t => {
+                        const nombre = t.nombre_persona || t.nombre || '';
+                        return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+                    });
+                    
+                    // ELIMINAR CUALQUIER TURNO CON EL MISMO NÚMERO (EVITA DUPLICADOS)
+                    turnos = turnos.filter(t => t.numero !== nuevoTurno.numero);
+                    
+                    // AGREGAR EL NUEVO TURNO
+                    turnos.push(nuevoTurno);
+                    localStorage.setItem('turnos', JSON.stringify(turnos));
+                    
+                    // LIMPIAR turnos_bd PARA FORZAR RECARGA DESDE BD
+                    localStorage.removeItem('turnos_bd');
+                    
+                    document.getElementById('turnoGeneradoNumero').textContent = data.numero_turno;
+                    document.getElementById('turnoGeneradoPaciente').innerHTML = `<i class="fas fa-user"></i> ${nombreCompleto}`;
+                    document.getElementById('turnoGeneradoServicio').innerHTML = `<i class="fas fa-stethoscope"></i> ${servicioObj ? servicioObj.nombre_servicio : selectedSpecialty}`;
+                    document.getElementById('turnoGeneradoVentanilla').innerHTML = `<i class="fas fa-door-open"></i> Diríjase a ${getNombreModulo(id_modulo)}`;
+                    document.getElementById('turnoGeneradoModal').style.display = 'block';
+                    
+                    showNotification(`✅ Turno ${data.numero_turno} guardado correctamente`, 'success');
+                    
+                    document.getElementById('cedula').value = '';
+                    document.getElementById('resultadoBusqueda').innerHTML = '';
+                    document.getElementById('personaInfo').style.display = 'none';
+                    personaActual = null;
+                    document.querySelectorAll('.specialty-card').forEach(c => { 
+                        c.classList.remove('selected'); 
+                        c.classList.add('disabled'); 
+                    });
+                    selectedSpecialty = null;
+                    btn.disabled = true;
+                    
+                    actualizarVista();
+                    if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte();
+                    
+                    setTimeout(cargarTurnosDesdeBD, 300);
+                    setTimeout(renderizarListaTurnos, 600);
+                    setTimeout(actualizarContadoresModal, 700);
+                    setTimeout(actualizarConteoDropdown, 800);
+                    
+                } else {
+                    showNotification('❌ ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
+                showNotification('❌ Error de conexión con el servidor', 'error');
+            });
+        }
+
+        // ================================================================
+        // 🔥 FUNCIÓN CARGAR TURNOS DESDE LA BASE DE DATOS
+        // ================================================================
+        function cargarTurnosDesdeBD() {
+            fetch('/api/turnos')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const turnosBD = data.data.map(t => {
+                            let numero = t.numero_turno;
+                            if (!numero) {
+                                const prefijos = ['CON', 'ODO', 'LAB', 'RAY'];
+                                const prefijo = prefijos[(t.id_modulo || 1) - 1] || 'CON';
+                                numero = prefijo + '-' + String(t.id_turno).padStart(2, '0');
+                            }
+                            
+                            const especialidad = t.especialidad || 'Consulta Externa';
+                            const nombreEspecialidad = especialidad;
+                            
+                            let nombrePersona = t.nombre_persona || 'Paciente';
+                            if (nombrePersona === 'undefined' || nombrePersona === 'null' || !nombrePersona.trim()) {
+                                nombrePersona = 'Paciente';
+                            }
+                            
+                            return {
+                                id: t.id_turno,
+                                id_turno: t.id_turno,
+                                numero: numero,
+                                identificacion: t.identificacion_paciente,
+                                nombre_persona: nombrePersona,
+                                especialidad: especialidad,
+                                nombreEspecialidad: nombreEspecialidad,
+                                id_modulo: t.id_modulo,
+                                timestamp: t.fecha_turno,
+                                estado: t.estado || 'pendiente',
+                                zona: t.zona || ''
+                            };
+                        });
+                        
+                        // 🔥 FILTRAR TURNOS CON UNDEFINED
+                        const turnosFiltrados = turnosBD.filter(t => {
+                            const nombre = t.nombre_persona || t.nombre || '';
+                            return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+                        });
+                        
+                        localStorage.setItem('turnos_bd', JSON.stringify(turnosFiltrados));
+                        
+                        const turnosLocales = JSON.parse(localStorage.getItem('turnos') || '[]');
+                        const turnosLocalesFiltrados = turnosLocales.filter(t => {
+                            const nombre = t.nombre_persona || t.nombre || '';
+                            return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+                        });
+                        
+                        const idsVistos = new Set();
+                        const turnosCombinados = [];
+                        
+                        turnosFiltrados.forEach(t => {
+                            if (!idsVistos.has(t.id_turno)) {
+                                idsVistos.add(t.id_turno);
+                                turnosCombinados.push(t);
+                            }
+                        });
+                        turnosLocalesFiltrados.forEach(t => {
+                            const id = t.id_turno || t.id;
+                            if (!idsVistos.has(id)) {
+                                idsVistos.add(id);
+                                turnosCombinados.push(t);
+                            }
+                        });
+                        
+                        localStorage.setItem('turnos', JSON.stringify(turnosCombinados));
+                        
+                        actualizarVista();
+                        renderizarListaTurnos();
+                        actualizarContadoresModal();
+                        actualizarConteoDropdown();
+                        
+                        if(document.getElementById('seccion-reportes').style.display !== 'none') {
+                            generarReporte();
+                        }
+                    }
+                })
+                .catch(error => console.error('Error cargando turnos de BD:', error));
+        }
+
+        // ================================================================
+        // 🔥 INICIAR ACTUALIZACIÓN AUTOMÁTICA DE TURNOS
+        // ================================================================
+        function iniciarActualizacionTurnos() {
+            cargarTurnosDesdeBD();
+            
+            if (window.intervaloActualizarTurnos) {
+                clearInterval(window.intervaloActualizarTurnos);
+            }
+            window.intervaloActualizarTurnos = setInterval(() => {
+                if (document.getElementById('seccion-atender').style.display !== 'none') {
+                    cargarTurnosDesdeBD();
+                }
+            }, 3000);
+        }
+
+        // ================================================================
+        // 🔥 ELIMINAR TURNO DE NATALIA AUTOMÁTICAMENTE
+        // ================================================================
+        function eliminarTurnoNatalia() {
+            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            const turnosFiltrados = turnos.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return !nombre.toUpperCase().includes('NATALIA YIRETH CACERES VILLARREAL');
+            });
+            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
+            localStorage.removeItem('turnos_bd');
+            
+            fetch('/api/turnos')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        data.data.forEach(turno => {
+                            const nombre = turno.nombre_persona || turno.nombre || '';
+                            if (nombre.toUpperCase().includes('NATALIA YIRETH CACERES VILLARREAL')) {
+                                fetch(`/turnos/${turno.id_turno}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                })
+                                .then(r => r.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        console.log('✅ Turno de Natalia eliminado de la BD');
+                                    }
+                                })
+                                .catch(err => console.log('Error eliminando de BD:', err));
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log('Error consultando BD:', err));
+            
+            setTimeout(() => {
+                cargarTurnosDesdeBD();
+                renderizarListaTurnos();
+                actualizarVista();
+            }, 500);
+        }
+
+        // ================================================================
+        // 🔥 ELIMINAR TURNO DE DEISY PAOLA RODRIGUEZ GIL
+        // ================================================================
+        function eliminarTurnoDeisy() {
+            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            
+            const turnosFiltrados = turnos.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return !nombre.toUpperCase().includes('DEISY PAOLA RODRIGUEZ GIL');
+            });
+            
+            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
+            localStorage.removeItem('turnos_bd');
+            
+            fetch('/api/turnos')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        data.data.forEach(turno => {
+                            const nombre = turno.nombre_persona || turno.nombre || '';
+                            if (nombre.toUpperCase().includes('DEISY PAOLA RODRIGUEZ GIL')) {
+                                fetch(`/turnos/${turno.id_turno}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                })
+                                .then(r => r.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        console.log('✅ Turno de DEISY PAOLA RODRIGUEZ GIL eliminado de la BD');
+                                    }
+                                })
+                                .catch(err => console.log('Error eliminando de BD:', err));
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log('Error consultando BD:', err));
+            
+            setTimeout(() => {
+                cargarTurnosDesdeBD();
+                renderizarListaTurnos();
+                actualizarVista();
+                actualizarContadoresModal();
+                actualizarConteoDropdown();
+            }, 500);
+        }
+
+        // ================================================================
+        // 🔥 ELIMINAR TURNOS CON "undefined" EN EL NOMBRE
+        // ================================================================
+        function eliminarTurnosUndefined() {
+            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            
+            const turnosFiltrados = turnos.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            
+            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
+            localStorage.removeItem('turnos_bd');
+            
+            fetch('/api/turnos')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        data.data.forEach(turno => {
+                            const nombre = turno.nombre_persona || turno.nombre || '';
+                            if (nombre === 'undefined' || nombre === '' || nombre === 'null' || !nombre.trim()) {
+                                fetch(`/turnos/${turno.id_turno}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                })
+                                .then(r => r.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        console.log('✅ Turno con undefined eliminado de la BD');
+                                    }
+                                })
+                                .catch(err => console.log('Error eliminando de BD:', err));
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log('Error consultando BD:', err));
+            
+            setTimeout(() => {
+                cargarTurnosDesdeBD();
+                renderizarListaTurnos();
+                actualizarVista();
+                actualizarContadoresModal();
+                actualizarConteoDropdown();
+            }, 500);
+        }
+
+        // ================================================================
+        // 🔥 LIMPIAR TURNOS CON "undefined" AL CARGAR LA PÁGINA
+        // ================================================================
+        function limpiarTurnosUndefined() {
+            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            const turnosFiltrados = turnos.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
+            localStorage.removeItem('turnos_bd');
+            
+            setTimeout(() => {
+                cargarTurnosDesdeBD();
+                renderizarListaTurnos();
+                actualizarVista();
+                actualizarContadoresModal();
+                actualizarConteoDropdown();
+            }, 500);
         }
 
         window.addEventListener('storage', () => { actualizarVista(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); });
@@ -4258,6 +4815,12 @@
                 limpiarModulosDropdown();
             }
         }, 500);
+        
+        setTimeout(eliminarTurnoNatalia, 500);
+        setTimeout(eliminarTurnoDeisy, 800);
+        setTimeout(limpiarTurnosUndefined, 1000);
+        setTimeout(cargarTurnosDesdeBD, 1500);
+        setTimeout(iniciarActualizacionTurnos, 2000);
     </script>
 </body>
 </html>
