@@ -319,16 +319,15 @@ let indiceActual = 0;
 let intervaloRotacion = null;
 let duracionSegundos = 10;
 
-// ===== NUEVA FUNCIÓN: OBTENER TURNOS DEL SERVIDOR =====
+// ===== OBTENER TURNOS DEL SERVIDOR =====
 async function obtenerTurnosDelServidor() {
     try {
-        const response = await fetch('/api/turnos-llamados');
+       const response = await fetch('/tv/turnos');
         if (!response.ok) throw new Error('Error al obtener turnos');
         const data = await response.json();
         return data.turnos || [];
     } catch (error) {
         console.error('Error obteniendo turnos del servidor:', error);
-        // Fallback: intentar leer de localStorage (por si está en el mismo dispositivo)
         try {
             const data = localStorage.getItem('turnos');
             const turnos = data ? JSON.parse(data) : [];
@@ -337,7 +336,7 @@ async function obtenerTurnosDelServidor() {
     }
 }
 
-// ===== NUEVA FUNCIÓN: CARGAR TURNOS DESDE EL SERVIDOR =====
+// ===== CARGAR TURNOS =====
 async function cargarTurnos() {
     try {
         const llamados = await obtenerTurnosDelServidor();
@@ -348,19 +347,18 @@ async function cargarTurnos() {
             return;
         }
         
-        // Mostrar solo los primeros 10
         const turnosMostrar = llamados.slice(0, 10);
         lista.innerHTML = turnosMostrar.map(t => `
             <div class="turn-row parpadeando">
                 <span style="color:#1aa39a;">${t.numero}</span>
                 <span style="font-size:18px;">👤 ${t.nombre_persona || 'Paciente'}</span>
-                <span style="background:#eee; padding:5px 15px; border-radius:20px;">MÓDULO ${t.ventanilla || 1}</span>
+                <span style="background:#eee; padding:5px 15px; border-radius:20px;">MÓDULO ${t.id_modulo || 1}span>
             </div>
         `).join('');
     } catch(e) { console.error(e); }
 }
 
-// ===== FUNCIONES PARA BANNERS (SIN CAMBIOS) =====
+// ===== FUNCIONES PARA BANNERS =====
 function cargarDatosBanners() {
     try {
         const dataStr = localStorage.getItem('banners_tv');
@@ -481,9 +479,9 @@ function actualizarReloj(){
 // ===== INICIALIZAR =====
 actualizarReloj();
 cargarDatosBanners();
-cargarTurnos(); // Ahora obtiene del servidor
+cargarTurnos();
 setInterval(actualizarReloj, 1000);
-setInterval(cargarTurnos, 3000); // Actualiza cada 3 segundos
+setInterval(cargarTurnos, 3000);
 setInterval(cargarDatosBanners, 5000);
 </script>
 </body>

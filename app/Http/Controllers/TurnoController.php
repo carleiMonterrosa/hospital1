@@ -408,7 +408,7 @@ class TurnoController extends Controller
         try {
             // 🔥 CAMBIADO: SOLO mostrar turnos en 'espera'
             $turnos = DB::table('turnos')
-                ->where('estado', 'espera') // Solo turnos en espera
+               ->whereIn('estado', ['espera', 'llamado']) // Solo turnos en espera
                 ->orderBy('id_turno', 'asc')
                 ->get();
 
@@ -845,6 +845,39 @@ class TurnoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al guardar configuración: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔥🔥🔥 NUEVO MÉTODO: ELIMINA LOS TURNOS CON NOMBRE "undefined"
+     * Esta función elimina físicamente los turnos que tienen nombre_persona = 'undefined' o NULL
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function eliminarTurnosUndefined()
+    {
+        try {
+            $eliminados = DB::table('turnos')
+                ->where(function($query) {
+                    $query->whereNull('nombre_persona')
+                          ->orWhere('nombre_persona', '')
+                          ->orWhere('nombre_persona', 'undefined')
+                          ->orWhere('nombre_persona', 'null')
+                          ->orWhere('nombre_persona', 'NULL');
+                })
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => "✅ Se eliminaron {$eliminados} turnos con nombre 'undefined' de la base de datos",
+                'eliminados' => $eliminados
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar turnos: ' . $e->getMessage()
             ], 500);
         }
     }

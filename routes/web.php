@@ -94,6 +94,9 @@ Route::get('/api/turnos/modulo/{id}', function ($id) {
 // ========== 🔥 NUEVA RUTA PÚBLICA PARA OBTENER TURNOS EN ESPERA POR MÓDULO ==========
 Route::get('/turnos/en-espera', [TurnoController::class, 'getTurnosEnEspera'])->name('turnos.en.espera');
 
+// ========== 🔥🔥🔥 NUEVA RUTA PARA ELIMINAR TURNOS CON "undefined" ==========
+Route::delete('/eliminar-turnos-undefined', [TurnoController::class, 'eliminarTurnosUndefined'])->name('eliminar.undefined');
+
 // ========== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) ==========
 Route::middleware(['auth'])->group(function () {
     // Ruta principal - Admin

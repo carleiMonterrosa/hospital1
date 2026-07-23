@@ -1535,6 +1535,11 @@
             padding: 28px;
             min-height: calc(100vh - 70px);
         }
+        
+        /* ===== ESTILO PARA OCULTAR EL UNDEFINED ===== */
+        .turno-espera-item.oculto {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -2978,17 +2983,23 @@
             form.submit();
         }
 
+        // ================================================================
+        // 🔥 FUNCIÓN CORREGIDA: cargarNombreUsuario()
+        // ================================================================
         function cargarNombreUsuario() {
             const nombreUsuario = @json(auth()->user()->name ?? 'Usuario');
             const usuarioElement = document.getElementById('usuarioAutenticadoNombre');
             if (usuarioElement) {
-                usuarioElement.textContent = nombreUsuario;
+                if (nombreUsuario === 'undefined' || nombreUsuario === 'null' || !nombreUsuario || nombreUsuario.trim() === '') {
+                    usuarioElement.textContent = 'Usuario';
+                } else {
+                    usuarioElement.textContent = nombreUsuario;
+                }
             }
         }
         
         // ================================================================
         // 🔥 FUNCIÓN CORREGIDA: cargarServiciosCompletos()
-        // AHORA usa el NOMBRE del servicio como value, NO el ID
         // ================================================================
         function cargarServiciosCompletos() {
             const servicioSelect = document.getElementById('gtServicioFiltro');
@@ -3148,8 +3159,7 @@
                 renderizarBarraModulos();
                 mostrarSeccion(seccion);
                 if (seccion === 'atender') {
-                    const nombreElement = document.getElementById('usuarioAutenticadoNombre');
-                    if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
+                    cargarNombreUsuario();
                     if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                         limpiarPanelIzquierdo();
                         cargarTurnosDesdeBD();
@@ -3204,8 +3214,7 @@
                     renderizarBarraModulos();
                     mostrarSeccion(currentModuloActivo.seccion);
                     if (currentModuloActivo.seccion === 'atender') {
-                        const nombreElement = document.getElementById('usuarioAutenticadoNombre');
-                        if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
+                        cargarNombreUsuario();
                         if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                             limpiarPanelIzquierdo();
                             cargarTurnosDesdeBD();
@@ -3299,8 +3308,7 @@
                 }
                 else if (modulo === 'atender_turnos') { 
                     mostrarSeccion('atender');
-                    const nombreElement = document.getElementById('usuarioAutenticadoNombre');
-                    if (nombreElement) nombreElement.textContent = nombreUsuarioAutenticado;
+                    cargarNombreUsuario();
                     if (typeof turnoActivoModal === 'undefined' || turnoActivoModal === null) {
                         limpiarPanelIzquierdo();
                         cargarTurnosDesdeBD();
@@ -3501,21 +3509,29 @@
             const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
             const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
             
-            turnosBD.forEach(t => {
+            // 🔥 FILTRAR TURNOS CON UNDEFINED
+            const turnosLocalFiltrados = turnosLocal.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            const turnosBDFiltrados = turnosBD.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            
+            turnosBDFiltrados.forEach(t => {
                 if (!idsVistos.has(t.id_turno)) {
                     idsVistos.add(t.id_turno);
                     turnosCombinados.push(t);
                 }
             });
-            turnosLocal.forEach(t => {
+            turnosLocalFiltrados.forEach(t => {
                 const id = t.id_turno || t.id;
                 if (!idsVistos.has(id)) {
                     idsVistos.add(id);
                     turnosCombinados.push(t);
                 }
             });
-            
-            const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
             
             const moduloAEspecialidad = {
                 1: 'Consulta Externa',
@@ -3526,9 +3542,7 @@
             
             for(let mod = 1; mod <= 6; mod++) { 
                 const especialidad = moduloAEspecialidad[mod] || 'Consulta Externa';
-                let lista = servicioFiltro ? 
-                    turnosCombinados.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
-                    turnosCombinados.filter(t => t.especialidad === especialidad);
+                let lista = turnosCombinados.filter(t => t.especialidad === especialidad);
                 const activos = lista.filter(t => t.estado === 'pendiente' || t.estado === 'llamado').length; 
                 const atendidos = lista.filter(t => t.estado === 'atendido').length; 
                 const el = document.getElementById(`countMod${mod}`); 
@@ -3863,7 +3877,7 @@
         }
         
         // ================================================================
-        // 🔥 ACTUALIZAR CONTADORES MODAL - CORREGIDO para usar id_modulo
+        // 🔥 ACTUALIZAR CONTADORES MODAL - CORREGIDO
         // ================================================================
         function actualizarContadoresModal() { 
             let turnosCombinados = [];
@@ -3872,13 +3886,23 @@
             const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
             const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
             
-            turnosBD.forEach(t => {
+            // 🔥 FILTRAR TURNOS CON UNDEFINED
+            const turnosLocalFiltrados = turnosLocal.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            const turnosBDFiltrados = turnosBD.filter(t => {
+                const nombre = t.nombre_persona || t.nombre || '';
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
+            });
+            
+            turnosBDFiltrados.forEach(t => {
                 if (!idsVistos.has(t.id_turno)) {
                     idsVistos.add(t.id_turno);
                     turnosCombinados.push(t);
                 }
             });
-            turnosLocal.forEach(t => {
+            turnosLocalFiltrados.forEach(t => {
                 const id = t.id_turno || t.id;
                 if (!idsVistos.has(id)) {
                     idsVistos.add(id);
@@ -3886,7 +3910,6 @@
                 }
             });
             
-            // 🔥 OBTENER EL NOMBRE DE LA ESPECIALIDAD SEGÚN EL MÓDULO SELECCIONADO
             const moduloAEspecialidad = {
                 1: 'Consulta Externa',
                 2: 'Odontología',
@@ -3897,7 +3920,6 @@
             
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
             
-            // 🔥 FILTRAR POR ESPECIALIDAD (NOMBRE) o por ID_MODULO
             let lista = servicioFiltro ? 
                 turnosCombinados.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
                 turnosCombinados.filter(t => t.id_modulo === moduloSeleccionado);
@@ -3911,34 +3933,61 @@
         }
         
         // ================================================================
-        // 🔥 RENDERIZAR LISTA DE TURNOS - CORREGIDO para filtrar por ESPECIALIDAD
+        // 🔥 RENDERIZAR LISTA DE TURNOS - CORREGIDO PARA ELIMINAR UNDEFINED
         // ================================================================
         function renderizarListaTurnos() { 
+            // 🔥 PRIMERO: ELIMINAR EL TURNO "undefined" DEL LOCALSTORAGE
+            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
+            turnos = turnos.filter(t => {
+                const nombre = (t.nombre_persona || t.nombre || '').toString().trim();
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null';
+            });
+            localStorage.setItem('turnos', JSON.stringify(turnos));
+            localStorage.removeItem('turnos_bd');
+            
+            // 🔥 SEGUNDO: CARGAR LOS TURNOS LIMPIOS
             let turnosCombinados = [];
             const idsVistos = new Set();
             
             const turnosLocal = JSON.parse(localStorage.getItem('turnos') || '[]');
             const turnosBD = JSON.parse(localStorage.getItem('turnos_bd') || '[]');
             
-            // 🔥 SI NO HAY TURNOS EN LOCALSTORAGE, CARGAR DESDE BD
             if (turnosLocal.length === 0 && turnosBD.length === 0) {
                 cargarTurnosDesdeBD();
                 return;
             }
             
-            turnosBD.forEach(t => {
+            // FILTRAR TURNOS CON UNDEFINED
+            const turnosLocalFiltrados = turnosLocal.filter(t => {
+                const nombre = (t.nombre_persona || t.nombre || '').toString().trim();
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null';
+            });
+            const turnosBDFiltrados = turnosBD.filter(t => {
+                const nombre = (t.nombre_persona || t.nombre || '').toString().trim();
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null';
+            });
+            
+            turnosBDFiltrados.forEach(t => {
                 if (!idsVistos.has(t.id_turno)) {
                     idsVistos.add(t.id_turno);
                     turnosCombinados.push(t);
                 }
             });
-            turnosLocal.forEach(t => {
+            turnosLocalFiltrados.forEach(t => {
                 const id = t.id_turno || t.id;
                 if (!idsVistos.has(id)) {
                     idsVistos.add(id);
                     turnosCombinados.push(t);
                 }
             });
+            
+            // FILTRO FINAL - ELIMINA CUALQUIER UNDEFINED
+            turnosCombinados = turnosCombinados.filter(t => {
+                const nombre = (t.nombre_persona || t.nombre || '').toString().trim();
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null';
+            });
+            
+            localStorage.setItem('turnos', JSON.stringify(turnosCombinados));
             
             if (turnosCombinados.length === 0) {
                 const body = document.getElementById('turnosEsperaBody');
@@ -3949,9 +3998,6 @@
                 return;
             }
             
-            localStorage.setItem('turnos', JSON.stringify(turnosCombinados));
-            
-            // 🔥 OBTENER EL NOMBRE DE LA ESPECIALIDAD SEGÚN EL MÓDULO SELECCIONADO
             const moduloAEspecialidad = {
                 1: 'Consulta Externa',
                 2: 'Odontología',
@@ -3963,10 +4009,15 @@
             const servicioFiltro = document.getElementById('gtServicioFiltro') ? document.getElementById('gtServicioFiltro').value : ''; 
             let activos = turnosCombinados.filter(t => t.estado !== 'atendido' && t.estado !== 'eliminado');
             
-            // 🔥 CORREGIDO: Filtrar por ESPECIALIDAD (NOMBRE) o por ID_MODULO
             let espera = servicioFiltro ? 
                 activos.filter(t => String(t.especialidad) === String(servicioFiltro)) : 
                 activos.filter(t => t.id_modulo === moduloSeleccionado);
+            
+            // 🔥🔥🔥 ELIMINAR EL TURNO "undefined" DE LA LISTA
+            espera = espera.filter(t => {
+                const nombre = (t.nombre_persona || '').toString().trim();
+                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null';
+            });
             
             const turnosUnicos = [];
             const numerosVistos = new Set();
@@ -3995,7 +4046,10 @@
             } 
             
             body.innerHTML = turnosUnicos.map(t => {
-                const nombrePaciente = t.nombre_persona || 'Paciente';
+                let nombrePaciente = t.nombre_persona || 'Paciente';
+                if (nombrePaciente === 'undefined' || nombrePaciente === 'null' || !nombrePaciente.trim()) {
+                    nombrePaciente = 'Paciente';
+                }
                 const especialidad = t.nombreEspecialidad || t.especialidad || 'Consulta';
                 const isSeleccionado = turnoActivoModal && turnoActivoModal.numero === t.numero ? 'seleccionado' : '';
                 const claseLlamado = t.estado === 'llamado' ? 'parpadeando' : '';
@@ -4026,14 +4080,12 @@
             const idx = turnos.findIndex(t => t.numero === num); 
             
             if(idx !== -1 && turnos[idx].estado !== 'atendido') { 
-                // 🔥 MARCAR COMO ATENDIDO EN LOCAL
                 turnos[idx].estado = 'atendido'; 
                 turnos[idx].salida = new Date().toISOString(); 
                 localStorage.setItem('turnos', JSON.stringify(turnos));
                 
                 const idTurno = turnos[idx].id_turno || turnos[idx].id;
                 
-                // 🔥 ACTUALIZAR EN LA BASE DE DATOS
                 if(idTurno) {
                     fetch(`/turnos/${idTurno}/estado`, {
                         method: 'POST',
@@ -4063,7 +4115,6 @@
                 if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); 
                 renderizarListaTurnos();
                 
-                // 🔥 RECARGAR TURNOS DESDE BD PARA SINCRONIZAR
                 setTimeout(cargarTurnosDesdeBD, 500);
             } else if(idx !== -1) { 
                 showNotification(`⚠️ El turno ${num} ya fue atendido`, 'warning'); 
@@ -4083,7 +4134,7 @@
         }
         
         // ================================================================
-        // 🔥 FUNCIÓN verTurnosModal - CONSULTA LA BD
+        // 🔥 FUNCIÓN verTurnosModal
         // ================================================================
         function verTurnosModal() { 
             listaTurnosVisible = !listaTurnosVisible; 
@@ -4100,7 +4151,7 @@
         }
         
         // ================================================================
-        // 🔥 FUNCIÓN LLAMAR TURNO (GUARDA EN BASE DE DATOS)
+        // 🔥 FUNCIÓN LLAMAR TURNO
         // ================================================================
         function llamarTurno(num) { 
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]'); 
@@ -4403,7 +4454,7 @@
         });
 
         // ================================================================
-        // 🔥 FUNCIÓN PRINCIPAL: GENERAR TURNO Y GUARDAR EN BASE DE DATOS (CORREGIDA)
+        // 🔥 FUNCIÓN PRINCIPAL: GENERAR TURNO (CORREGIDA - NUNCA CREA UNDEFINED)
         // ================================================================
         function ejecutarGenerarTurno(btn) {
             const servicioObj = serviciosDB.find(s => s.id_servicio == selectedSpecialty);
@@ -4417,7 +4468,28 @@
             }
             
             const identificacion = personaActual.identificacion;
-            const nombreCompleto = `${personaActual.primer_nombre} ${personaActual.segundo_nombre || ''} ${personaActual.primer_apellido} ${personaActual.segundo_apellido || ''}`.trim().replace(/\s+/g, ' ');
+            
+            // 🔥 CORREGIDO: Construir el nombre completo asegurando que nunca sea "undefined"
+            let nombreCompleto = '';
+            if (personaActual.primer_nombre && personaActual.primer_nombre.trim() !== '') {
+                nombreCompleto = personaActual.primer_nombre.trim();
+                if (personaActual.segundo_nombre && personaActual.segundo_nombre.trim() !== '') {
+                    nombreCompleto += ' ' + personaActual.segundo_nombre.trim();
+                }
+                if (personaActual.primer_apellido && personaActual.primer_apellido.trim() !== '') {
+                    nombreCompleto += ' ' + personaActual.primer_apellido.trim();
+                }
+                if (personaActual.segundo_apellido && personaActual.segundo_apellido.trim() !== '') {
+                    nombreCompleto += ' ' + personaActual.segundo_apellido.trim();
+                }
+            } else {
+                nombreCompleto = 'Paciente';
+            }
+            nombreCompleto = nombreCompleto.trim().replace(/\s+/g, ' ');
+            
+            if (!nombreCompleto || nombreCompleto === '' || nombreCompleto === 'undefined' || nombreCompleto === 'null') {
+                nombreCompleto = 'Paciente';
+            }
             
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
@@ -4443,7 +4515,6 @@
                 btn.innerHTML = '<i class="fas fa-ticket-alt"></i> Generar Turno';
                 
                 if (data.success) {
-                    // 🔥 CREAR UN SOLO TURNO CON EL NOMBRE CORRECTO
                     const nuevoTurno = {
                         id: data.id_turno,
                         id_turno: data.id_turno,
@@ -4459,23 +4530,19 @@
                         zona: personaActual.zona || ''
                     };
                     
-                    // 🔥 OBTENER TURNOS ACTUALES Y LIMPIAR
                     let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
                     
-                    // ELIMINAR TODOS LOS TURNOS CON "undefined" EN EL NOMBRE
+                    // 🔥 ELIMINAR TODOS LOS TURNOS CON UNDEFINED
                     turnos = turnos.filter(t => {
                         const nombre = t.nombre_persona || t.nombre || '';
                         return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
                     });
                     
-                    // ELIMINAR CUALQUIER TURNO CON EL MISMO NÚMERO (EVITA DUPLICADOS)
+                    // ELIMINAR DUPLICADOS
                     turnos = turnos.filter(t => t.numero !== nuevoTurno.numero);
                     
-                    // AGREGAR EL NUEVO TURNO
                     turnos.push(nuevoTurno);
                     localStorage.setItem('turnos', JSON.stringify(turnos));
-                    
-                    // LIMPIAR turnos_bd PARA FORZAR RECARGA DESDE BD
                     localStorage.removeItem('turnos_bd');
                     
                     document.getElementById('turnoGeneradoNumero').textContent = data.numero_turno;
@@ -4518,7 +4585,7 @@
         }
 
         // ================================================================
-        // 🔥 FUNCIÓN CARGAR TURNOS DESDE LA BASE DE DATOS
+        // 🔥 FUNCIÓN CARGAR TURNOS DESDE BD (CORREGIDA)
         // ================================================================
         function cargarTurnosDesdeBD() {
             fetch('/api/turnos')
@@ -4603,128 +4670,14 @@
         }
 
         // ================================================================
-        // 🔥 INICIAR ACTUALIZACIÓN AUTOMÁTICA DE TURNOS
+        // 🔥 FUNCIÓN ELIMINAR TURNOS CON "undefined" DE LA BD
         // ================================================================
-        function iniciarActualizacionTurnos() {
-            cargarTurnosDesdeBD();
-            
-            if (window.intervaloActualizarTurnos) {
-                clearInterval(window.intervaloActualizarTurnos);
-            }
-            window.intervaloActualizarTurnos = setInterval(() => {
-                if (document.getElementById('seccion-atender').style.display !== 'none') {
-                    cargarTurnosDesdeBD();
-                }
-            }, 3000);
-        }
-
-        // ================================================================
-        // 🔥 ELIMINAR TURNO DE NATALIA AUTOMÁTICAMENTE
-        // ================================================================
-        function eliminarTurnoNatalia() {
+        function eliminarTurnosUndefinedBD() {
             let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-            const turnosFiltrados = turnos.filter(t => {
-                const nombre = t.nombre_persona || t.nombre || '';
-                return !nombre.toUpperCase().includes('NATALIA YIRETH CACERES VILLARREAL');
-            });
-            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
-            localStorage.removeItem('turnos_bd');
-            
-            fetch('/api/turnos')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success && data.data) {
-                        data.data.forEach(turno => {
-                            const nombre = turno.nombre_persona || turno.nombre || '';
-                            if (nombre.toUpperCase().includes('NATALIA YIRETH CACERES VILLARREAL')) {
-                                fetch(`/turnos/${turno.id_turno}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    }
-                                })
-                                .then(r => r.json())
-                                .then(result => {
-                                    if (result.success) {
-                                        console.log('✅ Turno de Natalia eliminado de la BD');
-                                    }
-                                })
-                                .catch(err => console.log('Error eliminando de BD:', err));
-                            }
-                        });
-                    }
-                })
-                .catch(err => console.log('Error consultando BD:', err));
-            
-            setTimeout(() => {
-                cargarTurnosDesdeBD();
-                renderizarListaTurnos();
-                actualizarVista();
-            }, 500);
-        }
-
-        // ================================================================
-        // 🔥 ELIMINAR TURNO DE DEISY PAOLA RODRIGUEZ GIL
-        // ================================================================
-        function eliminarTurnoDeisy() {
-            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-            
-            const turnosFiltrados = turnos.filter(t => {
-                const nombre = t.nombre_persona || t.nombre || '';
-                return !nombre.toUpperCase().includes('DEISY PAOLA RODRIGUEZ GIL');
-            });
-            
-            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
-            localStorage.removeItem('turnos_bd');
-            
-            fetch('/api/turnos')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success && data.data) {
-                        data.data.forEach(turno => {
-                            const nombre = turno.nombre_persona || turno.nombre || '';
-                            if (nombre.toUpperCase().includes('DEISY PAOLA RODRIGUEZ GIL')) {
-                                fetch(`/turnos/${turno.id_turno}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    }
-                                })
-                                .then(r => r.json())
-                                .then(result => {
-                                    if (result.success) {
-                                        console.log('✅ Turno de DEISY PAOLA RODRIGUEZ GIL eliminado de la BD');
-                                    }
-                                })
-                                .catch(err => console.log('Error eliminando de BD:', err));
-                            }
-                        });
-                    }
-                })
-                .catch(err => console.log('Error consultando BD:', err));
-            
-            setTimeout(() => {
-                cargarTurnosDesdeBD();
-                renderizarListaTurnos();
-                actualizarVista();
-                actualizarContadoresModal();
-                actualizarConteoDropdown();
-            }, 500);
-        }
-
-        // ================================================================
-        // 🔥 ELIMINAR TURNOS CON "undefined" EN EL NOMBRE
-        // ================================================================
-        function eliminarTurnosUndefined() {
-            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-            
             const turnosFiltrados = turnos.filter(t => {
                 const nombre = t.nombre_persona || t.nombre || '';
                 return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
             });
-            
             localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
             localStorage.removeItem('turnos_bd');
             
@@ -4761,28 +4714,7 @@
                 actualizarVista();
                 actualizarContadoresModal();
                 actualizarConteoDropdown();
-            }, 500);
-        }
-
-        // ================================================================
-        // 🔥 LIMPIAR TURNOS CON "undefined" AL CARGAR LA PÁGINA
-        // ================================================================
-        function limpiarTurnosUndefined() {
-            let turnos = JSON.parse(localStorage.getItem('turnos') || '[]');
-            const turnosFiltrados = turnos.filter(t => {
-                const nombre = t.nombre_persona || t.nombre || '';
-                return nombre !== 'undefined' && nombre !== '' && nombre !== 'null' && nombre.trim() !== '';
-            });
-            localStorage.setItem('turnos', JSON.stringify(turnosFiltrados));
-            localStorage.removeItem('turnos_bd');
-            
-            setTimeout(() => {
-                cargarTurnosDesdeBD();
-                renderizarListaTurnos();
-                actualizarVista();
-                actualizarContadoresModal();
-                actualizarConteoDropdown();
-            }, 500);
+            }, 1000);
         }
 
         window.addEventListener('storage', () => { actualizarVista(); if(document.getElementById('seccion-reportes').style.display !== 'none') generarReporte(); });
@@ -4816,11 +4748,23 @@
             }
         }, 500);
         
-        setTimeout(eliminarTurnoNatalia, 500);
-        setTimeout(eliminarTurnoDeisy, 800);
-        setTimeout(limpiarTurnosUndefined, 1000);
-        setTimeout(cargarTurnosDesdeBD, 1500);
+        // 🔥 ELIMINAR TURNOS CON UNDEFINED AL CARGAR
+        setTimeout(eliminarTurnosUndefinedBD, 500);
+        setTimeout(cargarTurnosDesdeBD, 1000);
+        setTimeout(renderizarListaTurnos, 1500);
         setTimeout(iniciarActualizacionTurnos, 2000);
+        
+        // 🔥 FUNCIÓN EXTRA PARA ELIMINAR EL UNDEFINED DE LA VISTA
+        setTimeout(function() {
+            // Buscar cualquier elemento que contenga "undefined" en la lista de turnos
+            const items = document.querySelectorAll('.turno-espera-item');
+            items.forEach(item => {
+                const text = item.textContent || '';
+                if (text.includes('undefined') && !text.includes('·')) {
+                    item.style.display = 'none';
+                }
+            });
+        }, 2000);
     </script>
 </body>
 </html>
