@@ -319,40 +319,46 @@ let indiceActual = 0;
 let intervaloRotacion = null;
 let duracionSegundos = 10;
 
-// ===== OBTENER TURNOS DEL SERVIDOR =====
+// ===== 🔥 OBTENER TURNOS DEL SERVIDOR (CORREGIDO - SIN localStorage) =====
 async function obtenerTurnosDelServidor() {
     try {
-       const response = await fetch('/tv/turnos');
+        const response = await fetch('/tv/turnos');
         if (!response.ok) throw new Error('Error al obtener turnos');
         const data = await response.json();
         return data.turnos || [];
     } catch (error) {
         console.error('Error obteniendo turnos del servidor:', error);
-        try {
-            const data = localStorage.getItem('turnos');
-            const turnos = data ? JSON.parse(data) : [];
-            return turnos.filter(t => t.estado === 'llamado');
-        } catch(e) { return []; }
+        return [];
     }
 }
 
 // ===== CARGAR TURNOS =====
 async function cargarTurnos() {
     try {
-        const llamados = await obtenerTurnosDelServidor();
+        const data = await obtenerTurnosDelServidor();
         const lista = document.getElementById("turnsList");
         
-        if(llamados.length === 0) {
+        // Mostrar TODOS los turnos activos (espera y llamado)
+        const turnosActivos = data.filter(t => t.estado !== 'atendido' && t.estado !== 'eliminado');
+        
+        if(turnosActivos.length === 0) {
             lista.innerHTML = "<div style='text-align:center; padding:40px; color:#999;'>📭 No hay turnos</div>";
             return;
         }
         
-        const turnosMostrar = llamados.slice(0, 10);
+        // Ordenar: primero los llamados (parpadean), luego los en espera
+        turnosActivos.sort((a, b) => {
+            if (a.estado === 'llamado' && b.estado !== 'llamado') return -1;
+            if (a.estado !== 'llamado' && b.estado === 'llamado') return 1;
+            return 0;
+        });
+        
+        const turnosMostrar = turnosActivos.slice(0, 10);
         lista.innerHTML = turnosMostrar.map(t => `
-            <div class="turn-row parpadeando">
-                <span style="color:#1aa39a;">${t.numero}</span>
+            <div class="turn-row ${t.estado === 'llamado' ? 'parpadeando' : ''}">
+                <span style="color:#1aa39a; font-weight:bold;">${t.numero}</span>
                 <span style="font-size:18px;">👤 ${t.nombre_persona || 'Paciente'}</span>
-                <span style="background:#eee; padding:5px 15px; border-radius:20px;">MÓDULO ${t.id_modulo || 1}span>
+                <span style="background:#eee; padding:5px 15px; border-radius:20px; font-weight:bold;">MÓDULO ${t.id_modulo || 1}</span>
             </div>
         `).join('');
     } catch(e) { console.error(e); }
