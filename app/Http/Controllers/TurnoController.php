@@ -398,17 +398,18 @@ class TurnoController extends Controller
     }
 
     /**
-     * 🔥 CORREGIDO: Obtiene los turnos en ESPERA para la pantalla de TV
-     * Solo muestra los turnos que están en estado 'espera'
+     * 🔥🔥🔥 CORREGIDO: Obtiene TODOS los turnos para la pantalla de TV
+     * El filtrado por estado se hace en el frontend (JavaScript)
+     * Esto permite que los turnos en estado 'llamado' también se muestren
      * 
      * @return \Illuminate\Http\JsonResponse
      */
     public function getTurnosTV()
     {
         try {
-            // 🔥 CAMBIADO: SOLO mostrar turnos en 'espera'
+            // 🔥 CAMBIADO: Devuelve TODOS los turnos sin filtrar por estado
+            // El frontend (JavaScript) filtrará los que NO estén atendidos/eliminados
             $turnos = DB::table('turnos')
-               ->whereIn('estado', ['espera', 'llamado']) // Solo turnos en espera
                 ->orderBy('id_turno', 'asc')
                 ->get();
 
