@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Iniciar Sesión - {{ $configuracion->nombre_empresa ?? 'Hospital San Pablo' }}</title>
+    <title>Verificar Código - {{ $configuracion->nombre_empresa ?? 'Hospital San Pablo' }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
+        /* ===== TODOS TUS ESTILOS AQUÍ (LOS MISMOS) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -313,63 +314,7 @@
             box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.15);
         }
 
-        .form-group input:focus + .input-icon i {
-            color: #43a047;
-        }
-
-        .password-container {
-            position: relative;
-            width: 100%;
-        }
-
-        .password-container input {
-            width: 100%;
-            padding: 14px 50px 14px 44px;
-            border: 2px solid #e2e8f0;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-            font-family: inherit;
-            background: #ffffff;
-        }
-
-        .password-container input:focus {
-            border-color: #43a047;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.15);
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #94a3b8;
-            font-size: 1.1rem;
-            transition: color 0.2s;
-            background: transparent;
-            border: none;
-            z-index: 10;
-        }
-
-        .toggle-password:hover {
-            color: #43a047;
-        }
-
-        .info-text {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 8px;
-            margin-left: 12px;
-        }
-
-        .info-text i {
-            font-size: 0.65rem;
-            margin-right: 4px;
-        }
-
-        .btn-login {
+        .btn-recuperar {
             width: 100%;
             background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
@@ -388,28 +333,43 @@
             box-shadow: 0 4px 14px rgba(40, 167, 69, 0.3);
         }
 
-        .btn-login:hover {
+        .btn-recuperar:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
         }
 
-        .btn-login:active {
+        .btn-recuperar:active {
             transform: translateY(0);
         }
 
-        .register-link {
+        .btn-reenviar {
+            background: transparent;
+            border: none;
+            color: #28a745;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .btn-reenviar:hover {
+            color: #1e7e34;
+        }
+
+        .back-link {
             text-align: center;
             margin-top: 28px;
             padding-top: 20px;
             border-top: 1px solid #e2e8f0;
         }
 
-        .register-link p {
+        .back-link p {
             color: #64748b;
             font-size: 0.9rem;
         }
 
-        .register-link a {
+        .back-link a {
             background: linear-gradient(135deg, #28a745, #20c997);
             -webkit-background-clip: text;
             background-clip: text;
@@ -419,52 +379,10 @@
             transition: all 0.3s;
         }
 
-        .register-link a:hover {
+        .back-link a:hover {
             opacity: 0.8;
             text-decoration: underline;
         }
-
-        /* ===== NUEVO ESTILO PARA EL BOTÓN DE RECUPERAR CONTRASEÑA ===== */
-        .forgot-password-link {
-            text-align: center;
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px dashed #e2e8f0;
-        }
-
-        .forgot-password-link p {
-            color: #64748b;
-            font-size: 0.85rem;
-        }
-
-        .forgot-password-link a {
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .forgot-password-link a i {
-            font-size: 0.9rem;
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .forgot-password-link a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-            transform: translateY(-2px);
-        }
-
-        /* ===== FIN NUEVO ESTILO ===== */
 
         .alert {
             padding: 14px 18px;
@@ -493,15 +411,43 @@
             font-size: 1.1rem;
         }
 
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        /* 🔥 ESTILO PARA EL CÓDIGO DE PRUEBA */
+        .alert-codigo {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 18px 22px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .alert-codigo .codigo-grande {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d39e00;
+            letter-spacing: 8px;
+            display: block;
+            margin: 8px 0;
+        }
+
+        .alert-codigo small {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #856404;
+        }
+
+        .email-info {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .email-info strong {
+            color: #2e7d32;
         }
 
         @keyframes fadeInRight {
@@ -606,7 +552,6 @@
 </head>
 <body>
     <div class="left-panel" id="leftPanel">
-        <!-- IMAGEN DE FONDO DINÁMICA DESDE LA BASE DE DATOS -->
         <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ 
             (isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login) 
                 ? asset($configuracion->imagen_fondo_login) 
@@ -623,17 +568,15 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <!-- LOGO DINÁMICO DE LA EMPRESA -->
                     @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
                         <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
                     @else
-                        <i class="fas fa-hospital-user" style="font-size: 3.5rem; color: #2e7d32; margin-bottom: 10px; display: block;"></i>
+                        <i class="fas fa-shield-alt" style="font-size: 3.5rem; color: #2e7d32; margin-bottom: 10px; display: block;"></i>
                     @endif
                     
-                    <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
-                    <h1><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SAN PABLO' }}</h1>
-                    <p>Bienvenido de vuelta</p>
-                    <div class="badge"><i class="fas fa-shield-alt"></i> Acceso seguro</div>
+                    <h1><i class="fas fa-shield-alt"></i> Verificar Código</h1>
+                    <p>Ingresa el código de verificación que recibiste en tu correo</p>
+                    <div class="badge"><i class="fas fa-clock"></i> El código expira en 15 minutos</div>
                 </div>
 
                 @if(session('success'))
@@ -648,93 +591,75 @@
                     </div>
                 @endif
 
-                @if($errors->any())
-                    <div class="alert alert-error">
-                        <i class="fas fa-exclamation-circle"></i> 
-                        @foreach($errors->all() as $error)
-                            {{ $error }}<br>
-                        @endforeach
+                <!-- 🔥 CÓDIGO DE PRUEBA - SE MUESTRA CUANDO NO SE ENVÍA EL CORREO -->
+                @if(session('codigo'))
+                    <div class="alert-codigo">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>📧 CÓDIGO DE PRUEBA</strong>
+                        <span class="codigo-grande">{{ session('codigo') }}</span>
+                        <small>⚠️ El correo no se pudo enviar. Usa este código para verificar.</small>
                     </div>
                 @endif
 
-                <form action="{{ route('login.post') }}" method="POST" id="loginForm" autocomplete="off">
+                <!-- Mostrar el correo al que se envió el código -->
+                <div class="email-info">
+                    <i class="fas fa-envelope"></i> Código enviado a: <strong>{{ session('email_verificado') ?? old('email') }}</strong>
+                </div>
+
+                <!-- ===== PASO 2: FORMULARIO PARA VERIFICAR CÓDIGO ===== -->
+                <form action="{{ route('password.verificar') }}" method="POST" id="verificarForm">
                     @csrf
+
+                    <!-- Campo oculto para el email -->
+                    <input type="hidden" name="email" value="{{ session('email_verificado') ?? old('email') }}">
+
+                    <!-- ===== CAMPO CÓDIGO ===== -->
                     <div class="form-group">
-                        <label><i class="fas fa-user-circle"></i>Usuario</label>
+                        <label><i class="fas fa-key"></i> Código de Verificación</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="text" name="login" id="usuarioInput" value="" placeholder=" " autocomplete="off">
+                            <i class="fas fa-key input-icon"></i>
+                            <input type="text" name="codigo" id="codigoInput" placeholder="Ej: 123456" maxlength="6" autofocus required>
                         </div>
-                        <div class="info-text">
-                            <i class="fas fa-info-circle"></i> Ingresa tu correo electrónico o nombre de usuario
-                        </div>
+                        @error('codigo')
+                            <div style="color: #dc3545; font-size: 0.8rem; margin-top: 5px;">
+                                <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                            </div>
+                        @enderror
                     </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Contraseña</label>
-                        <div class="password-container">
-                            <i class="fas fa-key input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 1;"></i>
-                            <input type="password" name="password" id="password" placeholder=" " autocomplete="off" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword()">
-                                <i class="fas fa-eye-slash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-login">
-                        <i class="fas fa-arrow-right-to-bracket"></i> Iniciar Sesión
+
+                    <button type="submit" class="btn-recuperar">
+                        <i class="fas fa-check-circle"></i> Verificar Código
                     </button>
                 </form>
 
-                <div class="register-link">
-                    <p>¿No tienes una cuenta? <a href="{{ route('register') }}">Registrar</a></p>
+                <!-- Botón para reenviar código -->
+                <div style="text-align: center; margin-top: 15px;">
+                    <form action="{{ route('password.enviar.codigo') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <input type="hidden" name="email" value="{{ session('email_verificado') ?? old('email') }}">
+                        <button type="submit" class="btn-reenviar">
+                            <i class="fas fa-redo"></i> Reenviar código
+                        </button>
+                    </form>
                 </div>
 
-                <!-- ===== BOTÓN RECUPERAR CONTRASEÑA ===== -->
-                <div class="forgot-password-link">
-                    <p><a href="{{ route('password.request') }}"><i class="fas fa-key"></i> Recuperar Contraseña</a></p>
+                <div class="back-link">
+                    <p><a href="{{ route('login') }}"><i class="fas fa-arrow-left"></i> Volver al inicio de sesión</a></p>
                 </div>
-                <!-- ===== FIN BOTÓN RECUPERAR CONTRASEÑA ===== -->
             </div>
         </div>
     </div>
 
     <script>
-        // Limpiar campos inmediatamente cuando se carga la página
-        document.getElementById('usuarioInput').value = '';
-        document.getElementById('password').value = '';
-        
-        // También limpiar después de 100ms (por si el navegador es lento)
-        setTimeout(function() {
-            document.getElementById('usuarioInput').value = '';
-            document.getElementById('password').value = '';
-        }, 100);
-        
-        // También limpiar cuando el usuario haga clic en los campos (por si el navegador autocompleta después)
-        document.getElementById('usuarioInput').addEventListener('focus', function() {
-            if (this.value !== '') {
-                this.value = '';
+        // Auto-mayúsculas para el código
+        document.addEventListener('DOMContentLoaded', function() {
+            const codigoInput = document.getElementById('codigoInput');
+            if (codigoInput) {
+                codigoInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
             }
         });
-        
-        document.getElementById('password').addEventListener('focus', function() {
-            if (this.value !== '') {
-                this.value = '';
-            }
-        });
-
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const icon = document.querySelector('.toggle-password i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        }
 
         function generarBurbujas() {
             const container = document.getElementById('bubblesContainer');
@@ -756,79 +681,20 @@
             }
         }
 
-        // Función para cargar el fondo desde la BD o localStorage
         function cargarFondo() {
             const panelBg = document.getElementById('panelBg');
             
-            // Verificar si hay imagen de fondo en la base de datos
             @if(isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login)
-                // Si hay imagen en la BD, usarla con CONTAIN (se ve completa y nítida)
                 panelBg.style.backgroundImage = `url('{{ asset($configuracion->imagen_fondo_login) }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';
                 panelBg.style.backgroundPosition = 'center';
             @else
-                // Si no hay imagen en la BD, usar la imagen por defecto
                 panelBg.style.backgroundImage = `url('{{ asset('images/hospital-bg.jpg') }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';
                 panelBg.style.backgroundPosition = 'center';
             @endif
-        }
-
-        function subirFondo() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const imagenBase64 = event.target.result;
-                        localStorage.setItem('loginBackgroundImage', imagenBase64);
-                        cargarFondo();
-                        mostrarNotificacion('✅ Imagen de fondo actualizada (solo en este navegador)', 'success');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
-
-        function mostrarNotificacion(mensaje, tipo = 'success') {
-            const notif = document.createElement('div');
-            notif.innerHTML = `<i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${mensaje}`;
-            notif.style.position = 'fixed';
-            notif.style.bottom = '20px';
-            notif.style.right = '20px';
-            notif.style.backgroundColor = tipo === 'success' ? '#28a745' : '#17a2b8';
-            notif.style.color = 'white';
-            notif.style.padding = '14px 24px';
-            notif.style.borderRadius = '50px';
-            notif.style.zIndex = '9999';
-            notif.style.fontFamily = 'Inter, sans-serif';
-            notif.style.fontSize = '14px';
-            notif.style.fontWeight = '500';
-            notif.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
-            notif.style.display = 'flex';
-            notif.style.alignItems = 'center';
-            notif.style.gap = '10px';
-            notif.style.backdropFilter = 'blur(8px)';
-            notif.style.background = tipo === 'success' ? 'linear-gradient(135deg, #28a745, #20c997)' : 'linear-gradient(135deg, #17a2b8, #0d8a9e)';
-            document.body.appendChild(notif);
-            setTimeout(() => {
-                notif.style.opacity = '0';
-                notif.style.transition = 'opacity 0.3s';
-                setTimeout(() => notif.remove(), 300);
-            }, 3000);
-        }
-
-        const leftPanel = document.getElementById('leftPanel');
-        if (leftPanel) {
-            leftPanel.addEventListener('dblclick', function(e) {
-                subirFondo();
-            });
         }
 
         cargarFondo();

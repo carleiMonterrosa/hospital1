@@ -7,8 +7,11 @@ use App\Http\Controllers\HistorialLlamadoController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\RecuperarController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request;
 
 // ========== RUTAS DE AUTENTICACIÓN (PÚBLICAS) ==========
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -16,6 +19,52 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ========== 🔥 RUTA HOME PARA EL LAYOUT DE AUTENTICACIÓN ==========
+Route::get('/home', function () {
+    return redirect('/');
+})->name('home');
+
+// ============================================================
+// 🔥🔥🔥 RUTAS PARA RECUPERAR CONTRASEÑA - CON CÓDIGO 🔥🔥🔥
+// ============================================================
+
+// PASO 1: Formulario para ingresar correo
+Route::get('/recuperar-contraseña', function () {
+    $configuracion = App\Models\ConfiguracionEmpresa::first();
+    return view('recuperar-paso1', compact('configuracion'));
+})->name('password.request');
+
+// PASO 1: Enviar código de verificación
+Route::post('/enviar-codigo', [RecuperarController::class, 'enviarCodigo'])
+    ->name('password.enviar.codigo');
+
+// PASO 2: Formulario para verificar código
+Route::get('/verificar-codigo', [RecuperarController::class, 'mostrarVerificacion'])
+    ->name('password.verificar.codigo');
+
+// PASO 2: Verificar código ingresado
+Route::post('/verificar-codigo', [RecuperarController::class, 'verificarCodigo'])
+    ->name('password.verificar');
+
+// PASO 3: Formulario para nueva contraseña
+Route::get('/restablecer-contraseña', function () {
+    $configuracion = App\Models\ConfiguracionEmpresa::first();
+    return view('recuperar', compact('configuracion'));
+})->name('password.reset.form');
+
+// PASO 3: Actualizar contraseña
+Route::post('/restablecer-contraseña', [RecuperarController::class, 'actualizarPassword'])
+    ->name('password.reset.update');
+
+// ============================================================
+// FIN RUTAS RECUPERAR CONTRASEÑA
+// ============================================================
+
+// ========== 🔥 REDIRIGIR /forgot-password A /recuperar-contraseña ==========
+Route::get('/forgot-password', function () {
+    return redirect('/recuperar-contraseña');
+});
 
 // ========== RUTAS DEL PANEL SUPER ADMIN (SIN AUTENTICACIÓN) ==========
 Route::get('/super-panel', [SuperAdminController::class, 'index'])->name('super.panel');
@@ -55,8 +104,6 @@ Route::post('/api/turnos', [TurnoController::class, 'store']);
 // 🔥 Ruta para OBTENER turnos (GET) - para reportes y TV - CORREGIDO ✅
 Route::get('/api/turnos', function () {
     try {
-        // 🔥 CORREGIDO: 'fecha_creacion' NO existe en la tabla 'turnos'
-        // Se cambió a 'id_turno' que SI existe
         $turnos = DB::table('turnos')->orderBy('id_turno', 'desc')->get();
         return response()->json([
             'success' => true,
@@ -73,8 +120,6 @@ Route::get('/api/turnos', function () {
 // 🔥 Ruta para OBTENER turnos por módulo - CORREGIDO ✅
 Route::get('/api/turnos/modulo/{id}', function ($id) {
     try {
-        // 🔥 CORREGIDO: 'fecha_creacion' NO existe en la tabla 'turnos'
-        // Se cambió a 'id_turno' que SI existe
         $turnos = DB::table('turnos')
             ->where('id_modulo', $id)
             ->orderBy('id_turno', 'desc')
@@ -117,7 +162,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/eliminar-usuario/{id}', [TurnoController::class, 'eliminarUsuario'])->name('eliminar.usuario');
 
     // ========== RUTAS DE TURNOS ==========
-    // 🔥 CAMBIO IMPORTANTE: /generar-turno ahora usa store() que SÍ guarda en BD
     Route::post('/generar-turno', [TurnoController::class, 'store'])->name('generar.turno');
     Route::post('/turnos/{id}/estado', [TurnoController::class, 'cambiarEstado'])->name('turnos.estado');
 
@@ -164,6 +208,93 @@ Route::get('/limpiar-cache', function() {
         return response()->json([
             'success' => false,
             'message' => '❌ Error al limpiar caché: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
+// ============================================================
+// 🔥🔥🔥 RUTAS DE PRUEBA PARA DIAGNÓSTICO (CORREGIDAS PARA POSTGRESQL) 🔥🔥🔥
+// ============================================================
+
+// ========== 🔥 RUTA PARA PROBAR CONEXIÓN A BASE DE DATOS ==========
+Route::get('/test-db', function() {
+    try {
+        // Intentar conectar a la base de datos
+        DB::connection()->getPdo();
+        
+        // Obtener nombre de la base de datos
+        $database = DB::connection()->getDatabaseName();
+        
+        // Contar tablas (CORREGIDO PARA POSTGRESQL)
+        $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+        $tableCount = count($tables);
+        
+        return response()->json([
+            'success' => true,
+            'message' => '✅ Conexión exitosa a la base de datos',
+            'database' => $database,
+            'tables' => $tableCount,
+            'table_list' => array_map(function($table) {
+                return $table->table_name;
+            }, $tables)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => '❌ Error de conexión a la base de datos',
+            'error' => $e->getMessage(),
+            'code' => $e->getCode()
+        ], 500);
+    }
+});
+
+// ========== 🔥 RUTA PARA VERIFICAR CONFIGURACIÓN DE BD ==========
+Route::get('/test-env', function() {
+    return response()->json([
+        'DB_CONNECTION' => env('DB_CONNECTION'),
+        'DB_HOST' => env('DB_HOST'),
+        'DB_PORT' => env('DB_PORT'),
+        'DB_DATABASE' => env('DB_DATABASE'),
+        'DB_USERNAME' => env('DB_USERNAME'),
+        'DB_PASSWORD' => env('DB_PASSWORD') ? '***' : 'vacio',
+    ]);
+});
+
+// ========== 🔥 RUTA PARA VERIFICAR TABLAS EXISTENTES (CORREGIDO PARA POSTGRESQL) ==========
+Route::get('/test-tables', function() {
+    try {
+        $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+        $tableNames = array_map(function($table) {
+            return $table->table_name;
+        }, $tables);
+        
+        return response()->json([
+            'success' => true,
+            'tables' => $tableNames
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al obtener tablas: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
+// ========== 🔥 RUTA PARA PROBAR CONSULTA ESPECÍFICA ==========
+Route::get('/test-query', function() {
+    try {
+        // Probar una consulta simple
+        $users = DB::table('users')->limit(5)->get();
+        
+        return response()->json([
+            'success' => true,
+            'message' => '✅ Consulta exitosa',
+            'users' => $users
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error en la consulta: ' . $e->getMessage()
         ], 500);
     }
 });

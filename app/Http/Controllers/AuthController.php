@@ -12,9 +12,15 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // Mostrar vista de login - MODIFICADO para pasar configuración de empresa
+    // Mostrar vista de login - MODIFICADO para cerrar sesión si ya está autenticado
     public function showLogin()
     {
+        // 🔥 Si ya está autenticado, cerrar sesión para mostrar login limpio
+        if (auth()->check()) {
+            auth()->logout();
+            session()->flash('info', 'Has cerrado sesión correctamente.');
+        }
+        
         // Obtener la configuración de la empresa desde la base de datos
         $configuracion = ConfiguracionEmpresa::first();
         
