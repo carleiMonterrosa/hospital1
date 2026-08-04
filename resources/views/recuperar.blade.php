@@ -30,6 +30,7 @@
             justify-content: center;
             overflow: hidden;
             background: linear-gradient(145deg, #e8f5e9 0%, #d0e8dc 50%, #b8e0cc 100%);
+            height: 100vh;
         }
 
         .left-panel::after {
@@ -132,8 +133,9 @@
             align-items: center;
             justify-content: center;
             padding: 40px;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
+            height: 100vh;
         }
 
         .right-panel::before {
@@ -524,7 +526,8 @@
             }
             .left-panel, .right-panel {
                 width: 100%;
-                min-height: 35vh;
+                min-height: 100vh;
+                height: 100vh;
             }
             .login-card {
                 padding: 24px 20px;
@@ -589,9 +592,10 @@
                     </div>
                 @endif
 
-                <!-- ===== FORMULARIO - SIN PLACEHOLDERS ===== -->
-                <form action="/recuperar-contraseña" method="POST" id="recuperarForm">
+                <!-- ===== FORMULARIO CORREGIDO - CAMPOS VACIOS ===== -->
+                <form action="{{ route('password.reset.update') }}" method="POST" id="recuperarForm" autocomplete="off">
                     @csrf
+                    <input type="hidden" name="email" value="{{ session('email_verificado') ?? '' }}">
                     <input type="hidden" name="token" value="{{ $token ?? '' }}">
 
                     <!-- ===== CAMPO USUARIO ===== -->
@@ -599,7 +603,7 @@
                         <label><i class="fas fa-user-circle"></i> Usuario</label>
                         <div class="input-wrapper">
                             <i class="fas fa-user input-icon"></i>
-                            <input type="text" name="username" id="usernameInput" autofocus>
+                            <input type="text" name="username" id="usernameInput" placeholder="Ingresa tu usuario" autofocus autocomplete="off">
                         </div>
                         @error('username')
                             <div style="color: #dc3545; font-size: 0.8rem; margin-top: 5px;">
@@ -613,7 +617,7 @@
                         <label><i class="fas fa-lock"></i> Nueva Contraseña</label>
                         <div class="password-container">
                             <i class="fas fa-key input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 1;"></i>
-                            <input type="password" name="password" id="newPassword">
+                            <input type="password" name="password" id="newPassword" placeholder="Ingresa tu nueva contraseña" autocomplete="new-password">
                             <button type="button" class="toggle-password" onclick="togglePassword('newPassword', this)">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
@@ -630,7 +634,7 @@
                         <label><i class="fas fa-check-circle"></i> Confirmar Contraseña</label>
                         <div class="password-container">
                             <i class="fas fa-check input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 1;"></i>
-                            <input type="password" name="password_confirmation" id="confirmPassword">
+                            <input type="password" name="password_confirmation" id="confirmPassword" placeholder="Confirma tu nueva contraseña" autocomplete="new-password">
                             <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)">
                                 <i class="fas fa-eye-slash"></i>
                             </button>
@@ -670,29 +674,15 @@
             }
         }
 
-        // ===== SOLO LIMPIA LOS CAMPOS AL CARGAR LA PÁGINA =====
+        // ===== 🔥 LIMPIA LOS CAMPOS SIEMPRE =====
         document.addEventListener('DOMContentLoaded', function() {
             const usernameInput = document.getElementById('usernameInput');
             const newPassword = document.getElementById('newPassword');
             const confirmPassword = document.getElementById('confirmPassword');
             
-            // No limpiar si hay errores de validación (para mantener el valor)
-            if (!document.querySelector('.alert-error')) {
-                if (usernameInput) usernameInput.value = '';
-                if (newPassword) newPassword.value = '';
-                if (confirmPassword) confirmPassword.value = '';
-            }
-        });
-
-        // ===== 🔥 REDIRECCIÓN AUTOMÁTICA AL LOGIN DESPUÉS DE ÉXITO =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const successAlert = document.querySelector('.alert-success');
-            if (successAlert) {
-                // Redirigir al login después de 3 segundos
-                setTimeout(function() {
-                    window.location.href = '{{ route("login") }}';
-                }, 3000);
-            }
+            if (usernameInput) usernameInput.value = '';
+            if (newPassword) newPassword.value = '';
+            if (confirmPassword) confirmPassword.value = '';
         });
 
         function generarBurbujas() {

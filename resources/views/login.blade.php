@@ -29,6 +29,7 @@
             justify-content: center;
             overflow: hidden;
             background: linear-gradient(145deg, #e8f5e9 0%, #d0e8dc 50%, #b8e0cc 100%);
+            height: 100vh;
         }
 
         .left-panel::after {
@@ -131,8 +132,9 @@
             align-items: center;
             justify-content: center;
             padding: 40px;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
+            height: 100vh;
         }
 
         .right-panel::before {
@@ -424,7 +426,6 @@
             text-decoration: underline;
         }
 
-        /* ===== NUEVO ESTILO PARA EL BOTÓN DE RECUPERAR CONTRASEÑA ===== */
         .forgot-password-link {
             text-align: center;
             margin-top: 16px;
@@ -463,8 +464,6 @@
             text-decoration: underline;
             transform: translateY(-2px);
         }
-
-        /* ===== FIN NUEVO ESTILO ===== */
 
         .alert {
             padding: 14px 18px;
@@ -580,7 +579,8 @@
             }
             .left-panel, .right-panel {
                 width: 100%;
-                min-height: 35vh;
+                min-height: 100vh;
+                height: 100vh;
             }
             .login-card {
                 padding: 24px 20px;
@@ -606,7 +606,6 @@
 </head>
 <body>
     <div class="left-panel" id="leftPanel">
-        <!-- IMAGEN DE FONDO DINÁMICA DESDE LA BASE DE DATOS -->
         <div class="left-panel-bg" id="panelBg" style="background-image: url('{{ 
             (isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login) 
                 ? asset($configuracion->imagen_fondo_login) 
@@ -623,14 +622,12 @@
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
-                    <!-- LOGO DINÁMICO DE LA EMPRESA -->
                     @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
                         <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
                     @else
                         <i class="fas fa-hospital-user" style="font-size: 3.5rem; color: #2e7d32; margin-bottom: 10px; display: block;"></i>
                     @endif
                     
-                    <!-- NOMBRE DINÁMICO DE LA EMPRESA -->
                     <h1><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SAN PABLO' }}</h1>
                     <p>Bienvenido de vuelta</p>
                     <div class="badge"><i class="fas fa-shield-alt"></i> Acceso seguro</div>
@@ -688,27 +685,22 @@
                     <p>¿No tienes una cuenta? <a href="{{ route('register') }}">Registrar</a></p>
                 </div>
 
-                <!-- ===== BOTÓN RECUPERAR CONTRASEÑA ===== -->
                 <div class="forgot-password-link">
                     <p><a href="{{ route('password.request') }}"><i class="fas fa-key"></i> Recuperar Contraseña</a></p>
                 </div>
-                <!-- ===== FIN BOTÓN RECUPERAR CONTRASEÑA ===== -->
             </div>
         </div>
     </div>
 
     <script>
-        // Limpiar campos inmediatamente cuando se carga la página
         document.getElementById('usuarioInput').value = '';
         document.getElementById('password').value = '';
         
-        // También limpiar después de 100ms (por si el navegador es lento)
         setTimeout(function() {
             document.getElementById('usuarioInput').value = '';
             document.getElementById('password').value = '';
         }, 100);
         
-        // También limpiar cuando el usuario haga clic en los campos (por si el navegador autocompleta después)
         document.getElementById('usuarioInput').addEventListener('focus', function() {
             if (this.value !== '') {
                 this.value = '';
@@ -756,19 +748,15 @@
             }
         }
 
-        // Función para cargar el fondo desde la BD o localStorage
         function cargarFondo() {
             const panelBg = document.getElementById('panelBg');
             
-            // Verificar si hay imagen de fondo en la base de datos
             @if(isset($configuracion) && $configuracion && $configuracion->imagen_fondo_login)
-                // Si hay imagen en la BD, usarla con CONTAIN (se ve completa y nítida)
                 panelBg.style.backgroundImage = `url('{{ asset($configuracion->imagen_fondo_login) }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';
                 panelBg.style.backgroundPosition = 'center';
             @else
-                // Si no hay imagen en la BD, usar la imagen por defecto
                 panelBg.style.backgroundImage = `url('{{ asset('images/hospital-bg.jpg') }}')`;
                 panelBg.style.backgroundSize = 'contain';
                 panelBg.style.backgroundRepeat = 'no-repeat';

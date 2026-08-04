@@ -30,6 +30,7 @@
             justify-content: center;
             overflow: hidden;
             background: linear-gradient(145deg, #e8f5e9 0%, #d0e8dc 50%, #b8e0cc 100%);
+            height: 100vh;
         }
 
         .left-panel::after {
@@ -132,8 +133,9 @@
             align-items: center;
             justify-content: center;
             padding: 40px;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
+            height: 100vh;
         }
 
         .right-panel::before {
@@ -526,7 +528,8 @@
             }
             .left-panel, .right-panel {
                 width: 100%;
-                min-height: 35vh;
+                min-height: 100vh;
+                height: 100vh;
             }
             .login-card {
                 padding: 24px 20px;
