@@ -1053,390 +1053,538 @@
         .btn-llamar-lista { background: #28a745; color: white; }
         .btn-atender-lista { background: #007bff; color: white; }
         @media (max-width: 700px) { .gestionar-turno-layout { grid-template-columns: 1fr; } }
-        @media (max-width: 1024px) { .sidebar { width: 280px; } .main-content { margin-left: 280px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; height: auto; } .main-content { margin-left: 0; } .app-layout { flex-direction: column; } }
-        .usuarios-section { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .usuarios-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid #ffd966; padding-bottom: 15px; }
-        .usuarios-header h2 { color: #0b2b5e; display: flex; align-items: center; gap: 10px; }
-        .form-usuario-container { background: #f8fafc; border-radius: 20px; padding: 25px; margin-bottom: 30px; border: 1px solid #e0e7ff; }
-        .form-usuario-container h3 { color: #0b2b5e; margin-bottom: 20px; font-size: 1.2rem; border-left: 4px solid #ffd966; padding-left: 12px; }
-        .form-usuario-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .form-usuario-field { margin-bottom: 15px; }
-        .form-usuario-field label { display: block; font-weight: 600; color: #0b2b5e; margin-bottom: 6px; font-size: 0.8rem; text-transform: uppercase; }
-        .form-usuario-field input, .form-usuario-field select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; transition: 0.2s; }
-        .form-usuario-field input:focus, .form-usuario-field select:focus { border-color: #ffd966; outline: none; box-shadow: 0 0 0 3px rgba(255,217,102,0.3); }
         
-        /* ===== NUEVO ESTILO PARA SELECTOR MÚLTIPLE DE MÓDULOS ===== */
-        .modulos-select-container {
-            position: relative;
-            width: 100%;
-        }
-        .modulos-select-btn {
-            width: 100%;
-            padding: 12px 15px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: inherit;
-        }
-        .modulos-select-btn:hover {
-            border-color: #667eea;
-        }
-        .modulos-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            z-index: 1000;
-            display: none;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-        .modulos-dropdown.open {
-            display: block;
-        }
-        .modulo-check-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .modulo-check-option:hover {
-            background: #f1f5f9;
-        }
-        .modulo-check-option input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            margin: 0;
-        }
-        .modulo-check-option label {
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #1e293b;
-            margin: 0;
-            text-transform: none;
-            letter-spacing: normal;
-            font-weight: 400;
-        }
-        
-        .form-usuario-actions { display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
-        .btn-guardar-usuario-form { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
-        .btn-actualizar-usuario { background: linear-gradient(135deg, #ffc107, #ff9800); color: #0b2b5e; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
-        .btn-cancelar-usuario-form { background: #6c757d; color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
-        .usuarios-list { margin-top: 30px; }
-        .usuarios-list h3 { color: #0b2b5e; margin-bottom: 15px; font-size: 1.1rem; }
-        .usuarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .usuario-card { background: #f8fafc; border-radius: 16px; padding: 18px; border-left: 5px solid #ffd966; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .usuario-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
-        .usuario-card h4 { color: #0b2b5e; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .usuario-card p { margin: 5px 0; color: #4b5563; font-size: 0.85rem; }
-        .usuario-card .modulos-asignados { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .modulo-badge { background: #667eea; color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; }
-        .btn-eliminar-usuario-card { background: #dc3545; color: white; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.7rem; margin-top: 12px; transition: 0.2s; }
-        .btn-eliminar-usuario-card:hover { background: #b02a37; }
-        .btn-editar-usuario-card { background: #ffc107; color: #0b2b5e; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.7rem; margin-top: 12px; margin-right: 8px; transition: 0.2s; }
-        .btn-editar-usuario-card:hover { background: #e0a800; }
-        .acceso-denegado-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s ease; }
-        .acceso-denegado-card { background: white; border-radius: 24px; padding: 40px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 8px solid #dc3545; }
-        .acceso-denegado-card i { font-size: 64px; color: #dc3545; margin-bottom: 20px; }
-        .acceso-denegado-card h2 { color: #0b2b5e; margin-bottom: 10px; }
-        .acceso-denegado-card p { color: #666; margin-bottom: 25px; }
-        .acceso-denegado-card button { background: #0b2b5e; color: white; border: none; padding: 12px 30px; border-radius: 40px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
-        .acceso-denegado-card button:hover { background: #1e4a8a; transform: scale(1.02); }
-        .perfil-section { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .perfil-header { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #ffd966; }
-        .perfil-header h2 { color: #0b2b5e; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .perfil-search { margin-bottom: 25px; display: flex; gap: 10px; align-items: flex-end; }
-        .perfil-search label { display: block; font-weight: 600; color: #0b2b5e; margin-bottom: 8px; font-size: 0.85rem; }
-        .perfil-search .search-input-wrapper { flex: 1; }
-        .perfil-search input { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; }
-        .btn-buscar-perfil { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; height: 48px; transition: all 0.3s; }
-        .btn-buscar-perfil:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
-        .permisos-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
-        .permiso-item { background: #f8fafc; border-radius: 16px; padding: 18px 20px; border-left: 4px solid #ffd966; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .permiso-info h4 { color: #0b2b5e; margin-bottom: 5px; font-size: 1rem; }
-        .permiso-info p { color: #666; font-size: 0.75rem; }
-        .permiso-buttons { display: flex; gap: 20px; align-items: center; }
-        .permiso-buttons label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; color: #4b5563; }
-        .permiso-buttons input { width: 18px; height: 18px; cursor: pointer; margin: 0; }
-        .perfil-actions { display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
-        .btn-actualizar-perfil { background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
-        .btn-guardar-perfil { background: linear-gradient(135deg, #ffc107, #ff9800); color: #0b2b5e; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold; }
-        .perfil-footer { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; color: #666; font-size: 0.8rem; }
+        /* ============================================================
+           🔥 CORREGIDO: ESTILOS PARA TABLET Y PANTALLAS PEQUEÑAS
+           ============================================================ */
 
-        /* ===== ESTILO PARA OCULTAR EL FORMULARIO DE USUARIO ===== */
-        .form-usuario-container {
-            display: none;
-        }
-        .form-usuario-container.visible {
-            display: block;
-        }
-        
-        /* ===== NUEVO ESTILO PARA MODAL DE NIVEL ACCESO ===== */
-        .modal-nivel-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 10001;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-nivel-card {
-            background: white;
-            border-radius: 28px;
-            padding: 32px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        }
-        .modal-nivel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 3px solid #ffd966;
-            padding-bottom: 15px;
-        }
-        .modal-nivel-header h3 {
-            color: #0b2b5e;
-            font-size: 1.5rem;
-            margin: 0;
-        }
-        .modal-nivel-close {
-            background: #dc3545;
-            color: white;
-            border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        .modal-nivel-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 25px;
-        }
-        .btn-guardar-nivel {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-cancelar-nivel {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        /* Estilos para la sección de agregar nivel (modo trabajador) */
-        .agregar-nivel-section {
-            background: white;
-            border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        .agregar-nivel-section h2 {
-            color: #0b2b5e;
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ffd966;
-            padding-bottom: 15px;
-        }
-        .agregar-nivel-section .form-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        .agregar-nivel-section .form-group label {
-            display: block;
-            font-weight: 600;
-            color: #0b2b5e;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-        .agregar-nivel-section .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 1rem;
-        }
-        .agregar-nivel-section .form-group input:focus {
-            border-color: #ffd966;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
-        }
-        .btn-guardar-nivel-section {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-right: 10px;
-        }
-        .btn-cancelar-nivel-section {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        
-        /* ===== ESTILO PARA EL BOTÓN DE OJO EN CONTRASEÑAS ===== */
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .password-wrapper input {
-            width: 100%;
-            padding: 12px 50px 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            font-family: inherit;
-            background: #ffffff;
-        }
-        .password-wrapper input:focus {
-            border-color: #ffd966;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
-        }
-        .toggle-password-btn {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #94a3b8;
-            font-size: 1.1rem;
-            transition: color 0.2s;
-            background: transparent;
-            border: none;
-            z-index: 10;
-        }
-        .toggle-password-btn:hover {
-            color: #43a047;
+        /* Para tablets grandes (entre 1025px y 1200px) */
+        @media (max-width: 1200px) and (min-width: 1025px) {
+            .sidebar {
+                width: 280px !important;
+            }
+            .main-content {
+                margin-left: 280px !important;
+                padding: 15px !important;
+            }
+            .sidebar-header h2 {
+                font-size: 1rem !important;
+            }
+            .nav-item {
+                padding: 8px 12px !important;
+                font-size: 0.85rem !important;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 12px !important;
+            }
+            .servicios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+            }
+            .gestionar-turno-layout {
+                gap: 15px !important;
+            }
         }
 
-        /* ===== ESTILOS PARA MODAL DE CONFIRMACIÓN RURAL ===== */
-        .modal-confirmacion-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 999999;
-            display: none;
-            justify-content: center;
-            align-items: center;
+        /* ===== 🔥 PARA TABLET (768px a 1024px) - MANTENER DISEÑO ORIGINAL ===== */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            /* ===== LA BARRA LATERAL MANTIENE SU ANCHO ORIGINAL ===== */
+            .sidebar {
+                width: 320px !important;
+                position: fixed !important;
+                height: 100vh !important;
+            }
+            
+            .sidebar-header {
+                padding: 20px !important;
+            }
+            
+            .sidebar-header h2 {
+                font-size: 1.2em !important;
+            }
+            
+            .sidebar-header .logo-empresa {
+                max-width: 80px !important;
+                max-height: 60px !important;
+            }
+            
+            .nav-item {
+                padding: 10px 15px !important;
+                font-size: 0.9rem !important;
+                gap: 12px !important;
+            }
+            
+            .nav-item i {
+                width: 24px !important;
+                font-size: 1rem !important;
+            }
+            
+            .nav-section-title {
+                font-size: 0.75em !important;
+                padding-left: 10px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .voice-control {
+                padding: 12px !important;
+                margin: 10px 15px !important;
+            }
+            
+            .voice-control h3 {
+                font-size: 0.9em !important;
+            }
+            
+            .voice-btn {
+                padding: 6px 12px !important;
+                font-size: 0.75em !important;
+            }
+            
+            /* ===== EL CONTENIDO PRINCIPAL MANTIENE SU MARGEN ===== */
+            .main-content {
+                margin-left: 320px !important;
+                padding: 20px !important;
+            }
+            
+            /* ===== ESTADÍSTICAS EN 3 COLUMNAS ===== */
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 15px !important;
+            }
+            
+            .stat-card {
+                padding: 15px !important;
+                gap: 12px !important;
+            }
+            
+            .stat-icon {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 1rem !important;
+            }
+            
+            .stat-info h3 {
+                font-size: 0.75em !important;
+            }
+            
+            .stat-info .value {
+                font-size: 1.5em !important;
+            }
+            
+            /* ===== HEADER ===== */
+            .header-hospital {
+                padding: 15px 25px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .header-hospital h1 {
+                font-size: 1.3rem !important;
+            }
+            
+            .header-hospital p {
+                font-size: 0.85rem !important;
+            }
+            
+            /* ===== SECCIÓN DE TURNOS ===== */
+            .section-card {
+                padding: 20px !important;
+            }
+            
+            .section-title {
+                font-size: 1.1em !important;
+            }
+            
+            /* ===== BÚSQUEDA ===== */
+            .busqueda-container input {
+                padding: 10px 15px !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .btn-buscar {
+                padding: 10px 20px !important;
+                font-size: 0.9rem !important;
+            }
+            
+            /* ===== ESPECIALIDADES ===== */
+            .specialties-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+            
+            .specialty-card {
+                padding: 12px !important;
+            }
+            
+            .specialty-icon {
+                font-size: 1.8em !important;
+            }
+            
+            .specialty-name {
+                font-size: 0.8em !important;
+            }
+            
+            /* ===== SERVICIOS ===== */
+            .servicios-section {
+                padding: 28px !important;
+            }
+            
+            .servicios-header h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .servicios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+                gap: 20px !important;
+            }
+            
+            .servicio-card {
+                padding: 20px !important;
+            }
+            
+            .servicio-card h3 {
+                font-size: 1.2rem !important;
+            }
+            
+            .servicio-card .descripcion {
+                font-size: 0.85rem !important;
+            }
+            
+            /* ===== ATENDER TURNOS ===== */
+            .atender-section {
+                padding: 28px !important;
+            }
+            
+            .atender-header h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .gestionar-turno-layout {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 20px !important;
+            }
+            
+            .gestionar-izquierda,
+            .gestionar-derecha {
+                padding: 25px !important;
+            }
+            
+            .gestionar-titulo {
+                font-size: 1.1rem !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .turno-numero-grande {
+                font-size: 2rem !important;
+                padding: 14px 20px !important;
+            }
+            
+            .campo-fila .campo-valor-display {
+                padding: 10px 14px !important;
+                font-size: 0.9rem !important;
+                min-height: 40px !important;
+            }
+            
+            .campos-dos-col {
+                gap: 12px !important;
+            }
+            
+            /* ===== MÓDULOS DROPDOWN ===== */
+            .modulo-btn-click {
+                padding: 14px 18px !important;
+            }
+            
+            .modulo-btn-click .modulo-nombre-text {
+                font-size: 0.95rem !important;
+            }
+            
+            .modulo-option {
+                padding: 13px 18px !important;
+                font-size: 0.88rem !important;
+            }
+            
+            .modulo-option .mod-icon {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.75rem !important;
+            }
+            
+            .modulo-info-box {
+                padding: 14px !important;
+            }
+            
+            .modulo-nombre {
+                font-size: 0.95rem !important;
+            }
+            
+            .contador-badge {
+                padding: 4px 12px !important;
+                font-size: 0.72rem !important;
+            }
+            
+            /* ===== REPORTES ===== */
+            .reportes-section {
+                padding: 28px !important;
+            }
+            
+            .report-header h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .filtros-fecha {
+                padding: 20px !important;
+                gap: 15px !important;
+            }
+            
+            .filtros-fecha input {
+                padding: 12px 20px !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .btn-generar-reporte {
+                padding: 12px 28px !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .reporte-table th,
+            .reporte-table td {
+                padding: 12px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            /* ===== USUARIOS ===== */
+            .usuarios-section {
+                padding: 28px !important;
+            }
+            
+            .form-usuario-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 20px !important;
+            }
+            
+            .usuarios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+                gap: 20px !important;
+            }
+            
+            .usuario-card {
+                padding: 18px !important;
+            }
+            
+            .usuario-card h4 {
+                font-size: 1rem !important;
+            }
+            
+            /* ===== BANNERS ===== */
+            .banners-section-fullwidth {
+                padding: 28px !important;
+            }
+            
+            .banners-section-fullwidth h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .banner-item-clickable {
+                padding: 15px !important;
+                gap: 15px !important;
+            }
+            
+            .banner-numero {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 1.2rem !important;
+            }
+            
+            .banner-imagen-preview,
+            .banner-color-preview {
+                width: 80px !important;
+                height: 80px !important;
+            }
+            
+            .banner-info h4 {
+                font-size: 1rem !important;
+            }
+            
+            .banner-info p {
+                font-size: 0.75rem !important;
+            }
+            
+            /* ===== MODALES ===== */
+            .modal-banner-card {
+                padding: 32px !important;
+            }
+            
+            .modal-banner-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 20px 30px !important;
+            }
+            
+            .modal-banner-grid .full-width {
+                grid-column: span 2 !important;
+            }
+            
+            .modal-content {
+                padding: 25px !important;
+                margin: 50px auto !important;
+            }
+            
+            .modal-persona .modal-content {
+                padding: 32px !important;
+            }
+            
+            /* ===== CONFIGURACIÓN ===== */
+            .configuracion-section {
+                padding: 28px !important;
+            }
+            
+            .configuracion-section h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .configuracion-section .form-group input[type="text"] {
+                padding: 14px 18px !important;
+                font-size: 1rem !important;
+            }
+            
+            /* ===== PERFIL ===== */
+            .perfil-section {
+                padding: 28px !important;
+            }
+            
+            .perfil-header h2 {
+                font-size: 1.3rem !important;
+            }
+            
+            .permiso-item {
+                padding: 18px 20px !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 15px !important;
+            }
+            
+            .permiso-info h4 {
+                font-size: 1rem !important;
+            }
+            
+            .permiso-info p {
+                font-size: 0.75rem !important;
+            }
+            
+            .permiso-buttons {
+                gap: 20px !important;
+            }
+            
+            /* ===== AGREGAR NIVEL ===== */
+            .agregar-nivel-section {
+                padding: 28px !important;
+            }
+            
+            .agregar-nivel-section h2 {
+                font-size: 1.6rem !important;
+            }
+            
+            .agregar-nivel-section .form-group input {
+                padding: 14px 18px !important;
+                font-size: 1rem !important;
+            }
+            
+            /* ===== MODO TRABAJADOR EN TABLET ===== */
+            .modo-trabajador .servicios-section {
+                padding: 28px !important;
+            }
+            
+            .modo-trabajador .servicios-section .servicios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)) !important;
+                gap: 25px !important;
+            }
+            
+            .modo-trabajador .gestionar-turno-layout {
+                gap: 30px !important;
+            }
+            
+            .modo-trabajador .gestionar-izquierda,
+            .modo-trabajador .gestionar-derecha {
+                padding: 30px !important;
+            }
+            
+            .modo-trabajador .turno-numero-grande {
+                font-size: 2.2rem !important;
+                padding: 18px !important;
+            }
+            
+            .modo-trabajador .reportes-section {
+                padding: 28px !important;
+            }
+            
+            .modo-trabajador .reportes-section .report-header h2 {
+                font-size: 1.8rem !important;
+            }
+            
+            .modo-trabajador .atender-section {
+                padding: 28px !important;
+            }
         }
-        .modal-confirmacion-overlay.active {
-            display: flex;
-        }
-        .modal-confirmacion-card {
-            background: white;
-            border-radius: 28px;
-            padding: 40px;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-confirmacion-card .icono-warning {
-            font-size: 4rem;
-            color: #ffc107;
-            margin-bottom: 15px;
-        }
-        .modal-confirmacion-card h2 {
-            color: #0b2b5e;
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-        .modal-confirmacion-card p {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        .modal-confirmacion-card .paciente-nombre {
-            font-weight: 700;
-            color: #0b2b5e;
-            font-size: 1.1rem;
-            background: #f8fafc;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 10px 0 20px 0;
-        }
-        .modal-confirmacion-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .modal-confirmacion-buttons button {
-            padding: 12px 35px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-confirmar-si {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-        }
-        .btn-confirmar-si:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40,167,69,0.4);
-        }
-        .btn-confirmar-no {
-            background: #dc3545;
-            color: white;
-        }
-        .btn-confirmar-no:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220,53,69,0.4);
+
+        /* Para pantallas muy pequeñas (teléfonos) */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100% !important;
+                position: relative !important;
+                height: auto !important;
+                max-height: 300px !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 8px !important;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .stat-card:last-child {
+                grid-column: span 2 !important;
+            }
+            .modulos-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .btn-cerrar-sesion-modulo {
+                margin-left: 0 !important;
+            }
+            .specialties-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .gestionar-turno-layout {
+                grid-template-columns: 1fr !important;
+            }
+            .modal-banner-card {
+                width: 98% !important;
+                padding: 12px !important;
+            }
+            .modal-content {
+                width: 98% !important;
+                margin: 10px auto !important;
+                padding: 12px !important;
+            }
+            .filtros-fecha {
+                flex-direction: column !important;
+            }
+            .filtros-fecha input {
+                width: 100% !important;
+            }
+            .servicios-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .usuarios-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .turno-generado-numero {
+                font-size: 2rem !important;
+                padding: 12px 20px !important;
+            }
+            .modo-trabajador .servicios-section .servicios-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
         
-        /* ===== ESTILOS PARA SECCIÓN CONFIGURACIÓN ===== */
+        /* ESTILOS PARA LA SECCIÓN DE CONFIGURACIÓN */
         .configuracion-section {
             background: white;
             border-radius: 24px;
@@ -1536,471 +1684,356 @@
             min-height: calc(100vh - 70px);
         }
         
-        /* ===== ESTILO PARA OCULTAR EL UNDEFINED ===== */
+        /* ESTILO PARA OCULTAR EL UNDEFINED */
         .turno-espera-item.oculto {
             display: none !important;
         }
 
-        /* ============================================================
-           🔥 ESTILOS PARA TABLET Y PANTALLAS PEQUEÑAS (RESPONSIVE)
-           ============================================================ */
-
-        /* Para tablets (entre 768px y 1024px) */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 220px !important;
-            }
-            .sidebar-header {
-                padding: 10px 12px !important;
-            }
-            .sidebar-header h2 {
-                font-size: 0.8rem !important;
-            }
-            .sidebar-header .logo-empresa {
-                max-width: 45px !important;
-                max-height: 35px !important;
-            }
-            .nav-item {
-                padding: 7px 10px !important;
-                font-size: 0.75rem !important;
-                gap: 6px !important;
-            }
-            .nav-item i {
-                width: 18px !important;
-                font-size: 0.8rem !important;
-            }
-            .nav-section-title {
-                font-size: 0.55rem !important;
-                padding-left: 6px !important;
-                margin-bottom: 6px !important;
-            }
-            .voice-control {
-                padding: 8px 10px !important;
-                margin: 6px 10px !important;
-            }
-            .voice-control h3 {
-                font-size: 0.7rem !important;
-            }
-            .voice-btn {
-                padding: 4px 10px !important;
-                font-size: 0.6rem !important;
-            }
-            .main-content {
-                margin-left: 220px !important;
-                padding: 10px !important;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 8px !important;
-            }
-            .stat-card {
-                padding: 10px !important;
-                gap: 8px !important;
-            }
-            .stat-icon {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 0.7rem !important;
-            }
-            .stat-info h3 {
-                font-size: 0.55rem !important;
-            }
-            .stat-info .value {
-                font-size: 1.1rem !important;
-            }
-            .header-hospital {
-                padding: 10px 15px !important;
-                margin-bottom: 10px !important;
-            }
-            .header-hospital h1 {
-                font-size: 1.1rem !important;
-            }
-            .header-hospital p {
-                font-size: 0.7rem !important;
-            }
-            .section-card {
-                padding: 12px !important;
-            }
-            .section-title {
-                font-size: 0.85rem !important;
-                padding-bottom: 6px !important;
-                margin-bottom: 8px !important;
-            }
-            .busqueda-container input {
-                padding: 6px 10px !important;
-                font-size: 0.8rem !important;
-            }
-            .btn-buscar {
-                padding: 6px 12px !important;
-                font-size: 0.7rem !important;
-            }
-            .persona-info {
-                padding: 8px !important;
-            }
-            .persona-info .nombre-completo {
-                font-size: 0.8rem !important;
-            }
-            .grid-nombres {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 4px !important;
-            }
-            .campo {
-                padding: 4px 6px !important;
-            }
-            .campo-label {
-                font-size: 0.45rem !important;
-            }
-            .campo-valor {
-                font-size: 0.65rem !important;
-            }
-            .specialties-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 6px !important;
-            }
-            .specialty-card {
-                padding: 8px !important;
-            }
-            .specialty-icon {
-                font-size: 1.2rem !important;
-            }
-            .specialty-name {
-                font-size: 0.6rem !important;
-            }
-            .btn-generate {
-                padding: 8px !important;
-                font-size: 0.8rem !important;
-            }
-            .atender-section {
-                padding: 12px !important;
-            }
-            .atender-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .gestionar-turno-layout {
-                grid-template-columns: 1fr !important;
-                gap: 12px !important;
-            }
-            .gestionar-izquierda, .gestionar-derecha {
-                padding: 12px !important;
-            }
-            .gestionar-titulo {
-                font-size: 0.85rem !important;
-                margin-bottom: 10px !important;
-            }
-            .turno-numero-grande {
-                font-size: 1.5rem !important;
-                padding: 10px !important;
-            }
-            .campo-fila .campo-valor-display {
-                padding: 6px 10px !important;
-                font-size: 0.75rem !important;
-                min-height: 30px !important;
-            }
-            .campos-dos-col {
-                gap: 6px !important;
-            }
-            .modulo-btn-click {
-                padding: 8px 12px !important;
-            }
-            .modulo-btn-click .modulo-nombre-text {
-                font-size: 0.75rem !important;
-            }
-            .modulo-option {
-                padding: 8px 12px !important;
-                font-size: 0.7rem !important;
-            }
-            .modulo-option .mod-icon {
-                width: 24px !important;
-                height: 24px !important;
-                font-size: 0.5rem !important;
-            }
-            .modulo-info-box {
-                padding: 8px !important;
-            }
-            .modulo-nombre {
-                font-size: 0.75rem !important;
-                margin-bottom: 6px !important;
-            }
-            .contador-badge {
-                padding: 2px 8px !important;
-                font-size: 0.55rem !important;
-            }
-            .turno-espera-item {
-                padding: 6px 10px !important;
-                font-size: 0.7rem !important;
-            }
-            .turno-espera-num {
-                font-size: 0.8rem !important;
-            }
-            .turno-espera-pac {
-                font-size: 0.6rem !important;
-            }
-            .btn-llamar-lista, .btn-atender-lista {
-                padding: 3px 8px !important;
-                font-size: 0.55rem !important;
-            }
-            .servicios-section {
-                padding: 12px !important;
-            }
-            .servicios-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .servicios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .servicio-card {
-                padding: 12px !important;
-            }
-            .servicio-card h3 {
-                font-size: 0.95rem !important;
-            }
-            .servicio-card .descripcion {
-                font-size: 0.7rem !important;
-            }
-            .usuarios-section {
-                padding: 12px !important;
-            }
-            .form-usuario-grid {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-            .usuarios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .usuario-card {
-                padding: 12px !important;
-            }
-            .usuario-card h4 {
-                font-size: 0.9rem !important;
-            }
-            .reportes-section {
-                padding: 12px !important;
-            }
-            .report-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .filtros-fecha {
-                padding: 12px !important;
-                gap: 8px !important;
-                flex-wrap: wrap !important;
-            }
-            .filtros-fecha input {
-                padding: 6px 10px !important;
-                font-size: 0.8rem !important;
-                width: 100% !important;
-            }
-            .btn-generar-reporte {
-                padding: 8px 16px !important;
-                font-size: 0.8rem !important;
-                width: 100% !important;
-            }
-            .reporte-table th,
-            .reporte-table td {
-                padding: 6px 8px !important;
-                font-size: 0.65rem !important;
-            }
-            .banners-section-fullwidth {
-                padding: 12px !important;
-            }
-            .banners-section-fullwidth h2 {
-                font-size: 1.2rem !important;
-            }
-            .banner-item-clickable {
-                padding: 10px !important;
-                gap: 10px !important;
-            }
-            .banner-numero {
-                width: 30px !important;
-                height: 30px !important;
-                font-size: 0.9rem !important;
-            }
-            .banner-imagen-preview, .banner-color-preview {
-                width: 50px !important;
-                height: 50px !important;
-            }
-            .banner-info h4 {
-                font-size: 0.8rem !important;
-            }
-            .banner-info p {
-                font-size: 0.65rem !important;
-            }
-            .modal-banner-card {
-                padding: 16px !important;
-                width: 95% !important;
-            }
-            .modal-banner-grid {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-            .modal-banner-grid .full-width {
-                grid-column: span 1 !important;
-            }
-            .modal-content {
-                padding: 16px !important;
-                margin: 20px auto !important;
-            }
-            .modal-persona .modal-content {
-                padding: 16px !important;
-            }
-            .btn-agregar-servicio,
-            .btn-agregar-banner,
-            .btn-guardar-config,
-            .btn-cancelar-config {
-                padding: 8px 16px !important;
-                font-size: 0.8rem !important;
-            }
-            .btn-ver-turnos-modal {
-                padding: 8px !important;
-                font-size: 0.8rem !important;
-            }
-            .modo-trabajador .modulos-bar {
-                padding: 6px 10px !important;
-                gap: 6px !important;
-            }
-            .modo-trabajador .modulo-tab {
-                padding: 6px 12px !important;
-                font-size: 0.65rem !important;
-            }
-            .modo-trabajador .servicios-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .atender-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .reportes-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .configuracion-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .servicios-section .servicios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .modo-trabajador .gestionar-turno-layout {
-                gap: 12px !important;
-            }
-            .modo-trabajador .gestionar-izquierda,
-            .modo-trabajador .gestionar-derecha {
-                padding: 12px !important;
-            }
-            .modo-trabajador .turno-numero-grande {
-                font-size: 1.5rem !important;
-                padding: 10px !important;
-            }
-            .configuracion-section {
-                padding: 12px !important;
-            }
-            .configuracion-section h2 {
-                font-size: 1.2rem !important;
-            }
-            .configuracion-section .form-group input[type="text"] {
-                padding: 10px 14px !important;
-                font-size: 0.85rem !important;
-            }
-            .configuracion-actions {
-                flex-wrap: wrap !important;
-                justify-content: center !important;
-            }
-            .perfil-section {
-                padding: 12px !important;
-            }
-            .perfil-header h2 {
-                font-size: 1rem !important;
-            }
-            .permiso-item {
-                padding: 10px 12px !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 8px !important;
-            }
-            .permiso-info h4 {
-                font-size: 0.8rem !important;
-            }
-            .permiso-info p {
-                font-size: 0.65rem !important;
-            }
-            .permiso-buttons {
-                gap: 10px !important;
-                flex-wrap: wrap !important;
-            }
-            .agregar-nivel-section {
-                padding: 12px !important;
-            }
-            .agregar-nivel-section h2 {
-                font-size: 1.2rem !important;
-            }
-            .agregar-nivel-section .form-group input {
-                padding: 10px 14px !important;
-                font-size: 0.85rem !important;
-            }
+        /* ESTILOS PARA SECCIÓN PERFIL */
+        .perfil-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        .perfil-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ffd966;
+        }
+        .perfil-header h2 {
+            color: #0b2b5e;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .perfil-search {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .perfil-search label {
+            display: block;
+            font-weight: 600;
+            color: #0b2b5e;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        .perfil-search .search-input-wrapper {
+            flex: 1;
+        }
+        .perfil-search input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        .btn-buscar-perfil {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 48px;
+            transition: all 0.3s;
+        }
+        .btn-buscar-perfil:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        .permisos-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .permiso-item {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 18px 20px;
+            border-left: 4px solid #ffd966;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .permiso-info h4 {
+            color: #0b2b5e;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        .permiso-info p {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        .permiso-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .permiso-buttons label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .permiso-buttons input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .perfil-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .btn-actualizar-perfil {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-guardar-perfil {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #0b2b5e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .perfil-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            color: #666;
+            font-size: 0.8rem;
         }
 
-        /* Para pantallas muy pequeñas (teléfonos) */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100% !important;
-                position: relative !important;
-                height: auto !important;
-                max-height: 300px !important;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                padding: 8px !important;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .stat-card:last-child {
-                grid-column: span 2 !important;
-            }
-            .modulos-bar {
-                flex-direction: column !important;
-                align-items: stretch !important;
-            }
-            .btn-cerrar-sesion-modulo {
-                margin-left: 0 !important;
-            }
-            .specialties-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .gestionar-turno-layout {
-                grid-template-columns: 1fr !important;
-            }
-            .modal-banner-card {
-                width: 98% !important;
-                padding: 12px !important;
-            }
-            .modal-content {
-                width: 98% !important;
-                margin: 10px auto !important;
-                padding: 12px !important;
-            }
-            .filtros-fecha {
-                flex-direction: column !important;
-            }
-            .filtros-fecha input {
-                width: 100% !important;
-            }
-            .servicios-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .usuarios-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .turno-generado-numero {
-                font-size: 2rem !important;
-                padding: 12px 20px !important;
-            }
-            .modo-trabajador .servicios-section .servicios-grid {
-                grid-template-columns: 1fr !important;
-            }
+        /* ESTILO PARA OCULTAR EL FORMULARIO DE USUARIO */
+        .form-usuario-container {
+            display: none;
+        }
+        .form-usuario-container.visible {
+            display: block;
+        }
+
+        /* ESTILOS PARA MODAL DE NIVEL ACCESO */
+        .modal-nivel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-nivel-card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .modal-nivel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #ffd966;
+            padding-bottom: 15px;
+        }
+        .modal-nivel-header h3 {
+            color: #0b2b5e;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .modal-nivel-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .modal-nivel-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+        .btn-guardar-nivel {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-cancelar-nivel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ESTILO PARA EL BOTÓN DE OJO EN CONTRASEÑAS */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: inherit;
+            background: #ffffff;
+        }
+        .password-wrapper input:focus {
+            border-color: #ffd966;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,217,102,0.3);
+        }
+        .toggle-password-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            background: transparent;
+            border: none;
+            z-index: 10;
+        }
+        .toggle-password-btn:hover {
+            color: #43a047;
+        }
+
+        /* ESTILOS PARA MODAL DE CONFIRMACIÓN RURAL */
+        .modal-confirmacion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 999999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-confirmacion-overlay.active {
+            display: flex;
+        }
+        .modal-confirmacion-card {
+            background: white;
+            border-radius: 28px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-confirmacion-card .icono-warning {
+            font-size: 4rem;
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+        .modal-confirmacion-card h2 {
+            color: #0b2b5e;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .modal-confirmacion-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .modal-confirmacion-card .paciente-nombre {
+            font-weight: 700;
+            color: #0b2b5e;
+            font-size: 1.1rem;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0 20px 0;
+        }
+        .modal-confirmacion-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .modal-confirmacion-buttons button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-confirmar-si {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+        .btn-confirmar-si:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.4);
+        }
+        .btn-confirmar-no {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-confirmar-no:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220,53,69,0.4);
+        }
+
+        /* ESTILO PARA OCULTAR EL UNDEFINED */
+        .turno-espera-item.oculto {
+            display: none !important;
         }
     </style>
 </head>
 <body>
+    <!-- CONTENIDO DEL BODY - IGUAL QUE ANTES -->
     <div class="notification" id="notification"></div>
 
     <!-- Modal Turno Generado -->
@@ -2059,7 +2092,6 @@
                 <div class="form-persona-group"><label><i class="fas fa-user"></i> Segundo Nombre</label><input type="text" id="regSegundoNombre" placeholder=""></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Primer Apellido *</label><input type="text" id="regPrimerApellido" placeholder="" required></div>
                 <div class="form-persona-group"><label><i class="fas fa-user-tag"></i> Segundo Apellido</label><input type="text" id="regSegundoApellido" placeholder=""></div>
-                <!-- CAMPO ZONA -->
                 <div class="form-persona-group">
                     <label><i class="fas fa-map-marker-alt"></i> Zona *</label>
                     <select id="regZona" required>
@@ -2068,12 +2100,10 @@
                         <option value="R">RURAL</option>
                     </select>
                 </div>
-                <!-- ===== NUEVO CAMPO: FECHA DE NACIMIENTO ===== -->
                 <div class="form-persona-group">
                     <label><i class="fas fa-calendar-alt"></i> Fecha de Nacimiento *</label>
                     <input type="date" id="regFechaNacimiento" required>
                 </div>
-                <!-- ===== FIN NUEVO CAMPO ===== -->
                 <div class="modal-persona-actions">
                     <button type="button" class="btn-cancelar-persona" onclick="cerrarModalPersona()">Cancelar</button>
                     <button type="submit" class="btn-guardar-persona"><i class="fas fa-save"></i> Guardar Paciente</button>
@@ -2085,13 +2115,11 @@
     <div class="app-layout">
         <div class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
-                <!-- LOGO DINÁMICO DE LA EMPRESA -->
                 @if(isset($configuracion) && $configuracion && $configuracion->logo_empresa_url)
                     <img src="{{ asset($configuracion->logo_empresa_url) }}" alt="Logo Empresa" class="logo-empresa">
                 @else
                     <i class="fas fa-hospital-user" style="font-size: 2.5rem; color: #ffd966; display: block; margin: 0 auto 10px auto;"></i>
                 @endif
-                <!-- NOMBRE DINÁMICO DE LA EMPRESA Y DIRECCIÓN -->
                 <h2 style="margin-bottom: 2px;"><i class="fas fa-hospital-user"></i> {{ $configuracion->nombre_empresa ?? 'E.S.E HOSPITAL LOCAL SANPABLO' }}</h2>
                 @if(isset($configuracion) && $configuracion && $configuracion->direccion_empresa)
                     <div style="font-size: 0.55rem; color: #c7d2fe; margin-top: 2px; padding: 0 5px; border-top: 1px solid rgba(255,215,0,0.2); padding-top: 6px;">
@@ -2101,20 +2129,17 @@
                 @endif
             </div>
             <div class="nav-menu">
-                <!-- INICIO -->
                 <div class="nav-section">
                     <div class="nav-section-title">INICIO</div>
                     <div class="nav-item" onclick="mostrarSeccion('inicio')"><i class="fas fa-home"></i><span>Inicio</span></div>
                 </div>
                 
-                <!-- SERVICIOS - Agrupa Servicios y Agregar Nivel de Acceso -->
                 <div class="nav-section">
                     <div class="nav-section-title">SERVICIOS</div>
                     <div class="nav-item" id="navServicios" onclick="verificarAcceso('servicios')"><i class="fas fa-stethoscope"></i><span>Servicios</span></div>
                     <div class="nav-item" onclick="abrirModalNivelAcceso()"><i class="fas fa-plus-circle"></i><span>Agregar Nivel de Acceso</span></div>
                 </div>
                 
-                <!-- USUARIOS - Agrupa Usuarios, Atender Turnos y Perfil -->
                 <div class="nav-section">
                     <div class="nav-section-title">USUARIOS</div>
                     <div class="nav-item" id="navUsuarios" onclick="verificarAcceso('usuarios')"><i class="fas fa-users"></i><span>Usuarios</span></div>
@@ -2122,7 +2147,6 @@
                     <div class="nav-item" id="navPerfil" onclick="verificarAcceso('perfil')"><i class="fas fa-id-card"></i><span>Perfil</span></div>
                 </div>
                 
-                <!-- PUBLICIDAD TV + CONFIGURACIÓN -->
                 <div class="nav-section">
                     <div class="nav-section-title" style="margin-top: 15px; border-top: 1px solid rgba(255,215,0,0.3); padding-top: 15px;">PARAMETRO DE CONFIGURACION</div>
                     <div class="nav-item" id="navPublicidadTV" onclick="mostrarSeccion('publicidad_tv')">
@@ -2133,13 +2157,11 @@
                     </div>
                 </div>
                 
-                <!-- REPORTES -->
                 <div class="nav-section">
                     <div class="nav-section-title">REPORTES</div>
                     <div class="nav-item" id="navReportes" onclick="verificarAcceso('reportes')"><i class="fas fa-chart-bar"></i><span>Reportes</span></div>
                 </div>
                 
-                <!-- SALIR -->
                 <div class="nav-section">
                     <div class="nav-section-title">SALIR</div>
                     <div class="nav-item" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
@@ -2177,17 +2199,14 @@
                                     <div class="campo-label">Zona </div>
                                     <div class="campo-valor" id="personaZona"></div>
                                 </div>
-                                <!-- ===== NUEVO CAMPO: FECHA DE NACIMIENTO ===== -->
                                 <div class="campo" id="campoFechaNacimiento" style="display:none;">
                                     <div class="campo-label">Fecha de Nacimiento</div>
                                     <div class="campo-valor" id="personaFechaNacimiento"></div>
                                 </div>
-                                <!-- ===== NUEVO CAMPO: EDAD (se muestra junto a la fecha) ===== -->
                                 <div class="campo campo-edad" id="campoEdad" style="display:none;">
                                     <div class="campo-label"><i class="fas fa-cake-candles"></i> Edad</div>
                                     <div class="campo-valor" id="personaEdad"></div>
                                 </div>
-                                <!-- ===== FIN NUEVO CAMPO EDAD ===== -->
                             </div>
                         </div>
                         <div class="specialties-grid" id="serviciosGridInicio"></div>
@@ -2347,7 +2366,7 @@
                     </div>
                     <table class="reporte-table">
                         <thead><tr><th>ESTADO</th><th>TURNO</th><th>SERVICIO</th><th>DOCUMENTO</th><th>NOMBRE</th><th>INGRESO</th><th>SALIDA</th><th>DIFERENCIA</th></tr></thead>
-                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td</tr</tbody>
+                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td></tr></tbody>
                     </table>
                     <div class="footer-reporte">SISTEMA DE GESTIÓN DE TURNOS</div>
                 </div>

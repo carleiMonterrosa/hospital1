@@ -36,11 +36,16 @@ class RecuperarController extends Controller
         // Guardar email en sesión
         session(['email_verificado' => $request->email]);
 
-        // 🔥 INTENTAR ENVIAR EL CORREO CON DEPURACIÓN
+        // 🔥 OBTENER EL USUARIO POR CORREO
+        $usuario = DB::table('users')->where('email', $request->email)->first();
+        $nombreUsuario = $usuario ? $usuario->username : $request->email;
+
+        // 🔥 INTENTAR ENVIAR EL CORREO CON EL USUARIO
         try {
             Mail::send('emails.codigo-verificacion', [
                 'codigo' => $codigo,
-                'email' => $request->email
+                'email' => $request->email,
+                'username' => $nombreUsuario
             ], function($message) use ($request) {
                 $message->to($request->email)
                         ->subject('Código de verificación - Recuperar Contraseña');
@@ -52,8 +57,14 @@ class RecuperarController extends Controller
                 ->with('email', $request->email);
 
         } catch (\Exception $e) {
-            // 🔥 MUESTRA EL ERROR EXACTO EN PANTALLA PARA DEPURAR
-            dd('❌ ERROR DETALLADO:', $e->getMessage());
+            // 🔥 SI FALLA EL ENVÍO, MUESTRA EL ERROR
+            \Log::error('Error al enviar correo de recuperación: ' . $e->getMessage());
+            \Log::error('Correo destino: ' . $request->email);
+            \Log::error('Código generado: ' . $codigo);
+            
+            return redirect()->route('password.verificar.codigo')
+                ->with('error', '❌ Error al enviar el código de verificación. Por favor, intenta nuevamente o contacta al administrador.')
+                ->with('email', $request->email);
         }
     }
 
@@ -153,4 +164,4 @@ class RecuperarController extends Controller
             return back()->with('error', '❌ Error al actualizar la contraseña: ' . $e->getMessage());
         }
     }
-}
+} 
