@@ -472,6 +472,13 @@
                     <input type="text" name="username" id="usuario" placeholder="" autocomplete="off" required>
                 </div>
 
+                <!-- ===== NUEVO CAMPO: CORREO ELECTRÓNICO ===== -->
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> CORREO ELECTRÓNICO <span class="required">*</span></label>
+                    <input type="email" name="email" id="email" placeholder="" autocomplete="off" required>
+                </div>
+                <!-- ===== FIN NUEVO CAMPO ===== -->
+
                 <div class="form-row-2">
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> PRIMER NOMBRE <span class="required">*</span></label>
@@ -678,6 +685,7 @@
 
         function limpiarFormulario() {
             document.getElementById('usuario').value = '';
+            document.getElementById('email').value = '';
             document.getElementById('primer_nombre').value = '';
             document.getElementById('segundo_nombre').value = '';
             document.getElementById('primer_apellido').value = '';
@@ -780,6 +788,7 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const identificacion = document.getElementById('identificacion').value.trim();
             const usuario = document.getElementById('usuario').value.trim();
+            const email = document.getElementById('email').value.trim();
             const primer_nombre = document.getElementById('primer_nombre').value.trim();
             const primer_apellido = document.getElementById('primer_apellido').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -794,6 +803,12 @@
 
             if (!usuario) {
                 errores.push('El nombre de usuario es obligatorio');
+            }
+
+            if (!email) {
+                errores.push('El correo electrónico es obligatorio');
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errores.push('Ingrese un correo electrónico válido');
             }
 
             if (!primer_nombre) {

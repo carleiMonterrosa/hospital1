@@ -105,7 +105,7 @@ class AuthController extends Controller
         return view('register', compact('configuracion'));
     }
 
-    // ========== REGISTRO CORREGIDO ==========
+    // ========== REGISTRO CORREGIDO CON CAMPO EMAIL ==========
     public function register(Request $request)
     {
         // Construir el nombre completo desde los campos del formulario
@@ -118,10 +118,11 @@ class AuthController extends Controller
         $nombreCompleto = trim($primerNombre . ' ' . $segundoNombre . ' ' . $primerApellido . ' ' . $segundoApellido);
         $nombreCompleto = preg_replace('/\s+/', ' ', $nombreCompleto); // Limpiar espacios extra
         
-        // Validaciones
+        // 🔥 VALIDACIONES CON CAMPO EMAIL
         $validator = Validator::make($request->all(), [
             'identificacion' => 'required|string|max:20',
             'username' => 'required|string|max:50|unique:users',
+            'email' => 'required|email|max:255|unique:users,email', // 🔥 NUEVO: validar email
             'password' => 'required|string|min:6|confirmed',
             'primer_nombre' => 'required|string|max:50',
             'primer_apellido' => 'required|string|max:50',
@@ -129,6 +130,9 @@ class AuthController extends Controller
             'identificacion.required' => 'La identificación es obligatoria',
             'username.required' => 'El nombre de usuario es obligatorio',
             'username.unique' => 'Este nombre de usuario ya está en uso',
+            'email.required' => 'El correo electrónico es obligatorio', // 🔥 NUEVO
+            'email.email' => 'Ingrese un correo electrónico válido', // 🔥 NUEVO
+            'email.unique' => 'Este correo electrónico ya está registrado', // 🔥 NUEVO
             'password.required' => 'La contraseña es obligatoria',
             'password.min' => 'La contraseña debe tener al menos 6 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
@@ -142,8 +146,8 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        // Generar email automático
-        $email = $request->username . '@temp.com';
+        // 🔥 USAR EL CORREO QUE EL USUARIO INGRESÓ EN EL FORMULARIO
+        $email = $request->email; // 🔥 CAMBIADO: ya no usa @temp.com
         
         // Hashear contraseña
         $hashedPassword = Hash::make($request->password);
@@ -161,13 +165,13 @@ class AuthController extends Controller
             'agregar_nivel_acceso' => 0,
         ];
 
-        // ========== 1. GUARDAR EN TABLA users (CON IDENTIFICACION) ==========
+        // ========== 1. GUARDAR EN TABLA users (CON IDENTIFICACION Y EMAIL) ==========
         $user = User::create([
             'name' => $nombreCompleto,
             'username' => $request->username,
-            'email' => $email,
+            'email' => $email, // 🔥 AHORA GUARDA EL CORREO REAL
             'password' => $hashedPassword,
-            'identificacion' => $request->identificacion,  // Guardar identificación
+            'identificacion' => $request->identificacion,
             'permisos' => $permisosPorDefecto,
         ]);
 
@@ -196,10 +200,14 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:50|unique:users',
+            'email' => 'required|email|max:255|unique:users,email', // 🔥 NUEVO
         ], [
             'name.required' => 'El nombre completo es obligatorio',
             'username.required' => 'El nombre de usuario es obligatorio',
             'username.unique' => 'Este nombre de usuario ya está en uso',
+            'email.required' => 'El correo electrónico es obligatorio', // 🔥 NUEVO
+            'email.email' => 'Ingrese un correo electrónico válido', // 🔥 NUEVO
+            'email.unique' => 'Este correo electrónico ya está registrado', // 🔥 NUEVO
         ]);
 
         if ($validator->fails()) {
@@ -208,7 +216,7 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        $email = $request->username . '@temp.com';
+        $email = $request->email; // 🔥 AHORA USA EL EMAIL DEL FORMULARIO
         $password = Hash::make('password123');
 
         $permisosPorDefecto = [
@@ -226,7 +234,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'email' => $email,
+            'email' => $email, // 🔥 AHORA GUARDA EL CORREO REAL
             'password' => $password,
             'identificacion' => $request->identificacion ?? null,
             'permisos' => $permisosPorDefecto,
