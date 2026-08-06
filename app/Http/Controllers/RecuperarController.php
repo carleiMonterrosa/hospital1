@@ -94,9 +94,9 @@ class RecuperarController extends Controller
                 ->withInput();
         }
 
-        // Verificar que el código no haya expirado (15 minutos)
+        // Verificar que el código no haya expirado (5 minutos)
         $createdAt = Carbon::parse($reset->created_at);
-        if ($createdAt->diffInMinutes(Carbon::now()) > 15) {
+        if ($createdAt->diffInMinutes(Carbon::now()) > 5) {
             DB::table('password_resets')->where('email', $request->email)->delete();
             return back()->with('error', '❌ El código ha expirado. Solicita uno nuevo.');
         }

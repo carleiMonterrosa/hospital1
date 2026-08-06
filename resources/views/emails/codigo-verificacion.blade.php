@@ -63,7 +63,8 @@
             <p style="color: #666;">Recuperación de contraseña</p>
         </div>
 
-        <p>Hola,</p>
+        <!-- 🔥 CAMBIADO: AHORA MUESTRA EL USUARIO -->
+        <p>Hola <strong>{{ $username ?? $email }}</strong>,</p>
         <p>Has solicitado recuperar tu contraseña. Utiliza el siguiente código de verificación:</p>
 
         <div class="codigo">{{ $codigo }}</div>
@@ -73,6 +74,7 @@
         <p>Si no solicitaste este cambio, ignora este mensaje.</p>
 
         <div class="info">
+            <p>👤 Usuario: <strong>{{ $username ?? $email }}</strong></p>
             <p>📧 Correo: {{ $email }}</p>
         </div>
 

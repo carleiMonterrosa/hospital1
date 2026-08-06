@@ -1052,9 +1052,474 @@
         .btn-llamar-lista, .btn-atender-lista { border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7em; font-weight: bold; }
         .btn-llamar-lista { background: #28a745; color: white; }
         .btn-atender-lista { background: #007bff; color: white; }
-        @media (max-width: 700px) { .gestionar-turno-layout { grid-template-columns: 1fr; } }
-        @media (max-width: 1024px) { .sidebar { width: 280px; } .main-content { margin-left: 280px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; height: auto; } .main-content { margin-left: 0; } .app-layout { flex-direction: column; } }
+        
+        /* ============================================================
+           🔥 RESPONSIVE - BARRA LATERAL SIEMPRE A LA IZQUIERDA
+           ============================================================ */
+
+        /* ----- TABLET (pantallas entre 768px y 1024px) ----- */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            /* BARRA LATERAL A LA IZQUIERDA */
+            .app-layout {
+                flex-direction: row !important;
+            }
+            .sidebar {
+                width: 250px !important;
+                position: fixed !important;
+                height: 100vh !important;
+                left: 0 !important;
+                top: 0 !important;
+                display: flex !important;
+            }
+            .sidebar-header h2 {
+                font-size: 0.9rem !important;
+            }
+            .sidebar-header .logo-empresa {
+                max-width: 50px !important;
+                max-height: 40px !important;
+            }
+            .nav-item {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+                gap: 8px !important;
+            }
+            .nav-item i {
+                font-size: 0.9rem !important;
+                width: 20px !important;
+            }
+            .nav-section-title {
+                font-size: 0.6rem !important;
+            }
+            .voice-control h3 {
+                font-size: 0.7rem !important;
+            }
+            .voice-btn {
+                padding: 4px 10px !important;
+                font-size: 0.6rem !important;
+            }
+            .main-content {
+                margin-left: 250px !important;
+                padding: 15px !important;
+                width: calc(100% - 250px) !important;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 10px !important;
+            }
+            .stat-card {
+                padding: 10px !important;
+            }
+            .stat-icon {
+                width: 35px !important;
+                height: 35px !important;
+                font-size: 0.8rem !important;
+            }
+            .stat-info h3 {
+                font-size: 0.6rem !important;
+            }
+            .stat-info .value {
+                font-size: 1.2rem !important;
+            }
+            .servicios-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+                gap: 15px !important;
+            }
+            .gestionar-turno-layout {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 15px !important;
+            }
+        }
+
+        /* ----- CELULAR (pantallas menores a 768px) ----- */
+        @media (max-width: 768px) {
+            /* BARRA LATERAL A LA IZQUIERDA PERO MÁS PEQUEÑA */
+            .app-layout {
+                flex-direction: row !important;
+            }
+            .sidebar {
+                width: 200px !important;
+                position: fixed !important;
+                height: 100vh !important;
+                left: 0 !important;
+                top: 0 !important;
+                display: flex !important;
+                overflow-y: auto !important;
+                z-index: 100 !important;
+            }
+            .sidebar-header {
+                padding: 10px !important;
+            }
+            .sidebar-header h2 {
+                font-size: 0.7rem !important;
+            }
+            .sidebar-header .logo-empresa {
+                max-width: 35px !important;
+                max-height: 30px !important;
+            }
+            .nav-menu {
+                padding: 5px 8px !important;
+            }
+            .nav-section {
+                margin-bottom: 8px !important;
+            }
+            .nav-section-title {
+                font-size: 0.5rem !important;
+                padding-left: 5px !important;
+                margin-bottom: 4px !important;
+            }
+            .nav-item {
+                padding: 5px 8px !important;
+                font-size: 0.6rem !important;
+                gap: 5px !important;
+                border-radius: 6px !important;
+            }
+            .nav-item i {
+                font-size: 0.65rem !important;
+                width: 16px !important;
+            }
+            .voice-control {
+                padding: 4px !important;
+                margin: 4px 8px !important;
+            }
+            .voice-control h3 {
+                font-size: 0.5rem !important;
+            }
+            .voice-btn {
+                padding: 2px 6px !important;
+                font-size: 0.45rem !important;
+            }
+            .main-content {
+                margin-left: 200px !important;
+                padding: 8px !important;
+                width: calc(100% - 200px) !important;
+            }
+            .header-hospital {
+                padding: 8px 12px !important;
+                margin-bottom: 8px !important;
+            }
+            .header-hospital h1 {
+                font-size: 0.9rem !important;
+            }
+            .header-hospital p {
+                font-size: 0.6rem !important;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 6px !important;
+            }
+            .stat-card:last-child {
+                grid-column: span 2 !important;
+            }
+            .stat-card {
+                padding: 6px !important;
+                gap: 6px !important;
+            }
+            .stat-icon {
+                width: 25px !important;
+                height: 25px !important;
+                font-size: 0.6rem !important;
+            }
+            .stat-info h3 {
+                font-size: 0.45rem !important;
+            }
+            .stat-info .value {
+                font-size: 0.9rem !important;
+            }
+            .section-card {
+                padding: 8px !important;
+            }
+            .section-title {
+                font-size: 0.7rem !important;
+                padding-bottom: 4px !important;
+                margin-bottom: 6px !important;
+            }
+            .busqueda-container {
+                flex-direction: column !important;
+                gap: 4px !important;
+            }
+            .busqueda-container input {
+                width: 100% !important;
+                padding: 6px 10px !important;
+                font-size: 0.7rem !important;
+            }
+            .btn-buscar {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 6px !important;
+                font-size: 0.7rem !important;
+            }
+            .grid-nombres {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 3px !important;
+            }
+            .campo {
+                padding: 3px 4px !important;
+            }
+            .campo-label {
+                font-size: 0.4rem !important;
+            }
+            .campo-valor {
+                font-size: 0.5rem !important;
+            }
+            .specialties-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 4px !important;
+            }
+            .specialty-card {
+                padding: 4px !important;
+            }
+            .specialty-icon {
+                font-size: 1rem !important;
+            }
+            .specialty-name {
+                font-size: 0.5rem !important;
+            }
+            .btn-generate {
+                padding: 6px !important;
+                font-size: 0.7rem !important;
+            }
+            .servicios-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .servicio-card {
+                padding: 8px !important;
+            }
+            .servicio-card h3 {
+                font-size: 0.8rem !important;
+            }
+            .servicio-card .descripcion {
+                font-size: 0.6rem !important;
+            }
+            .gestionar-turno-layout {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .gestionar-izquierda,
+            .gestionar-derecha {
+                padding: 8px !important;
+            }
+            .turno-numero-grande {
+                font-size: 1.2rem !important;
+                padding: 6px !important;
+            }
+            .campo-fila .campo-valor-display {
+                padding: 4px 8px !important;
+                font-size: 0.65rem !important;
+                min-height: 25px !important;
+            }
+            .campos-dos-col {
+                grid-template-columns: 1fr !important;
+                gap: 4px !important;
+            }
+            .modulo-btn-click {
+                padding: 6px 10px !important;
+            }
+            .modulo-btn-click .modulo-nombre-text {
+                font-size: 0.65rem !important;
+            }
+            .modulo-option {
+                padding: 4px 10px !important;
+                font-size: 0.6rem !important;
+            }
+            .modulo-option .mod-icon {
+                width: 20px !important;
+                height: 20px !important;
+                font-size: 0.4rem !important;
+            }
+            .modulo-info-box {
+                padding: 6px !important;
+            }
+            .modulo-nombre {
+                font-size: 0.65rem !important;
+            }
+            .contador-badge {
+                padding: 2px 6px !important;
+                font-size: 0.45rem !important;
+            }
+            .usuarios-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .usuario-card {
+                padding: 8px !important;
+            }
+            .usuario-card h4 {
+                font-size: 0.7rem !important;
+            }
+            .reporte-table th,
+            .reporte-table td {
+                padding: 3px 4px !important;
+                font-size: 0.5rem !important;
+            }
+            .filtros-fecha {
+                flex-direction: column !important;
+                gap: 6px !important;
+                padding: 8px !important;
+            }
+            .filtros-fecha input {
+                width: 100% !important;
+                padding: 4px 8px !important;
+                font-size: 0.7rem !important;
+            }
+            .btn-generar-reporte,
+            .btn-descargar,
+            .btn-buscar-reporte {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 6px !important;
+                font-size: 0.7rem !important;
+            }
+            .acciones-reporte {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .modal-banner-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .modal-banner-grid .full-width {
+                grid-column: span 1 !important;
+            }
+            .modal-banner-card {
+                padding: 12px !important;
+                width: 95% !important;
+            }
+            .modal-content {
+                padding: 12px !important;
+                width: 95% !important;
+                margin: 8px auto !important;
+            }
+            .configuracion-section {
+                padding: 12px !important;
+            }
+            .configuracion-section h2 {
+                font-size: 1rem !important;
+            }
+            .perfil-section {
+                padding: 12px !important;
+            }
+            .perfil-search {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .perfil-search input {
+                width: 100% !important;
+            }
+            .permiso-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 6px !important;
+                padding: 8px !important;
+            }
+            .permiso-buttons {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+            .form-usuario-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
+            }
+            .form-usuario-actions {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .form-usuario-actions button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .banner-item-clickable {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                padding: 8px !important;
+                gap: 6px !important;
+            }
+            .banner-imagen-preview,
+            .banner-color-preview {
+                width: 50px !important;
+                height: 50px !important;
+            }
+            .banner-info h4 {
+                font-size: 0.7rem !important;
+            }
+            .banner-info p {
+                font-size: 0.55rem !important;
+            }
+            .banner-numero {
+                width: 25px !important;
+                height: 25px !important;
+                font-size: 0.7rem !important;
+            }
+            /* MODO TRABAJADOR EN CELULAR */
+            .modo-trabajador .sidebar {
+                width: 180px !important;
+            }
+            .modo-trabajador .main-content {
+                margin-left: 180px !important;
+                width: calc(100% - 180px) !important;
+            }
+            .modo-trabajador .modulos-bar {
+                flex-direction: row !important;
+                flex-wrap: wrap !important;
+                padding: 4px !important;
+                gap: 4px !important;
+            }
+            .modo-trabajador .modulo-tab {
+                padding: 4px 8px !important;
+                font-size: 0.55rem !important;
+            }
+            .btn-cerrar-sesion-modulo {
+                padding: 4px 10px !important;
+                font-size: 0.55rem !important;
+                margin-left: auto !important;
+            }
+        }
+
+        /* CELULAR MUY PEQUEÑO */
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 160px !important;
+            }
+            .main-content {
+                margin-left: 160px !important;
+                width: calc(100% - 160px) !important;
+            }
+            .sidebar-header h2 {
+                font-size: 0.6rem !important;
+            }
+            .sidebar-header .logo-empresa {
+                max-width: 30px !important;
+                max-height: 25px !important;
+            }
+            .nav-item {
+                font-size: 0.5rem !important;
+                padding: 4px 6px !important;
+                gap: 3px !important;
+            }
+            .nav-item i {
+                font-size: 0.5rem !important;
+                width: 14px !important;
+            }
+            .nav-section-title {
+                font-size: 0.4rem !important;
+            }
+            .modo-trabajador .sidebar {
+                width: 140px !important;
+            }
+            .modo-trabajador .main-content {
+                margin-left: 140px !important;
+                width: calc(100% - 140px) !important;
+            }
+            .modo-trabajador .modulo-tab {
+                font-size: 0.45rem !important;
+                padding: 3px 6px !important;
+            }
+        }
+        
+        /* ===== FIN RESPONSIVE ===== */
+        
+        /* ESTILOS RESTANTES */
         .usuarios-section { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .usuarios-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid #ffd966; padding-bottom: 15px; }
         .usuarios-header h2 { color: #0b2b5e; display: flex; align-items: center; gap: 10px; }
@@ -1541,466 +2006,10 @@
             display: none !important;
         }
 
-        /* ============================================================
-           🔥 ESTILOS PARA TABLET Y PANTALLAS PEQUEÑAS (RESPONSIVE)
-           ============================================================ */
-
-        /* Para tablets (entre 768px y 1024px) */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 220px !important;
-            }
-            .sidebar-header {
-                padding: 10px 12px !important;
-            }
-            .sidebar-header h2 {
-                font-size: 0.8rem !important;
-            }
-            .sidebar-header .logo-empresa {
-                max-width: 45px !important;
-                max-height: 35px !important;
-            }
-            .nav-item {
-                padding: 7px 10px !important;
-                font-size: 0.75rem !important;
-                gap: 6px !important;
-            }
-            .nav-item i {
-                width: 18px !important;
-                font-size: 0.8rem !important;
-            }
-            .nav-section-title {
-                font-size: 0.55rem !important;
-                padding-left: 6px !important;
-                margin-bottom: 6px !important;
-            }
-            .voice-control {
-                padding: 8px 10px !important;
-                margin: 6px 10px !important;
-            }
-            .voice-control h3 {
-                font-size: 0.7rem !important;
-            }
-            .voice-btn {
-                padding: 4px 10px !important;
-                font-size: 0.6rem !important;
-            }
-            .main-content {
-                margin-left: 220px !important;
-                padding: 10px !important;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 8px !important;
-            }
-            .stat-card {
-                padding: 10px !important;
-                gap: 8px !important;
-            }
-            .stat-icon {
-                width: 32px !important;
-                height: 32px !important;
-                font-size: 0.7rem !important;
-            }
-            .stat-info h3 {
-                font-size: 0.55rem !important;
-            }
-            .stat-info .value {
-                font-size: 1.1rem !important;
-            }
-            .header-hospital {
-                padding: 10px 15px !important;
-                margin-bottom: 10px !important;
-            }
-            .header-hospital h1 {
-                font-size: 1.1rem !important;
-            }
-            .header-hospital p {
-                font-size: 0.7rem !important;
-            }
-            .section-card {
-                padding: 12px !important;
-            }
-            .section-title {
-                font-size: 0.85rem !important;
-                padding-bottom: 6px !important;
-                margin-bottom: 8px !important;
-            }
-            .busqueda-container input {
-                padding: 6px 10px !important;
-                font-size: 0.8rem !important;
-            }
-            .btn-buscar {
-                padding: 6px 12px !important;
-                font-size: 0.7rem !important;
-            }
-            .persona-info {
-                padding: 8px !important;
-            }
-            .persona-info .nombre-completo {
-                font-size: 0.8rem !important;
-            }
-            .grid-nombres {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 4px !important;
-            }
-            .campo {
-                padding: 4px 6px !important;
-            }
-            .campo-label {
-                font-size: 0.45rem !important;
-            }
-            .campo-valor {
-                font-size: 0.65rem !important;
-            }
-            .specialties-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 6px !important;
-            }
-            .specialty-card {
-                padding: 8px !important;
-            }
-            .specialty-icon {
-                font-size: 1.2rem !important;
-            }
-            .specialty-name {
-                font-size: 0.6rem !important;
-            }
-            .btn-generate {
-                padding: 8px !important;
-                font-size: 0.8rem !important;
-            }
-            .atender-section {
-                padding: 12px !important;
-            }
-            .atender-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .gestionar-turno-layout {
-                grid-template-columns: 1fr !important;
-                gap: 12px !important;
-            }
-            .gestionar-izquierda, .gestionar-derecha {
-                padding: 12px !important;
-            }
-            .gestionar-titulo {
-                font-size: 0.85rem !important;
-                margin-bottom: 10px !important;
-            }
-            .turno-numero-grande {
-                font-size: 1.5rem !important;
-                padding: 10px !important;
-            }
-            .campo-fila .campo-valor-display {
-                padding: 6px 10px !important;
-                font-size: 0.75rem !important;
-                min-height: 30px !important;
-            }
-            .campos-dos-col {
-                gap: 6px !important;
-            }
-            .modulo-btn-click {
-                padding: 8px 12px !important;
-            }
-            .modulo-btn-click .modulo-nombre-text {
-                font-size: 0.75rem !important;
-            }
-            .modulo-option {
-                padding: 8px 12px !important;
-                font-size: 0.7rem !important;
-            }
-            .modulo-option .mod-icon {
-                width: 24px !important;
-                height: 24px !important;
-                font-size: 0.5rem !important;
-            }
-            .modulo-info-box {
-                padding: 8px !important;
-            }
-            .modulo-nombre {
-                font-size: 0.75rem !important;
-                margin-bottom: 6px !important;
-            }
-            .contador-badge {
-                padding: 2px 8px !important;
-                font-size: 0.55rem !important;
-            }
-            .turno-espera-item {
-                padding: 6px 10px !important;
-                font-size: 0.7rem !important;
-            }
-            .turno-espera-num {
-                font-size: 0.8rem !important;
-            }
-            .turno-espera-pac {
-                font-size: 0.6rem !important;
-            }
-            .btn-llamar-lista, .btn-atender-lista {
-                padding: 3px 8px !important;
-                font-size: 0.55rem !important;
-            }
-            .servicios-section {
-                padding: 12px !important;
-            }
-            .servicios-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .servicios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .servicio-card {
-                padding: 12px !important;
-            }
-            .servicio-card h3 {
-                font-size: 0.95rem !important;
-            }
-            .servicio-card .descripcion {
-                font-size: 0.7rem !important;
-            }
-            .usuarios-section {
-                padding: 12px !important;
-            }
-            .form-usuario-grid {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-            .usuarios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .usuario-card {
-                padding: 12px !important;
-            }
-            .usuario-card h4 {
-                font-size: 0.9rem !important;
-            }
-            .reportes-section {
-                padding: 12px !important;
-            }
-            .report-header h2 {
-                font-size: 1.2rem !important;
-            }
-            .filtros-fecha {
-                padding: 12px !important;
-                gap: 8px !important;
-                flex-wrap: wrap !important;
-            }
-            .filtros-fecha input {
-                padding: 6px 10px !important;
-                font-size: 0.8rem !important;
-                width: 100% !important;
-            }
-            .btn-generar-reporte {
-                padding: 8px 16px !important;
-                font-size: 0.8rem !important;
-                width: 100% !important;
-            }
-            .reporte-table th,
-            .reporte-table td {
-                padding: 6px 8px !important;
-                font-size: 0.65rem !important;
-            }
-            .banners-section-fullwidth {
-                padding: 12px !important;
-            }
-            .banners-section-fullwidth h2 {
-                font-size: 1.2rem !important;
-            }
-            .banner-item-clickable {
-                padding: 10px !important;
-                gap: 10px !important;
-            }
-            .banner-numero {
-                width: 30px !important;
-                height: 30px !important;
-                font-size: 0.9rem !important;
-            }
-            .banner-imagen-preview, .banner-color-preview {
-                width: 50px !important;
-                height: 50px !important;
-            }
-            .banner-info h4 {
-                font-size: 0.8rem !important;
-            }
-            .banner-info p {
-                font-size: 0.65rem !important;
-            }
-            .modal-banner-card {
-                padding: 16px !important;
-                width: 95% !important;
-            }
-            .modal-banner-grid {
-                grid-template-columns: 1fr !important;
-                gap: 10px !important;
-            }
-            .modal-banner-grid .full-width {
-                grid-column: span 1 !important;
-            }
-            .modal-content {
-                padding: 16px !important;
-                margin: 20px auto !important;
-            }
-            .modal-persona .modal-content {
-                padding: 16px !important;
-            }
-            .btn-agregar-servicio,
-            .btn-agregar-banner,
-            .btn-guardar-config,
-            .btn-cancelar-config {
-                padding: 8px 16px !important;
-                font-size: 0.8rem !important;
-            }
-            .btn-ver-turnos-modal {
-                padding: 8px !important;
-                font-size: 0.8rem !important;
-            }
-            .modo-trabajador .modulos-bar {
-                padding: 6px 10px !important;
-                gap: 6px !important;
-            }
-            .modo-trabajador .modulo-tab {
-                padding: 6px 12px !important;
-                font-size: 0.65rem !important;
-            }
-            .modo-trabajador .servicios-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .atender-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .reportes-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .configuracion-section {
-                padding: 12px !important;
-            }
-            .modo-trabajador .servicios-section .servicios-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-                gap: 12px !important;
-            }
-            .modo-trabajador .gestionar-turno-layout {
-                gap: 12px !important;
-            }
-            .modo-trabajador .gestionar-izquierda,
-            .modo-trabajador .gestionar-derecha {
-                padding: 12px !important;
-            }
-            .modo-trabajador .turno-numero-grande {
-                font-size: 1.5rem !important;
-                padding: 10px !important;
-            }
-            .configuracion-section {
-                padding: 12px !important;
-            }
-            .configuracion-section h2 {
-                font-size: 1.2rem !important;
-            }
-            .configuracion-section .form-group input[type="text"] {
-                padding: 10px 14px !important;
-                font-size: 0.85rem !important;
-            }
-            .configuracion-actions {
-                flex-wrap: wrap !important;
-                justify-content: center !important;
-            }
-            .perfil-section {
-                padding: 12px !important;
-            }
-            .perfil-header h2 {
-                font-size: 1rem !important;
-            }
-            .permiso-item {
-                padding: 10px 12px !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 8px !important;
-            }
-            .permiso-info h4 {
-                font-size: 0.8rem !important;
-            }
-            .permiso-info p {
-                font-size: 0.65rem !important;
-            }
-            .permiso-buttons {
-                gap: 10px !important;
-                flex-wrap: wrap !important;
-            }
-            .agregar-nivel-section {
-                padding: 12px !important;
-            }
-            .agregar-nivel-section h2 {
-                font-size: 1.2rem !important;
-            }
-            .agregar-nivel-section .form-group input {
-                padding: 10px 14px !important;
-                font-size: 0.85rem !important;
-            }
-        }
-
-        /* Para pantallas muy pequeñas (teléfonos) */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100% !important;
-                position: relative !important;
-                height: auto !important;
-                max-height: 300px !important;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                padding: 8px !important;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .stat-card:last-child {
-                grid-column: span 2 !important;
-            }
-            .modulos-bar {
-                flex-direction: column !important;
-                align-items: stretch !important;
-            }
-            .btn-cerrar-sesion-modulo {
-                margin-left: 0 !important;
-            }
-            .specialties-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-            .gestionar-turno-layout {
-                grid-template-columns: 1fr !important;
-            }
-            .modal-banner-card {
-                width: 98% !important;
-                padding: 12px !important;
-            }
-            .modal-content {
-                width: 98% !important;
-                margin: 10px auto !important;
-                padding: 12px !important;
-            }
-            .filtros-fecha {
-                flex-direction: column !important;
-            }
-            .filtros-fecha input {
-                width: 100% !important;
-            }
-            .servicios-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .usuarios-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .turno-generado-numero {
-                font-size: 2rem !important;
-                padding: 12px 20px !important;
-            }
-            .modo-trabajador .servicios-section .servicios-grid {
-                grid-template-columns: 1fr !important;
-            }
-        }
     </style>
 </head>
 <body>
+    <!-- CONTENIDO DEL BODY - IGUAL QUE ANTES -->
     <div class="notification" id="notification"></div>
 
     <!-- Modal Turno Generado -->
@@ -2347,7 +2356,7 @@
                     </div>
                     <table class="reporte-table">
                         <thead><tr><th>ESTADO</th><th>TURNO</th><th>SERVICIO</th><th>DOCUMENTO</th><th>NOMBRE</th><th>INGRESO</th><th>SALIDA</th><th>DIFERENCIA</th></tr></thead>
-                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td</tr</tbody>
+                        <tbody id="reporteBody"><tr><td colspan="8">Seleccione fechas y genere reporte</td</tr></tbody>
                     </table>
                     <div class="footer-reporte">SISTEMA DE GESTIÓN DE TURNOS</div>
                 </div>
